@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:05:19 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/05 10:24:20 by saecker          ###   ########.fr       */
+/*   Updated: 2026/07/03 18:40:10 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,8 @@ t_status	ft_echo(t_command *cmd, char **env)
 	t_u16	flag_n;
 	int		i;
 
-	ft_printf("curstom\n");
-	(void)env;
 	flag_n = 0;
+	(void)env;
 	i = 0;
 	while (cmd->argv[1] && i < cmd->ac && is_n_flag(cmd->argv[i + 1]))
 	{
@@ -46,12 +45,12 @@ t_status	ft_echo(t_command *cmd, char **env)
 	}
 	while (cmd->argv[1] && (i + 1) < cmd->ac)
 	{
-		print_env_fd(1, cmd->argv[i + 1], env);
+		ft_printf(cmd->argv[i + 1]);
 		if (i < (cmd->ac - 1))
 			ft_putstr_fd(" ", 1);
 		i++;
 	}
 	if (!flag_n)
-		ft_putstr_fd("\n", 1);
+		ft_printf("\n");
 	return (0);
 }

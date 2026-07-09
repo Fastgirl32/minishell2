@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/08 17:30:31 by saecker          ###   ########.fr       */
+/*   Updated: 2026/07/09 18:12:28 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include "libft/libft.h"
-# include "printf/ft_printf.h"
 # include <fcntl.h>
 # include <signal.h>
 # include <stdio.h>

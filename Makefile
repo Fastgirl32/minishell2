@@ -21,11 +21,8 @@ all: $(NAME)
 libft/libft.a:
 	cd libft && make
 
-printf/printf.a:
-	cd printf && make
-
-$(NAME): $(OBJEKT_DATEIEN) libft/libft.a printf/printf.a
-	$(CC) $(CFLAGGEN) $(OBJEKT_DATEIEN) $(LIBNAME) printf/printf.a -lreadline -o $(NAME)
+$(NAME): $(OBJEKT_DATEIEN) libft/libft.a
+	$(CC) $(CFLAGGEN) $(OBJEKT_DATEIEN) $(LIBNAME) -lreadline -o $(NAME)
 
 clean: 
 	rm -f $(OBJEKT_DATEIEN)

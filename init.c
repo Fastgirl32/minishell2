@@ -8,6 +8,8 @@ static void			extract_redirections(char **av, int *ac, char **limiter,
 						int *redirect_start);
 static int			prepare_heredocs(t_command *head);
 
+int				g_status = 0;
+
 static int	is_blank(char c)
 {
 	return (c == ' ' || c == '\t');

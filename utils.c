@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 14:02:27 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/05 10:08:03 by saecker          ###   ########.fr       */
+/*   Updated: 2026/07/03 18:30:22 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,18 +198,11 @@ void	env_append(char ***env, char *str)
 void		env_remove(char ***env, char *str)
 {
 	int		i;
-	char	found;
 	char	**new_env;
 
 	i = 0;
-	(void)found;
-	found = 0;
 	while ((*env)[i])
-	{
-		if (!ft_strcmp((*env)[i], str))
-			found = 1;
 		i++;
-	}
 	new_env = malloc(sizeof(char **) * (i + 1));
 	i = 0;
 	while ((*env)[i])
@@ -262,30 +255,77 @@ char*	get_var(char *var, char **env)
 void	print_env_fd(int fd, char *format, char **env)
 {
 	int		i;
-	// int		j;
-	// char	*var;
+	int		j;
+	char	*var;
 
-	(void)env;
 	i = 0;
 	while (format[i])
 	{
-		// j = 0;
-		// if (format[i] != '$')
-			write(fd, format+i, 1);
-		// else
-		// {
-		// 	i++;
-		// 	while (format[i + j] && format[i + j] != ' ' && format[i + j] != '$')
-		// 		j++;
-		// 	if (j == 0)
-		// 		continue ;
-		// 	var = malloc(j + 1);
-		// 	ft_memcpy(var, format + i , j);
-		// 	var[j] = 0;
-		// 	print_var(fd, var, env);
-		// 	free(var);
-		// 	i += (j - 1);
-		// }
+		j = 0;
+		if (format[i] != '$')
+			write(1, format+i, 1);
+		else
+		{
+			i++;
+			while (format[i + j] && format[i + j] != ' ' && format[i + j] != '$')
+				j++;
+			if (j == 0)
+				continue ;
+			var = malloc(j + 1);
+			ft_memcpy(var, format + i , j);
+			var[j] = 0;
+			print_var(fd, var, env);
+			free(var);
+			i += (j - 1);
+		}
 		i++;
 	}
+}
+
+char	*expand_str(char *format, char **env)
+{
+	char	*rstr = ft_calloc(ft_strlen(format) + 1, 1);
+	char	*tmp = malloc(ft_strlen(format) + 1);
+	char	*tmptmp;
+	char	*var;
+	int		i[3] = {0};
+	while (format[i[0]])
+	{
+		i[1] = 0;
+		if (format[i[0]] != '$')
+			tmp[(i[2])++] = format[i[0]];
+		else
+		{
+			i[0]++;
+			while (format[i[0] + i[1]] && format[i[0] + i[1]] != ' ' && format[i[0] + i[1]] != '$')
+				(i[1])++;
+			if (i[1] == 0)
+				continue ;
+			tmptmp = malloc(i[1] + 1);
+			ft_memcpy(tmptmp, format + i[0] , i[1]);
+			tmptmp[i[1]] = 0;
+			var = get_var(tmptmp, env);
+			free(tmptmp);
+			tmp[i[2]] = 0;
+			tmptmp = ft_strjoin(rstr, tmp);
+			free(rstr);
+			rstr = tmptmp;
+			if (var)
+			{
+				tmptmp = ft_strjoin(rstr, var);
+				free(var);
+				free(rstr);
+				rstr = tmptmp;
+			}
+			i[0] += (i[1] - 1);
+			i[2] = 0;
+		}
+		i[0]++;
+	}
+	tmp[i[2]] = 0;
+	tmptmp = ft_strjoin(rstr, tmp);
+	free(rstr);
+	free(tmp);
+	rstr = tmptmp;
+	return (rstr);
 }
