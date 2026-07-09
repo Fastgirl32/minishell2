@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/08 17:38:58 by saecker          ###   ########.fr       */
+/*   Updated: 2026/07/09 19:46:40 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,12 @@ void	execute(t_command *cmd, char **env_src)
 		exit(0);
 		free_arr((void **)env);
 	}
-	waitpid(child_pid, NULL, 0);
-	// else if (cmd->next)
-	// {
-	// 	close(cmd->fd_in);
-	// 	close(cmd->fd_out);
-	// 	execute(cmd->next, env_src);
-	// }
+	else if (cmd->next)
+	{
+	 	close(cmd->fd_in);
+	 	close(cmd->fd_out);
+	 	execute(cmd->next, env_src);
+	}
 }
 
 /*
@@ -111,5 +110,4 @@ int	main(int ac, char **av, char **env)
 	// if (connect_pipes(vars->list))
 	// 	return (1);
 	// execute(vars->list, env);
-	return (0);
 }
