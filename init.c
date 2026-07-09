@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <sys/types.h>
 
 static int			is_redirect_op(const char *s);
 static void			extract_redirections(char **av, int *ac, char **limiter,
@@ -800,7 +801,7 @@ void	make_list(t_vars *vars, char *line)
 	t_command	*cmd;
 	char		**av;
 	int			ac;
-	pid_t		clone_id;
+	pid_t		child_pid;
 
 	head = NULL;
 	tail = NULL;
@@ -862,19 +863,18 @@ void	make_list(t_vars *vars, char *line)
 		}
 		if (!connect_pipes(head) && !prepare_heredocs(head))
 		{
-			if (ft_strcmp(head->command, "exit") || head->next)
-			{
-				clone_id = fork();
-				if (!clone_id)
-					execute(head, vars->env);
-				else
-					waitpid(clone_id, NULL, 0);
-			}
+			(void)child_pid;
+			execute(head, vars->env);
+			/*if (is_builtin(head->command) && head->next == NULL)
+				execute_builtin(head, vars->env);
 			else
 			{
-				execute(head, vars->env);
-			}
-			
+				child_pid = fork();
+				if (!child_pid)
+					execute(head, vars->env);
+				else
+					waitpid(child_pid, NULL, 0);
+			} */
 		}
 	}
 	free_list(head);

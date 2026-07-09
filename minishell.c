@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/09 19:46:40 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/09 21:56:03 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,41 +35,49 @@ single command: direkt ausführen
 Teil einer pipeline: forken, dann als child ausführen
 das tut alle edge cases abklären (cd Documents | echo hi wechselt nicht wirklich z.B.)
 */
+
+void	execute_builtin(t_command *cmd, char **env)
+{
+	if (!ft_strcmp(cmd->command, "echo"))
+		ft_echo(cmd, env);
+	else if (!ft_strcmp(cmd->command, "cd"))
+		ft_cd(cmd, env);
+	else if (!ft_strcmp(cmd->command, "pwd"))
+		ft_pwd(cmd);
+	else if (!ft_strcmp(cmd->command, "export"))
+		ft_export(cmd, &env);
+	else if (!ft_strcmp(cmd->command, "unset"))
+		ft_unset(cmd, &env);
+	else if (!ft_strcmp(cmd->command, "env"))
+		ft_env(cmd, env);
+	else if (!ft_strcmp(cmd->command, "exit"))
+		ft_exit(cmd);
+}
+
 void	execute(t_command *cmd, char **env_src)
 {
 	pid_t	child_pid;
 	char	**env;
 
 	child_pid = 0;
-	if (cmd->next)
+	if (cmd->next || !is_builtin(cmd->command))
 		child_pid = fork();
-	if (!child_pid)
+	if (!child_pid) //in the child
 	{
 		setup_child_signals();
 		dup2(cmd->fd_in, 0);
 		dup2(cmd->fd_out, 1);
 		env = recreate_env(env_src);
-		if (!ft_strcmp(cmd->command, "echo"))
-			ft_echo(cmd, env);
-		else if (!ft_strcmp(cmd->command, "cd"))
-			ft_cd(cmd, env);
-		else if (!ft_strcmp(cmd->command, "pwd"))
-			ft_pwd(cmd);
-		else if (!ft_strcmp(cmd->command, "export"))
-			ft_export(cmd, &env);
-		else if (!ft_strcmp(cmd->command, "unset"))
-			ft_unset(cmd, &env);
-		else if (!ft_strcmp(cmd->command, "env"))
-			ft_env(cmd, env);
-		else if (!ft_strcmp(cmd->command, "exit"))
-			ft_exit(cmd);
+		if (is_builtin(cmd->command))
+			execute_builtin(cmd, env);
 		else
 			find_and_exec(cmd, env);
-		exit(0);
 		free_arr((void **)env);
+		exit(0);
 	}
-	else if (cmd->next)
+	else if (cmd->next) //in the parent
 	{
+		waitpid(child_pid, NULL, 0);
 	 	close(cmd->fd_in);
 	 	close(cmd->fd_out);
 	 	execute(cmd->next, env_src);

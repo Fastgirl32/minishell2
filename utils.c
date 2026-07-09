@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 14:02:27 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/03 18:30:22 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/09 20:21:16 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,4 +328,15 @@ char	*expand_str(char *format, char **env)
 	free(tmp);
 	rstr = tmptmp;
 	return (rstr);
+}
+
+t_u16	is_builtin(char *cmd)
+{
+	return (!ft_strcmp(cmd, "cd") ||
+		!ft_strcmp(cmd, "echo") ||
+		!ft_strcmp(cmd, "env") ||
+		!ft_strcmp(cmd, "exit") ||
+		!ft_strcmp(cmd, "export") ||
+		!ft_strcmp(cmd, "pwd") ||
+		!ft_strcmp(cmd, "unset"));
 }

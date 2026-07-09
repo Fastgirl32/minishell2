@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/09 18:38:17 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/09 21:22:33 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ char					*key(const char *str);
 char					*value(const char *str);
 char					*get_var(char *var, char **env);
 
+t_u16	is_builtin(char *cmd);
+
 t_status				ft_echo(t_command *cmd, char **env);
 t_status				ft_cd(t_command *cmd, char **env);
 t_status				ft_pwd(t_command *cmd);
@@ -73,6 +75,7 @@ t_status				ft_exit(t_command *cmd);
 t_status				find_and_exec(t_command *cmd, char **env);
 
 t_u16					connect_pipes(t_command *top_cmd);
+void	execute_builtin(t_command *cmd, char **env);
 void					execute(t_command *cmd, char **env_src);
 
 char					*get_input(int fd);
