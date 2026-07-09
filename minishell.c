@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/09 21:56:03 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/09 22:07:25 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	execute(t_command *cmd, char **env_src)
 	}
 	else if (cmd->next) //in the parent
 	{
-		waitpid(child_pid, NULL, 0);
+		//waitpid(child_pid, NULL, 0);
 	 	close(cmd->fd_in);
 	 	close(cmd->fd_out);
 	 	execute(cmd->next, env_src);

@@ -870,9 +870,11 @@ void	make_list(t_vars *vars, char *line)
 			else
 			{
 				child_pid = fork();
-				if (!child_pid)
+				if (!child_pid) //child
+				{
 					execute(head, vars->env);
-				else
+				}
+				else //parent waits for child
 					waitpid(child_pid, NULL, 0);
 			} */
 		}
