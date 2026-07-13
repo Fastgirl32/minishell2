@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/09 22:07:25 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/13 02:28:29 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,29 +59,40 @@ void	execute(t_command *cmd, char **env_src)
 	pid_t	child_pid;
 	char	**env;
 
-	child_pid = 0;
-	if (cmd->next || !is_builtin(cmd->command))
-		child_pid = fork();
+	if (!cmd)
+		return ;
+	child_pid = fork();
 	if (!child_pid) //in the child
 	{
 		setup_child_signals();
-		dup2(cmd->fd_in, 0);
-		dup2(cmd->fd_out, 1);
+		if (cmd->fd_in != 0)
+		{
+			dup2(cmd->fd_in, 0);
+			close(cmd->fd_in);
+		}
+		if (cmd->fd_out != 1)
+		{
+			dup2(cmd->fd_out, 1);
+			close(cmd->fd_out);
+		}
 		env = recreate_env(env_src);
 		if (is_builtin(cmd->command))
 			execute_builtin(cmd, env);
 		else
 			find_and_exec(cmd, env);
+		
 		free_arr((void **)env);
 		exit(0);
 	}
-	else if (cmd->next) //in the parent
+	else
 	{
-		//waitpid(child_pid, NULL, 0);
-	 	close(cmd->fd_in);
-	 	close(cmd->fd_out);
-	 	execute(cmd->next, env_src);
-	}
+		if (cmd->fd_in != STDIN_FILENO)
+			close(cmd->fd_in);
+		if (cmd->fd_out != STDOUT_FILENO)
+			close(cmd->fd_out);
+		execute(cmd->next, env_src);
+		waitpid(child_pid, NULL, 0);
+	}	
 }
 
 /*
@@ -97,7 +108,7 @@ int	main(int ac, char **av, char **env)
 	(void)env;
 	vars = init_vars(env);
 	setup_parent_signals();
-	print_banner();
+	//print_banner();
 	while (vars->stop == 0)
 	{
 		get_line(vars);
