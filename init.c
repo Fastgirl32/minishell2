@@ -864,8 +864,6 @@ void	make_list(t_vars *vars, char *line)
 		}
 		if (!connect_pipes(head) && !prepare_heredocs(head))
 		{
-			//(void)child_pid;
-			//execute(head, vars->env);
 			if (head->next == NULL)
 			{
 				if (is_builtin(head->command))

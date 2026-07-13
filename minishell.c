@@ -108,7 +108,7 @@ int	main(int ac, char **av, char **env)
 	(void)env;
 	vars = init_vars(env);
 	setup_parent_signals();
-	//print_banner();
+	print_banner();
 	while (vars->stop == 0)
 	{
 		get_line(vars);
