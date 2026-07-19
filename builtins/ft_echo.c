@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:05:19 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/09 18:43:43 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/14 12:14:10 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_status	ft_echo(t_command *cmd, char **env)
 	while (cmd->argv[1] && (i + 1) < cmd->ac)
 	{
 		ft_printf(cmd->argv[i + 1]);
-		if (i < (cmd->ac - 1))
+		if (i < (cmd->ac - 2))
 			ft_putstr_fd(" ", 1);
 		i++;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_and_exec.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/03 14:11:28 by lstarek           #+#    #+#             */
-/*   Updated: 2026/06/03 14:11:29 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/07/14 12:22:22 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ t_status    find_and_exec(t_command *cmd, char **env)
         found = access(path, F_OK);
         path_str = ft_strchr(path_str + 1, ':');
     }
+    free_arr((void **)env);
     if (found == -1)
         perror(cmd->command);
     else

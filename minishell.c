@@ -6,11 +6,12 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/13 02:28:29 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/14 13:09:24 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <unistd.h>
 
 t_u16	connect_pipes(t_command *top_cmd)
 {
@@ -69,26 +70,29 @@ void	execute(t_command *cmd, char **env_src)
 		{
 			dup2(cmd->fd_in, 0);
 			close(cmd->fd_in);
+			cmd->fd_in = -1;
 		}
 		if (cmd->fd_out != 1)
 		{
 			dup2(cmd->fd_out, 1);
 			close(cmd->fd_out);
+			cmd->fd_out = -1;
 		}
 		env = recreate_env(env_src);
 		if (is_builtin(cmd->command))
+		{
 			execute_builtin(cmd, env);
+			free_arr((void **)env);
+		}
 		else
 			find_and_exec(cmd, env);
-		
-		free_arr((void **)env);
 		exit(0);
 	}
 	else
 	{
-		if (cmd->fd_in != STDIN_FILENO)
+		if (cmd->fd_in >= 0 && cmd->fd_in != STDIN_FILENO)
 			close(cmd->fd_in);
-		if (cmd->fd_out != STDOUT_FILENO)
+		if (cmd->fd_out >= 0 && cmd->fd_out != STDOUT_FILENO)
 			close(cmd->fd_out);
 		execute(cmd->next, env_src);
 		waitpid(child_pid, NULL, 0);

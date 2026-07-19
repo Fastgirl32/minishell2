@@ -872,7 +872,7 @@ void	make_list(t_vars *vars, char *line)
 				{
 					child_pid = fork();
 					if (!child_pid) //child
-						find_and_exec(head,vars->env);
+						find_and_exec(head,recreate_env(vars->env));
 					else //parent waits for child
 						waitpid(child_pid, NULL, 0);
 				}
