@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <unistd.h>
 
 t_u16	connect_pipes(t_command *top_cmd)
 {
@@ -22,10 +21,13 @@ t_u16	connect_pipes(t_command *top_cmd)
 	cmd->fd_in = 0;
 	while (cmd->next)
 	{
-		if (pipe(pipe_pair) != 0)
-			return (1);
-		cmd->fd_out = pipe_pair[1];
-		cmd->next->fd_in = pipe_pair[0];
+		if (!ft_strcmp(cmd->limiter, "|"))
+		{
+			if (pipe(pipe_pair) != 0)
+				return (1);
+			cmd->fd_out = pipe_pair[1];
+			cmd->next->fd_in = pipe_pair[0];
+		}
 		cmd = cmd->next;
 	}
 	cmd->fd_out = 1;
