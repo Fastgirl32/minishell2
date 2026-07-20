@@ -862,7 +862,7 @@ void	make_list(t_vars *vars, char *line)
 			vars->list = NULL;
 			return ;
 		}
-		if (!connect_pipes(head) && !prepare_heredocs(head))
+		if (!connect_pipes(head) && !prepare_heredocs(head) && !establish_redirects(head))
 		{
 			if (head->next == NULL)
 			{

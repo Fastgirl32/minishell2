@@ -31,6 +31,24 @@ t_u16	connect_pipes(t_command *top_cmd)
 	cmd->fd_out = 1;
 	return (0);
 }
+
+t_u16	establish_redirects(t_command *top_cmd)
+{
+	t_command	*cmd;
+	t_command	*next_cmd;
+	int			fd;
+
+	cmd = top_cmd;
+	next_cmd = cmd;
+	//printf("<%s>, <%s>\n", cmd->next->command, cmd->next->limiter);
+	while (next_cmd && !ft_strcmp(next_cmd->limiter, ">"))
+	{
+		next_cmd = next_cmd->next;
+		fd = open(next_cmd->command, O_WRONLY | O_CREAT | O_EXCL, 0666);
+		cmd->fd_out = fd;
+	}
+	return (0);
+}
 /*
 single command: direkt ausführen
 Teil einer pipeline: forken, dann als child ausführen
@@ -112,7 +130,7 @@ int	main(int ac, char **av, char **env)
 	(void)env;
 	vars = init_vars(env);
 	setup_parent_signals();
-	print_banner();
+	//print_banner();
 	while (vars->stop == 0)
 	{
 		get_line(vars);

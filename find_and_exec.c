@@ -47,7 +47,10 @@ t_status    find_and_exec(t_command *cmd, char **env)
     }
     free_arr((void **)env);
     if (found == -1)
+    {
         perror(cmd->command);
+        exit(1);
+    }
     else
         execv(path, cmd->argv);
     free(path_str);
