@@ -15,6 +15,7 @@
 t_status	ft_env(t_command *cmd, char **env)
 {
 	if (cmd->ac)
+//ändern, stimmt ned
 		return ((void)printf("env: too many arguments\n"), 2);
 	while (*env)
 	{
