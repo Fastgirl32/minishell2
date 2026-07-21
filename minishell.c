@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/14 13:09:24 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/21 15:41:08 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	is_redirect_limiter(const char *s)
+{
+	return (s && (!ft_strcmp(s, "<") || !ft_strcmp(s, ">")
+			|| !ft_strcmp(s, "<<") || !ft_strcmp(s, ">>")));
+}
 
 t_u16	connect_pipes(t_command *top_cmd)
 {
@@ -21,7 +27,7 @@ t_u16	connect_pipes(t_command *top_cmd)
 	cmd->fd_in = 0;
 	while (cmd->next)
 	{
-		if (!ft_strcmp(cmd->limiter, "|"))
+		if (cmd->limiter && !ft_strcmp(cmd->limiter, "|"))
 		{
 			if (pipe(pipe_pair) != 0)
 				return (1);
@@ -39,15 +45,41 @@ t_u16	establish_redirects(t_command *top_cmd)
 	t_command	*cmd;
 	t_command	*next_cmd;
 	int			fd;
+	int			pipe_fd[2];
+	int			i;
 
 	cmd = top_cmd;
 	next_cmd = cmd;
 	//printf("<%s>, <%s>\n", cmd->next->command, cmd->next->limiter);
-	while (next_cmd && !ft_strcmp(next_cmd->limiter, ">"))
+	while (next_cmd && next_cmd->limiter && is_redirect_limiter(next_cmd->limiter))
 	{
-		next_cmd = next_cmd->next;
-		fd = open(next_cmd->command, O_WRONLY | O_CREAT | O_EXCL, 0666);
-		cmd->fd_out = fd;
+		if (!next_cmd->next || !next_cmd->next->command)
+			break ;
+		if (!ft_strcmp(next_cmd->limiter, ">"))
+		{
+			next_cmd = next_cmd->next;
+			fd = open(next_cmd->command, O_WRONLY | O_CREAT | O_EXCL, 0666);
+			cmd->fd_out = fd;
+		}
+		else if (!ft_strcmp(next_cmd->limiter, "<<"))
+		{
+			next_cmd = next_cmd->next;
+			if (pipe(pipe_fd) != 0)
+				return (1);
+			i = 0;
+			while (next_cmd->argv && next_cmd->argv[i])
+			{
+				write(pipe_fd[1], next_cmd->argv[i], ft_strlen(next_cmd->argv[i]));
+				write(pipe_fd[1], "\n", 1);
+				i++;
+			}
+			close(pipe_fd[1]);
+			if (cmd->fd_in > 2)
+				close(cmd->fd_in);
+			cmd->fd_in = pipe_fd[0];
+		}
+		else
+			next_cmd = next_cmd->next;
 	}
 	return (0);
 }
@@ -114,7 +146,10 @@ void	execute(t_command *cmd, char **env_src)
 			close(cmd->fd_in);
 		if (cmd->fd_out >= 0 && cmd->fd_out != STDOUT_FILENO)
 			close(cmd->fd_out);
-		execute(cmd->next, env_src);
+		if (cmd->limiter && is_redirect_limiter(cmd->limiter) && cmd->next)
+			execute(cmd->next->next, env_src);
+		else
+			execute(cmd->next, env_src);
 		waitpid(child_pid, NULL, 0);
 	}	
 }

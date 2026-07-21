@@ -248,7 +248,8 @@ static int	setup_heredoc(t_command *cmd)
 	int		pipe_fd[2];
 	char	*line;
 
-	if (!cmd || !cmd->limiter)
+	if (!cmd || !cmd->limiter || !ft_strcmp(cmd->limiter, "|")
+		|| is_redirect_op(cmd->limiter))
 		return (0);
 	if (pipe(pipe_fd) != 0)
 		return (1);
@@ -277,58 +278,6 @@ static int	setup_heredoc(t_command *cmd)
 	return (0);
 }
 
-static void	heredoc_alone(const char *limiter)
-{
-	char	*line;
-
-	if (!limiter)
-		return ;
-	while (1)
-	{
-		if (isatty(STDIN_FILENO))
-			line = read_line_prompt(NULL, "heredoc> ");
-		else
-			line = read_line_plain();
-		if (!line)
-			break ;
-		if (delimiter_found(line, limiter))
-		{
-			free(line);
-			break ;
-		}
-		free(line);
-	}
-}
-
-static int	contains_redirects(char **av, int ac)
-{
-	int	i;
-
-	i = 0;
-	while (i < ac)
-	{
-		if (!is_redirect_op(av[i]))
-			return (0);
-		if (i + 1 >= ac)
-			return (0);
-		i += 2;
-	}
-	return (ac > 0);
-}
-
-static void	handle_redirects(char **av, int ac)
-{
-	int	i;
-
-	i = 0;
-	while (i + 1 < ac)
-	{
-		if (!ft_strcmp(av[i], "<<"))
-			heredoc_alone(av[i + 1]);
-		i += 2;
-	}
-}
-
 static int	prepare_heredocs(t_command *head)
 {
 	while (head)
@@ -347,6 +296,7 @@ static char	**collect_heredoc_lines(const char *limiter, int *out_count)
 	char	*line;
 	int		count;
 	int		i;
+	size_t	len;
 
 	lines = malloc(sizeof(char *));
 	if (!lines)
@@ -366,6 +316,9 @@ static char	**collect_heredoc_lines(const char *limiter, int *out_count)
 			free(line);
 			break ;
 		}
+		len = ft_strlen(line);
+		if (len > 0 && line[len - 1] == '\n')
+			line[len - 1] = '\0';
 		new_lines = malloc(sizeof(char *) * (size_t)(count + 2));
 		if (!new_lines)
 		{
@@ -408,11 +361,10 @@ static t_command	*build_heredoc(const char *limiter)
 		return (NULL);
 	}
 	cmd->command = ft_strdup("");
-	cmd->limiter = ft_strdup("<<");
-	if (!cmd->command || !cmd->limiter)
+	cmd->limiter = NULL;
+	if (!cmd->command)
 	{
 		free(cmd->command);
-		free(cmd->limiter);
 		free_arr((void **)lines);
 		free(cmd);
 		return (NULL);
@@ -573,7 +525,46 @@ static void	free_list(t_command *cmd)
 	}
 }
 
-static t_command	*new_command(char **av, int ac)
+static t_command	*new_command_fail(t_command *cmd, char *limiter)
+{
+	free(cmd);
+	free(limiter);
+	return (NULL);
+}
+
+static char	**dup_token_range(char **av, int start, int end, int *out_ac)
+{
+	char	**copy;
+	int		i;
+	int		j;
+
+	if (end <= start)
+		return (NULL);
+	copy = malloc(sizeof(char *) * (size_t)(end - start + 1));
+	if (!copy)
+		return (NULL);
+	i = start;
+	j = 0;
+	while (i < end)
+	{
+		copy[j] = ft_strdup(av[i]);
+		if (!copy[j])
+		{
+			while (j > 0)
+				free(copy[--j]);
+			free(copy);
+			return (NULL);
+		}
+		i++;
+		j++;
+	}
+	copy[j] = NULL;
+	if (out_ac)
+		*out_ac = j;
+	return (copy);
+}
+
+static t_command	*new_command(char **av, int ac, int has_pipe)
 {
 	t_command	*cmd;
 	char		*limiter;
@@ -586,19 +577,21 @@ static t_command	*new_command(char **av, int ac)
 	limiter = NULL;
 	extract_redirections(av, &ac, &limiter, &redirect_start);
 	if (redirect_start || ac < 1 || !av[0])
-	{
-		free(cmd);
-		free(limiter);
-		return (NULL);
-	}
+		return (new_command_fail(cmd, limiter));
 	cmd->command = ft_strdup(av[0]);
 	if (!cmd->command)
-	{
-		free(cmd);
-		free(limiter);
-		return (NULL);
-	}
+		return (new_command_fail(cmd, limiter));
 	cmd->limiter = limiter;
+	if (!cmd->limiter && has_pipe)
+	{
+		cmd->limiter = ft_strdup("|");
+		if (!cmd->limiter)
+		{
+			free(cmd->command);
+			free(cmd);
+			return (NULL);
+		}
+	}
 	cmd->ac = ac;
 	if (!ft_strcmp(av[0], "exit") && ac == 1)
 		cmd->ac = 0;
@@ -690,6 +683,37 @@ static void	append_command(t_command **head, t_command **tail,
 	*tail = new_cmd;
 }
 
+static void	print_command_list(t_command *head)
+{
+	int		idx;
+	int		i;
+	t_command	*cmd;
+
+	ft_printf("\n--- command list ---\n");
+	if (!head)
+	{
+		ft_printf("(empty)\n");
+		return ;
+	}
+	idx = 0;
+	cmd = head;
+	while (cmd)
+	{
+		ft_printf("[%d] cmd='%s' limiter='%s' ac=%d\n", idx,
+			cmd->command ? cmd->command : "(null)",
+			cmd->limiter ? cmd->limiter : "(null)", cmd->ac);
+		i = 0;
+		while (cmd->argv && cmd->argv[i])
+		{
+			ft_printf("    argv[%d]='%s'\n", i, cmd->argv[i]);
+			i++;
+		}
+		cmd = cmd->next;
+		idx++;
+	}
+	ft_printf("--------------------\n");
+}
+
 static char	find_unclosed_quote(const char *s)
 {
 	char	q;
@@ -728,20 +752,13 @@ void	setup_child_signals(void)
 
 static int	is_redirect_op(const char *s)
 {
-	if (!s)
-		return (0);
-	if (!ft_strcmp(s, "<") || !ft_strcmp(s, ">"))
-		return (1);
-	if (!ft_strcmp(s, "<<") || !ft_strcmp(s, ">>"))
-		return (1);
-	return (0);
+	return (s && (!ft_strcmp(s, "<") || !ft_strcmp(s, ">")
+			|| !ft_strcmp(s, "<<") || !ft_strcmp(s, ">>")));
 }
 
 static int	is_heredoc_op(const char *s)
 {
-	if (!s)
-		return (0);
-	return (!ft_strcmp(s, "<<"));
+	return (s && !ft_strcmp(s, "<<"));
 }
 
 void	extract_redirections(char **av, int *ac, char **limit,
@@ -760,8 +777,9 @@ void	extract_redirections(char **av, int *ac, char **limit,
 	{
 		if (is_redirect_op(av[i]))
 		{
-			if (is_heredoc_op(av[i]) && !*limit && i + 1 < *ac)
-				*limit = ft_strdup(av[i + 1]);
+			if (!*limit)
+				*limit = ft_strdup((is_heredoc_op(av[i]) && i + 1 < *ac)
+						? av[i + 1] : av[i]);
 			free(av[i]);
 			av[i] = NULL;
 			if (i + 1 < *ac)
@@ -802,6 +820,13 @@ void	make_list(t_vars *vars, char *line)
 	t_command	*cmd;
 	char		**av;
 	int			ac;
+	int			has_pipe;
+	size_t		pipe_pos;
+	char		**left_av;
+	char		**right_av;
+	int			left_ac;
+	int			right_ac;
+	int			op_i;
 	pid_t		child_pid;
 
 	head = NULL;
@@ -819,34 +844,78 @@ void	make_list(t_vars *vars, char *line)
 			break ;
 		start = i;
 		end = segment_end(line, start);
+		pipe_pos = end;
+		while (line[pipe_pos] && is_blank(line[pipe_pos]))
+			pipe_pos++;
+		has_pipe = (line[pipe_pos] == '|');
 		av = split_tokens(line, start, end, &ac, vars->env);
 		if (av)
 		{
-			if (contains_redirects(av, ac))
+			op_i = 1;
+			while (op_i < ac && !is_redirect_op(av[op_i]))
+				op_i++;
+			if (op_i >= ac)
+				op_i = -1;
+			if (op_i > 0 && op_i + 1 < ac)
 			{
+				left_av = dup_token_range(av, 0, op_i, &left_ac);
 				cmd = NULL;
-				if (ac >= 2 && !ft_strcmp(av[0], "<<"))
-					cmd = build_heredoc(av[1]);
-				else
-					handle_redirects(av, ac);
+				if (left_av)
+					cmd = new_command(left_av, left_ac, 0);
 				if (cmd)
 					append_command(&head, &tail, cmd);
-				free_arr((void **)av);
+				else if (left_av)
+					free_arr((void **)left_av);
+				while (cmd && op_i + 1 < ac && is_redirect_op(av[op_i]))
+				{
+					free(cmd->limiter);
+					cmd->limiter = ft_strdup(av[op_i]);
+					if (!cmd->limiter)
+						break ;
+					if (!ft_strcmp(av[op_i], "<<"))
+						cmd = build_heredoc(av[op_i + 1]);
+					else
+					{
+						right_av = dup_token_range(av, op_i + 1, op_i + 2, &right_ac);
+						if (!right_av)
+							break ;
+						cmd = new_command(right_av, right_ac, 0);
+					}
+					if (cmd)
+						append_command(&head, &tail, cmd);
+					else if (ft_strcmp(av[op_i], "<<"))
+						free_arr((void **)right_av);
+					op_i += 2;
+				}
+				if (cmd && has_pipe && !cmd->limiter)
+				{
+					cmd->limiter = ft_strdup("|");
+					if (!cmd->limiter)
+					{
+						free_arr((void **)cmd->argv);
+						free(cmd->command);
+						free(cmd);
+					}
+				}
 			}
 			else
 			{
-				cmd = new_command(av, ac);
+				cmd = new_command(av, ac, has_pipe);
 				if (cmd)
 					append_command(&head, &tail, cmd);
 				else
 					free_arr((void **)av);
+				av = NULL;
 			}
+			if (av)
+				free_arr((void **)av);
 		}
 		i = end;
 		if (line[i] == '|')
 			i++;
 	}
 	vars->list = head;
+	print_command_list(head);
 	if (head)
 	{
 		if (!head->next && head->command && head->command[0] == '\0')
