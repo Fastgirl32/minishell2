@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/21 15:41:08 by saecker          ###   ########.fr       */
+/*   Updated: 2026/07/24 12:30:35 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,41 @@
 
 static int	is_redirect_limiter(const char *s)
 {
-	return (s && (!ft_strcmp(s, "<") || !ft_strcmp(s, ">")
-			|| !ft_strcmp(s, "<<") || !ft_strcmp(s, ">>")));
+	return (s && (!ft_strcmp(s, "<") || !ft_strcmp(s, ">") || !ft_strcmp(s,
+				"<<") || !ft_strcmp(s, ">>")));
 }
 
 t_u16	connect_pipes(t_command *top_cmd)
 {
 	t_command	*cmd;
+	t_command	*prev;
 	int			pipe_pair[2];
 
+	if (!top_cmd)
+		return (0);
 	cmd = top_cmd;
+	prev = NULL;
 	cmd->fd_in = 0;
 	while (cmd->next)
 	{
-		if (cmd->limiter && !ft_strcmp(cmd->limiter, "|"))
+		if (cmd->limiter && !ft_strcmp(cmd->limiter, "|")
+			&& !(prev && prev->limiter && is_redirect_limiter(prev->limiter)))
 		{
 			if (pipe(pipe_pair) != 0)
 				return (1);
 			cmd->fd_out = pipe_pair[1];
 			cmd->next->fd_in = pipe_pair[0];
 		}
+		else if (cmd->limiter && is_redirect_limiter(cmd->limiter)
+			&& cmd->next->limiter && !ft_strcmp(cmd->next->limiter, "|")
+			&& cmd->next->next)
+		{
+			if (pipe(pipe_pair) != 0)
+				return (1);
+			cmd->fd_out = pipe_pair[1];
+			cmd->next->next->fd_in = pipe_pair[0];
+		}
+		prev = cmd;
 		cmd = cmd->next;
 	}
 	cmd->fd_out = 1;
@@ -50,8 +65,9 @@ t_u16	establish_redirects(t_command *top_cmd)
 
 	cmd = top_cmd;
 	next_cmd = cmd;
-	//printf("<%s>, <%s>\n", cmd->next->command, cmd->next->limiter);
-	while (next_cmd && next_cmd->limiter && is_redirect_limiter(next_cmd->limiter))
+	// printf("<%s>, <%s>\n", cmd->next->command, cmd->next->limiter);
+	while (next_cmd && next_cmd->limiter
+		&& is_redirect_limiter(next_cmd->limiter))
 	{
 		if (!next_cmd->next || !next_cmd->next->command)
 			break ;
@@ -69,7 +85,8 @@ t_u16	establish_redirects(t_command *top_cmd)
 			i = 0;
 			while (next_cmd->argv && next_cmd->argv[i])
 			{
-				write(pipe_fd[1], next_cmd->argv[i], ft_strlen(next_cmd->argv[i]));
+				write(pipe_fd[1], next_cmd->argv[i],
+					ft_strlen(next_cmd->argv[i]));
 				write(pipe_fd[1], "\n", 1);
 				i++;
 			}
@@ -115,7 +132,7 @@ void	execute(t_command *cmd, char **env_src)
 	if (!cmd)
 		return ;
 	child_pid = fork();
-	if (!child_pid) //in the child
+	if (!child_pid) // in the child
 	{
 		setup_child_signals();
 		if (cmd->fd_in != 0)
@@ -151,7 +168,7 @@ void	execute(t_command *cmd, char **env_src)
 		else
 			execute(cmd->next, env_src);
 		waitpid(child_pid, NULL, 0);
-	}	
+	}
 }
 
 /*
@@ -167,10 +184,10 @@ int	main(int ac, char **av, char **env)
 	(void)env;
 	vars = init_vars(env);
 	setup_parent_signals();
-	//print_banner();
+	// print_banner();
 	while (vars->stop == 0)
 	{
-		get_line(vars);
+		input_process(vars);
 	}
 	return (0);
 	// hier simuliere ich input (hier gehört der Teil hin wo du input parsed)
