@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/25 21:24:16 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/25 21:32:03 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,10 @@ t_u16	establish_redirects(t_command *top_cmd)
 			if (!ft_strcmp(cmd->limiter, ">"))
 			{
 				prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+			}
+			if (!ft_strcmp(cmd->limiter, ">>"))
+			{
+				prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_APPEND, 0666);
 			}
 			else if (!ft_strcmp(cmd->limiter, "<<"))
 			{
