@@ -1,5 +1,4 @@
-#include "minishell.h"
-#include <readline/readline.h>
+#include "../minishell.h"
 
 static void	sigint_handler(int sig)
 {

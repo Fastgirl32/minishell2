@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int	g_status = 0;
 
@@ -24,9 +24,30 @@ void	free_list(t_command *cmd)
 void	execute_single_command(t_command *head, t_vars *vars)
 {
 	pid_t	child_pid;
+	int		stdin_save;
+	int		stdout_save;
 
 	if (is_builtin(head->command))
-		return ((void)execute_builtin(head, vars->env));
+	{
+		stdin_save = dup(STDIN_FILENO);
+		stdout_save = dup(STDOUT_FILENO);
+		if (head->fd_in != STDIN_FILENO)
+		{
+			dup2(head->fd_in, STDIN_FILENO);
+			close(head->fd_in);
+		}
+		if (head->fd_out != STDOUT_FILENO)
+		{
+			dup2(head->fd_out, STDOUT_FILENO);
+			close(head->fd_out);
+		}
+		execute_builtin(head, vars->env);
+		dup2(stdin_save, STDIN_FILENO);
+		dup2(stdout_save, STDOUT_FILENO);
+		close(stdin_save);
+		close(stdout_save);
+		return ;
+	}
 	child_pid = fork();
 	if (!child_pid)
 	{
@@ -85,12 +106,12 @@ void	make_list(t_vars *vars, char *line)
 
 	head = build_command_list(vars, line);
 	vars->list = head;
-	print_command_list(head);
 	if (!head || should_skip_list(head, vars))
 		return (free_list(head), (void)(vars->list = NULL));
 	if (!connect_pipes(head) && !prepare_heredocs(head)
 		&& !establish_redirects(head))
 	{
+		print_command_list(head);
 		if (head->next)
 			execute(head, vars->env);
 		else

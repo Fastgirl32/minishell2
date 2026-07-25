@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 char	*safe_text(char *s)
 {
@@ -38,6 +38,8 @@ void	print_argv_debug(char **argv)
 
 void	print_command_list(t_command *head)
 {
+	if (!VERBOSE)
+		return ;
 	int	idx;
 
 	ft_printf("\n--- command list ---\n");

@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 size_t	next_word_end(const char *line, size_t i, size_t end)
 {

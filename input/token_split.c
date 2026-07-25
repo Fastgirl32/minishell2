@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int	push_operator_token(struct s_split *sp)
 {

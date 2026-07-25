@@ -1,5 +1,4 @@
-#include "minishell.h"
-#include <readline/readline.h>
+#include "../minishell.h"
 
 char	*read_line_prompt(t_vars *vars, const char *prompt)
 {

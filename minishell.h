@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/24 12:40:40 by saecker          ###   ########.fr       */
+/*   Updated: 2026/07/25 21:05:50 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,18 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/types.h>
+# include <readline/readline.h>
 # include <sys/wait.h>
+# include <errno.h>
 # include <unistd.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1024
 # endif
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
+# endif
+# ifndef VERBOSE
+#  define VERBOSE 0
 # endif
 
 typedef unsigned short	t_u16;

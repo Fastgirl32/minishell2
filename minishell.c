@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/24 12:30:35 by saecker          ###   ########.fr       */
+/*   Updated: 2026/07/25 21:24:16 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <fcntl.h>
 
 static int	is_redirect_limiter(const char *s)
 {
@@ -27,29 +28,21 @@ t_u16	connect_pipes(t_command *top_cmd)
 	if (!top_cmd)
 		return (0);
 	cmd = top_cmd;
-	prev = NULL;
+	prev = top_cmd;
 	cmd->fd_in = 0;
 	while (cmd->next)
 	{
-		if (cmd->limiter && !ft_strcmp(cmd->limiter, "|")
-			&& !(prev && prev->limiter && is_redirect_limiter(prev->limiter)))
+		while (cmd->limiter && is_redirect_limiter(cmd->limiter))
+			cmd = cmd->next;
+		if (cmd->limiter && !ft_strcmp(cmd->limiter, "|"))
 		{
+			cmd = cmd->next;
 			if (pipe(pipe_pair) != 0)
-				return (1);
-			cmd->fd_out = pipe_pair[1];
-			cmd->next->fd_in = pipe_pair[0];
+					return (1);
+			prev->fd_out = pipe_pair[1];
+			cmd->fd_in = pipe_pair[0];
+			prev = cmd;
 		}
-		else if (cmd->limiter && is_redirect_limiter(cmd->limiter)
-			&& cmd->next->limiter && !ft_strcmp(cmd->next->limiter, "|")
-			&& cmd->next->next)
-		{
-			if (pipe(pipe_pair) != 0)
-				return (1);
-			cmd->fd_out = pipe_pair[1];
-			cmd->next->next->fd_in = pipe_pair[0];
-		}
-		prev = cmd;
-		cmd = cmd->next;
 	}
 	cmd->fd_out = 1;
 	return (0);
@@ -58,46 +51,50 @@ t_u16	connect_pipes(t_command *top_cmd)
 t_u16	establish_redirects(t_command *top_cmd)
 {
 	t_command	*cmd;
-	t_command	*next_cmd;
-	int			fd;
+	t_command	*prev;
+	//int			fd;
 	int			pipe_fd[2];
 	int			i;
 
 	cmd = top_cmd;
-	next_cmd = cmd;
-	// printf("<%s>, <%s>\n", cmd->next->command, cmd->next->limiter);
-	while (next_cmd && next_cmd->limiter
-		&& is_redirect_limiter(next_cmd->limiter))
+	prev = cmd;
+	while (cmd->next)
 	{
-		if (!next_cmd->next || !next_cmd->next->command)
-			break ;
-		if (!ft_strcmp(next_cmd->limiter, ">"))
+		while (cmd->limiter && is_redirect_limiter(cmd->limiter))
 		{
-			next_cmd = next_cmd->next;
-			fd = open(next_cmd->command, O_WRONLY | O_CREAT | O_EXCL, 0666);
-			cmd->fd_out = fd;
-		}
-		else if (!ft_strcmp(next_cmd->limiter, "<<"))
-		{
-			next_cmd = next_cmd->next;
-			if (pipe(pipe_fd) != 0)
-				return (1);
-			i = 0;
-			while (next_cmd->argv && next_cmd->argv[i])
+			if (!cmd->next || !cmd->next->command)
+				break ;
+			if (!ft_strcmp(cmd->limiter, ">"))
 			{
-				write(pipe_fd[1], next_cmd->argv[i],
-					ft_strlen(next_cmd->argv[i]));
-				write(pipe_fd[1], "\n", 1);
-				i++;
+				prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 			}
-			close(pipe_fd[1]);
-			if (cmd->fd_in > 2)
-				close(cmd->fd_in);
-			cmd->fd_in = pipe_fd[0];
+			else if (!ft_strcmp(cmd->limiter, "<<"))
+			{
+				if (pipe(pipe_fd) != 0)
+					return (1);
+				i = 0;
+				while (cmd->argv && cmd->argv[i])
+				{
+					write(pipe_fd[1], cmd->argv[i],
+						ft_strlen(cmd->argv[i]));
+					write(pipe_fd[1], "\n", 1);
+					i++;
+				}
+				close(pipe_fd[1]);
+				if (cmd->fd_in > 2)
+					close(cmd->fd_in);
+				cmd->fd_in = pipe_fd[0];
+			}
+			cmd = cmd->next;
 		}
-		else
-			next_cmd = next_cmd->next;
+		if (cmd->limiter && !ft_strcmp(cmd->limiter, "|"))
+		{
+			cmd = cmd->next;
+			prev->next = cmd;
+			prev = cmd;
+		}
 	}
+	prev->next = NULL;
 	return (0);
 }
 /*
@@ -126,8 +123,9 @@ void	execute_builtin(t_command *cmd, char **env)
 
 void	execute(t_command *cmd, char **env_src)
 {
-	pid_t	child_pid;
-	char	**env;
+	pid_t		child_pid;
+	t_command	*next_cmd;
+	char		**env;
 
 	if (!cmd)
 		return ;
@@ -163,10 +161,11 @@ void	execute(t_command *cmd, char **env_src)
 			close(cmd->fd_in);
 		if (cmd->fd_out >= 0 && cmd->fd_out != STDOUT_FILENO)
 			close(cmd->fd_out);
-		if (cmd->limiter && is_redirect_limiter(cmd->limiter) && cmd->next)
-			execute(cmd->next->next, env_src);
-		else
-			execute(cmd->next, env_src);
+		next_cmd = cmd->next;
+		while (next_cmd && next_cmd->limiter && is_redirect_limiter(next_cmd->limiter) && next_cmd->next)
+			next_cmd = next_cmd->next;
+		if (next_cmd != cmd)
+			execute(next_cmd, env_src);
 		waitpid(child_pid, NULL, 0);
 	}
 }
@@ -181,7 +180,6 @@ int	main(int ac, char **av, char **env)
 
 	(void)ac;
 	(void)av;
-	(void)env;
 	vars = init_vars(env);
 	setup_parent_signals();
 	// print_banner();
@@ -190,19 +188,4 @@ int	main(int ac, char **av, char **env)
 		input_process(vars);
 	}
 	return (0);
-	// hier simuliere ich input (hier gehört der Teil hin wo du input parsed)
-	// t_command exit4 = {"invalid-4", 0, NULL, NULL, 0, 1};
-	// t_command exit3 = {"invalid-3", 0, NULL, &exit4, 0, 1};
-	// char *argv2[2] = {"rev", NULL};
-	// t_command exit3 = {"rev", 1, argv2, NULL, 0, 1};
-	// t_command exit2 = {"rev", 1, argv2, &exit3, 0, 1};
-	// char *argv[3] = {"echo", "Der $PATH NAAAAAAAAHT\nnaa\nhd\nhdjhsdj",
-	// 	NULL
-	// };
-	// t_command exit = {"echo", 2, argv, &exit2, 0, 1};
-	// t_command pwd = {"echo", 1, NULL, NULL, 0, 1};
-	// mein Teil
-	// if (connect_pipes(vars->list))
-	// 	return (1);
-	// execute(vars->list, env);
 }

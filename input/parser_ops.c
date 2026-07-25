@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int	set_command_limiter(t_command *cmd, char *lim)
 {

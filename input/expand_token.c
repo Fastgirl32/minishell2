@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int	append_env_var(struct s_expand *ex)
 {

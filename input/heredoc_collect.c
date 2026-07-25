@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int	collect_heredoc_line(char ***lines, int *count, const char *limiter)
 {

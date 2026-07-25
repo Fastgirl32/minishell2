@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int	delimiter_found(const char *line, const char *delimiter)
 {

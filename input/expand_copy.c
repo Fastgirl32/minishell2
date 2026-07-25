@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 void	setup_expand(struct s_expand *ex, const char *line, char **env,
 		char *dyn)

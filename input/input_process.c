@@ -1,5 +1,4 @@
-#include "minishell.h"
-#include <errno.h>
+#include "../minishell.h"
 
 char	find_unclosed_quote(const char *s)
 {

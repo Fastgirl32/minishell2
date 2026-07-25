@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 void	append_plain_segment(struct s_redir *rd)
 {

@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 static int	grow_str(char **str, size_t *cap, size_t len)
 {

@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int	consume_redir_only_segment(struct s_redir *rd)
 {

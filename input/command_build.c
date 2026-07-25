@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int	set_pipe_limiter(t_command *cmd, int has_pipe)
 {
