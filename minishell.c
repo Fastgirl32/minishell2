@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/25 21:32:03 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/27 14:52:56 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ t_u16	establish_redirects(t_command *top_cmd)
 {
 	t_command	*cmd;
 	t_command	*prev;
-	//int			fd;
+	int			fd_tmp;
 	int			pipe_fd[2];
 	int			i;
 
@@ -66,11 +66,15 @@ t_u16	establish_redirects(t_command *top_cmd)
 				break ;
 			if (!ft_strcmp(cmd->limiter, ">"))
 			{
+				fd_tmp = prev->fd_out;
 				prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+				close(fd_tmp);
 			}
 			if (!ft_strcmp(cmd->limiter, ">>"))
 			{
+				fd_tmp = prev->fd_out;
 				prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_APPEND, 0666);
+				close(fd_tmp);
 			}
 			else if (!ft_strcmp(cmd->limiter, "<<"))
 			{
@@ -162,9 +166,15 @@ void	execute(t_command *cmd, char **env_src)
 	else
 	{
 		if (cmd->fd_in >= 0 && cmd->fd_in != STDIN_FILENO)
+		{
 			close(cmd->fd_in);
+			cmd->fd_in = -1;
+		}
 		if (cmd->fd_out >= 0 && cmd->fd_out != STDOUT_FILENO)
+		{
 			close(cmd->fd_out);
+			cmd->fd_out = -1;
+		}
 		next_cmd = cmd->next;
 		while (next_cmd && next_cmd->limiter && is_redirect_limiter(next_cmd->limiter) && next_cmd->next)
 			next_cmd = next_cmd->next;
@@ -191,5 +201,6 @@ int	main(int ac, char **av, char **env)
 	{
 		input_process(vars);
 	}
+	printf("sexy time??\n");
 	return (0);
 }

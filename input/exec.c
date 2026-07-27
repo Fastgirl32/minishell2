@@ -9,9 +9,9 @@ void	free_list(t_command *cmd)
 	while (cmd)
 	{
 		next = cmd->next;
-		if (cmd->fd_in > 2)
+		if (cmd->fd_in != 0 && cmd->fd_in != -1)
 			close(cmd->fd_in);
-		if (cmd->fd_out > 2)
+		if (cmd->fd_out != 1 && cmd->fd_out != -1)
 			close(cmd->fd_out);
 		free(cmd->command);
 		free(cmd->limiter);
@@ -24,28 +24,30 @@ void	free_list(t_command *cmd)
 void	execute_single_command(t_command *head, t_vars *vars)
 {
 	pid_t	child_pid;
-	int		stdin_save;
-	int		stdout_save;
 
 	if (is_builtin(head->command))
 	{
-		stdin_save = dup(STDIN_FILENO);
-		stdout_save = dup(STDOUT_FILENO);
-		if (head->fd_in != STDIN_FILENO)
+		int stdin_save = dup(0);
+		int stdout_save = dup(1);
+		if (head->fd_in != 0)
 		{
-			dup2(head->fd_in, STDIN_FILENO);
+			dup2(head->fd_in, 0);
 			close(head->fd_in);
+			head->fd_in = -1;
 		}
-		if (head->fd_out != STDOUT_FILENO)
+		if (head->fd_out != 1)
 		{
-			dup2(head->fd_out, STDOUT_FILENO);
+			dup2(head->fd_out, 1);
 			close(head->fd_out);
+			head->fd_out = -1;
 		}
 		execute_builtin(head, vars->env);
-		dup2(stdin_save, STDIN_FILENO);
-		dup2(stdout_save, STDOUT_FILENO);
-		close(stdin_save);
-		close(stdout_save);
+		dup2(stdin_save, 0);
+		dup2(stdout_save, 1);
+		if (head->fd_in != 0)
+			close(stdin_save);
+		if (head->fd_out != 1)
+			close(stdout_save);
 		return ;
 	}
 	child_pid = fork();
