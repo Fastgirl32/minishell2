@@ -11,11 +11,11 @@ int	setup_heredoc(t_command *cmd)
 		return (1);
 	if (!fill_heredoc_pipe(pipe_fd[1], cmd->limiter))
 	{
-		ft_close(&pipe_fd[0]);
-		ft_close(&pipe_fd[1]);
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
 		return (1);
 	}
-	ft_close(&pipe_fd[1]);
+	close(pipe_fd[1]);
 	replace_cmd_fd_in(cmd, pipe_fd[0]);
 	return (0);
 }
