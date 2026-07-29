@@ -99,26 +99,27 @@ int						ft_strcmp(const char *s1, const char *s2);
 
 char					*key(const char *str);
 char					*value(const char *str);
-char					*get_var(char *var, char **env);
+char					*get_var(char *var, t_vars *vars);
 
 t_u16					is_builtin(char *cmd);
 
-t_status				ft_echo(t_command *cmd, char **env);
-t_status				ft_cd(t_command *cmd, char **env);
+t_status				ft_echo(t_command *cmd, t_vars *vars);
+t_status				ft_cd(t_command *cmd, t_vars *vars);
 t_status				ft_pwd(t_command *cmd);
-t_status				ft_export(t_command *cmd, char ***env);
-t_status				ft_unset(t_command *cmd, char ***env);
-t_status				ft_env(t_command *cmd, char **env);
+t_status				ft_export(t_command *cmd, t_vars *vars);
+t_status				ft_unset(t_command *cmd, t_vars *vars);
+t_status				ft_env(t_command *cmd, t_vars *vars);
 t_status				ft_exit(t_command *cmd);
 
-t_status				find_and_exec(t_command *cmd, char **env);
+t_status				find_and_exec(t_command *cmd, t_vars *vars);
 
 t_u16					connect_pipes(t_command *top_cmd);
 t_u16					establish_redirects(t_command *top_cmd);
-void					execute_builtin(t_command *cmd, char **env);
-void					execute(t_command *cmd, char **env_src);
+void					execute_builtin(t_command *cmd, t_vars *vars);
+void					execute(t_command *cmd, t_vars *vars);
 
 char					*get_input(int fd);
+void					ft_close(int *fd);
 
 void					print_banner(void);
 
@@ -126,10 +127,10 @@ void					setup_parent_signals(void);
 void					setup_child_signals(void);
 
 char					**recreate_env(char **env);
-void					env_append(char ***env, char *str);
-void					env_remove(char ***env, char *str);
+void					env_append(t_vars *vars, char *str);
+void					env_remove(t_vars *vars, char *str);
 void					free_arr(void **arr);
-void					print_env_fd(int fd, char *format, char **env);
+void					print_env_fd(int fd, char *format, t_vars *vars);
 
 void					input_process(t_vars *vars);
 void					make_list(t_vars *vars, char *line);

@@ -81,7 +81,7 @@ t_vars	*init_vars(char **env)
 	vars = malloc(sizeof(t_vars));
 	if (!vars)
 		return (NULL);
-	vars->env = env;
+	vars->env = recreate_env(env);
 	vars->history = NULL;
 	vars->history_count = 0;
 	vars->history_cap = 0;

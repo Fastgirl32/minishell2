@@ -12,15 +12,18 @@
 
 #include "../minishell.h"
 
-t_status	ft_env(t_command *cmd, char **env)
+t_status	ft_env(t_command *cmd, t_vars *vars)
 {
-	if (cmd->ac)
+	int	i;
+
+	i = 0;
+	if (cmd->ac > 1)
 //ändern, stimmt ned
 		return ((void)printf("env: too many arguments\n"), 2);
-	while (*env)
+	while (vars->env[i])
 	{
-		printf("%s\n", *env);
-		env++;
+		printf("%s\n", vars->env[i]);
+		i++;
 	}
 	return (0);
 }

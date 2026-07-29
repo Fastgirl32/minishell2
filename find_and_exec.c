@@ -28,9 +28,9 @@ char* getpath(char *str)
     return (path);
 }
 
-t_status    find_and_exec(t_command *cmd, char **env)
+t_status    find_and_exec(t_command *cmd, t_vars *vars)
 {
-    char    *path_str = get_var("PATH", env);
+    char    *path_str = get_var("PATH", vars);
     char    *path_scan = path_str;
     char    *path = NULL;
     char    *tmp;
@@ -46,7 +46,7 @@ t_status    find_and_exec(t_command *cmd, char **env)
         found = access(path, F_OK);
         path_scan = ft_strchr(path_scan + 1, ':');
     }
-    free_arr((void **)env);
+    free_arr((void **)vars->env);
     if (found == -1)
     {
         perror(cmd->command);

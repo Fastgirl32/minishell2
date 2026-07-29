@@ -9,10 +9,8 @@ void	free_list(t_command *cmd)
 	while (cmd)
 	{
 		next = cmd->next;
-		if (cmd->fd_in != 0 && cmd->fd_in != -1)
-			close(cmd->fd_in);
-		if (cmd->fd_out != 1 && cmd->fd_out != -1)
-			close(cmd->fd_out);
+		ft_close(&cmd->fd_in);
+		ft_close(&cmd->fd_out);
 		free(cmd->command);
 		free(cmd->limiter);
 		free_arr((void **)cmd->argv);
@@ -27,27 +25,9 @@ void	execute_single_command(t_command *head, t_vars *vars)
 
 	if (is_builtin(head->command))
 	{
-		int stdin_save = dup(0);
-		int stdout_save = dup(1);
-		if (head->fd_in != 0)
-		{
-			dup2(head->fd_in, 0);
-			close(head->fd_in);
-			head->fd_in = -1;
-		}
-		if (head->fd_out != 1)
-		{
-			dup2(head->fd_out, 1);
-			close(head->fd_out);
-			head->fd_out = -1;
-		}
-		execute_builtin(head, vars->env);
-		dup2(stdin_save, 0);
-		dup2(stdout_save, 1);
-		if (head->fd_in != 0)
-			close(stdin_save);
-		if (head->fd_out != 1)
-			close(stdout_save);
+		execute_builtin(head, vars);
+		ft_close(&head->fd_in);
+		ft_close(&head->fd_out);
 		return ;
 	}
 	child_pid = fork();
@@ -57,14 +37,14 @@ void	execute_single_command(t_command *head, t_vars *vars)
 		if (head->fd_in != 0)
 		{
 			dup2(head->fd_in, 0);
-			close(head->fd_in);
+			ft_close(&head->fd_in);
 		}
 		if (head->fd_out != 1)
 		{
 			dup2(head->fd_out, 1);
-			close(head->fd_out);
+			ft_close(&head->fd_out);
 		}
-		find_and_exec(head, recreate_env(vars->env));
+		find_and_exec(head, vars);
 	}
 	else
 		waitpid(child_pid, NULL, 0);
@@ -115,7 +95,7 @@ void	make_list(t_vars *vars, char *line)
 	{
 		print_command_list(head);
 		if (head->next)
-			execute(head, vars->env);
+			execute(head, vars);
 		else
 			execute_single_command(head, vars);
 	}

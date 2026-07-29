@@ -68,13 +68,13 @@ t_u16	establish_redirects(t_command *top_cmd)
 			{
 				fd_tmp = prev->fd_out;
 				prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-				close(fd_tmp);
+				ft_close(&fd_tmp);
 			}
 			if (!ft_strcmp(cmd->limiter, ">>"))
 			{
 				fd_tmp = prev->fd_out;
 				prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_APPEND, 0666);
-				close(fd_tmp);
+				ft_close(&fd_tmp);
 			}
 			else if (!ft_strcmp(cmd->limiter, "<<"))
 			{
@@ -88,9 +88,8 @@ t_u16	establish_redirects(t_command *top_cmd)
 					write(pipe_fd[1], "\n", 1);
 					i++;
 				}
-				close(pipe_fd[1]);
-				if (cmd->fd_in > 2)
-					close(cmd->fd_in);
+				ft_close(&pipe_fd[1]);
+				ft_close(&cmd->fd_in);
 				cmd->fd_in = pipe_fd[0];
 			}
 			cmd = cmd->next;
@@ -111,29 +110,28 @@ Teil einer pipeline: forken, dann als child ausführen
 das tut alle edge cases abklären (cd Documents | echo hi wechselt nicht wirklich z.B.)
 */
 
-void	execute_builtin(t_command *cmd, char **env)
+void	execute_builtin(t_command *cmd, t_vars *vars)
 {
 	if (!ft_strcmp(cmd->command, "echo"))
-		ft_echo(cmd, env);
+		ft_echo(cmd, vars);
 	else if (!ft_strcmp(cmd->command, "cd"))
-		ft_cd(cmd, env);
+		ft_cd(cmd, vars);
 	else if (!ft_strcmp(cmd->command, "pwd"))
 		ft_pwd(cmd);
 	else if (!ft_strcmp(cmd->command, "export"))
-		ft_export(cmd, &env);
+		ft_export(cmd, vars);
 	else if (!ft_strcmp(cmd->command, "unset"))
-		ft_unset(cmd, &env);
+		ft_unset(cmd, vars);
 	else if (!ft_strcmp(cmd->command, "env"))
-		ft_env(cmd, env);
+		ft_env(cmd, vars);
 	else if (!ft_strcmp(cmd->command, "exit"))
 		ft_exit(cmd);
 }
 
-void	execute(t_command *cmd, char **env_src)
+void	execute(t_command *cmd, t_vars *vars)
 {
 	pid_t		child_pid;
 	t_command	*next_cmd;
-	char		**env;
 
 	if (!cmd)
 		return ;
@@ -144,42 +142,36 @@ void	execute(t_command *cmd, char **env_src)
 		if (cmd->fd_in != 0)
 		{
 			dup2(cmd->fd_in, 0);
-			close(cmd->fd_in);
-			cmd->fd_in = -1;
+			//ft_close(&cmd->fd_in);
 		}
 		if (cmd->fd_out != 1)
 		{
 			dup2(cmd->fd_out, 1);
-			close(cmd->fd_out);
-			cmd->fd_out = -1;
+			//ft_close(&cmd->fd_out);
 		}
-		env = recreate_env(env_src);
 		if (is_builtin(cmd->command))
-		{
-			execute_builtin(cmd, env);
-			free_arr((void **)env);
-		}
+			execute_builtin(cmd, vars);
 		else
-			find_and_exec(cmd, env);
+			find_and_exec(cmd, vars);
 		exit(0);
 	}
 	else
 	{
 		if (cmd->fd_in >= 0 && cmd->fd_in != STDIN_FILENO)
 		{
-			close(cmd->fd_in);
+			ft_close(&cmd->fd_in);
 			cmd->fd_in = -1;
 		}
 		if (cmd->fd_out >= 0 && cmd->fd_out != STDOUT_FILENO)
 		{
-			close(cmd->fd_out);
+			ft_close(&cmd->fd_out);
 			cmd->fd_out = -1;
 		}
 		next_cmd = cmd->next;
 		while (next_cmd && next_cmd->limiter && is_redirect_limiter(next_cmd->limiter) && next_cmd->next)
 			next_cmd = next_cmd->next;
 		if (next_cmd != cmd)
-			execute(next_cmd, env_src);
+			execute(next_cmd, vars);
 		waitpid(child_pid, NULL, 0);
 	}
 }
@@ -201,6 +193,6 @@ int	main(int ac, char **av, char **env)
 	{
 		input_process(vars);
 	}
-	printf("sexy time??\n");
+	free_arr((void **)(vars->env));
 	return (0);
 }

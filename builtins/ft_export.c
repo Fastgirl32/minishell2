@@ -16,7 +16,7 @@
 input wie export var=ex und var="ex" und var=""ex" (quote) handeln plz
 ich handle nur geparsten string wie export var=ex.
 */
-t_status	ft_export(t_command *cmd, char ***env)
+t_status	ft_export(t_command *cmd, t_vars *vars)
 {
 	int		i;
 	char	*key_;
@@ -25,12 +25,12 @@ t_status	ft_export(t_command *cmd, char ***env)
 	i = 0;
 	if (cmd->ac == 0)
 	{
-		while (*env
-			&& (*env)[i] != NULL
-			&& (*env)[i][0] != '\0')
+		while (vars->env
+			&& (vars->env)[i] != NULL
+			&& (vars->env)[i][0] != '\0')
 		{
-			key_ = key((*env)[i]);
-			val_ = value((*env)[i]);
+			key_ = key((vars->env)[i]);
+			val_ = value((vars->env)[i]);
 			printf("declare -x %s=\"%s\"\n", key_, val_);
 			free(key_);
 			free(val_);
@@ -41,7 +41,7 @@ t_status	ft_export(t_command *cmd, char ***env)
 	{
 		while ((i + 1) < cmd->ac)
 		{
-			env_append(env, cmd->argv[i + 1]);
+			env_append(vars, cmd->argv[i + 1]);
 			i++;
 		}
 	}

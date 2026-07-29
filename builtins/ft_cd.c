@@ -45,14 +45,14 @@ possible cases:
 	-no path given & HOME is set
 	-no path given & HOME is unset
 */
-t_status	ft_cd(t_command *cmd, char **env)
+t_status	ft_cd(t_command *cmd, t_vars *vars)
 {
 	char	*curpath;
 	char	*home;
 	int		i;
 	char	path[PATH_MAX];
 
-	home = home_var(env);
+	home = home_var(vars->env);
 	getcwd(path, PATH_MAX);
 	i = ft_strlen(path) - 1;
 	if (path[i] != '/')

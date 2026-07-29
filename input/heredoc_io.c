@@ -32,8 +32,7 @@ int	write_heredoc_line(int fd, const char *line)
 
 void	replace_cmd_fd_in(t_command *cmd, int new_fd)
 {
-	if (cmd->fd_in > 2)
-		close(cmd->fd_in);
+	ft_close(&cmd->fd_in);
 	cmd->fd_in = new_fd;
 }
 

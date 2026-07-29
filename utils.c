@@ -142,7 +142,7 @@ void	free_arr(void **arr)
 }
 
 
-t_status	contains_var(char **env, char *var)
+t_status	contains_var(t_vars *vars, char *var)
 {
 	int		i;
 	char	*tmp;
@@ -150,16 +150,16 @@ t_status	contains_var(char **env, char *var)
 	char	*key2;
 
 	i = 0;
-	while (env[i])
+	while (vars->env[i])
 	{
-		key1 = key(env[i]);
+		key1 = key(vars->env[i]);
 		key2 = key(var);
 		if (!ft_strcmp(key1, key2))
 		{
-			tmp = ft_strjoin(key(env[i]), "=");
+			tmp = ft_strjoin(key(vars->env[i]), "=");
 			tmp = ft_strjoin(tmp, value(var));
-			free(env[i]);
-			env[i] = tmp;
+			free(vars->env[i]);
+			vars->env[i] = tmp;
 			return (free(key1), free(key2), 1);
 		}
 		free(key1);
@@ -169,64 +169,69 @@ t_status	contains_var(char **env, char *var)
 	return (0);
 }
 
-void	env_append(char ***env, char *str)
+void	env_append(t_vars *vars, char *str)
 {
 	int			i;
 	t_status	expand;
 	char		**new_env;
 
 	i = 0;
-	while ((*env)[i])
+	while ((vars->env)[i])
 		i++;
-	expand = contains_var(*env, str);
+	expand = contains_var(vars, str);
 	if (expand)
 		return ;
 	new_env = malloc(sizeof(char *) * (i + 2));
 	i = 0;
-	while ((*env)[i])
+	while ((vars->env)[i])
 	{
-		new_env[i] = ft_strdup((*env)[i]);
+		new_env[i] = ft_strdup((vars->env)[i]);
 		i++;
 	}
 	new_env[i] = ft_strdup(str);
 	new_env[i + 1] = NULL;
-	free_arr((void **)*env);
-	*env = new_env;
+	free_arr((void **)vars->env);
+	vars->env = new_env;
 	return ;
 }
 
-void		env_remove(char ***env, char *str)
+void		env_remove(t_vars *vars, char *str)
 {
 	int		i;
+	int		j;
 	char	**new_env;
 
 	i = 0;
-	while ((*env)[i])
+	j = 0;
+	while ((vars->env)[i])
 		i++;
 	new_env = malloc(sizeof(char **) * (i + 1));
 	i = 0;
-	while ((*env)[i])
+	while ((vars->env)[j])
 	{
-		if (!ft_strcmp((*env)[i], str))
-			continue ;
-		new_env[i] = ft_strdup((*env)[i]);
+		//printf("i whole heartedly believe %s != %s\n", key((vars->env)[j]), str);
+		if (!ft_strcmp(key((vars->env)[j]), str))
+			j++;
+		new_env[i] = ft_strdup((vars->env)[j]);
+		j++;
 		i++;
 	}
 	new_env[i] = NULL;
-	free_arr((void **)*env);
-	*env = new_env;
+	free_arr((void **)vars->env);
+	vars->env = new_env;
+	return ;
 }
 
-void	print_var(int fd, char *var, char **env)
+void	print_var(int fd, char *var, t_vars *vars)
 {
 	int	i;
 
 	i = 0;
-	while (env[i])
+	while (vars->env[i])
 	{
-		if (!ft_strncmp(var, env[i], ft_strlen(var)))
+		if (!ft_strncmp(var, vars->env[i], ft_strlen(var)))
 		{
-			ft_putstr_fd(value(env[i]), fd);
+			ft_putstr_fd(value(vars->env[i]), fd);
 			return  ;
 		}
 		i++;
@@ -234,17 +239,17 @@ void	print_var(int fd, char *var, char **env)
 	return ;
 }
 
-char*	get_var(char *var, char **env)
+char*	get_var(char *var, t_vars *vars)
 {
 	int		i;
 	char	*val;
 
 	i = 0;
-	while (env[i])
+	while (vars->env[i])
 	{
-		if (!ft_strncmp(var, env[i], ft_strlen(var)))
+		if (!ft_strncmp(var, vars->env[i], ft_strlen(var)))
 		{
-			val = value(env[i]);
+			val = value(vars->env[i]);
 			return (val);
 		}
 		i++;
@@ -252,7 +257,7 @@ char*	get_var(char *var, char **env)
 	return (NULL);
 }
 
-void	print_env_fd(int fd, char *format, char **env)
+void	print_env_fd(int fd, char *format, t_vars *vars)
 {
 	int		i;
 	int		j;
@@ -274,7 +279,7 @@ void	print_env_fd(int fd, char *format, char **env)
 			var = malloc(j + 1);
 			ft_memcpy(var, format + i , j);
 			var[j] = 0;
-			print_var(fd, var, env);
+			print_var(fd, var, vars);
 			free(var);
 			i += (j - 1);
 		}
@@ -282,7 +287,7 @@ void	print_env_fd(int fd, char *format, char **env)
 	}
 }
 
-char	*expand_str(char *format, char **env)
+char	*expand_str(char *format, t_vars *vars)
 {
 	char	*rstr = ft_calloc(ft_strlen(format) + 1, 1);
 	char	*tmp = malloc(ft_strlen(format) + 1);
@@ -304,7 +309,7 @@ char	*expand_str(char *format, char **env)
 			tmptmp = malloc(i[1] + 1);
 			ft_memcpy(tmptmp, format + i[0] , i[1]);
 			tmptmp[i[1]] = 0;
-			var = get_var(tmptmp, env);
+			var = get_var(tmptmp, vars);
 			free(tmptmp);
 			tmp[i[2]] = 0;
 			tmptmp = ft_strjoin(rstr, tmp);
@@ -339,4 +344,13 @@ t_u16	is_builtin(char *cmd)
 		!ft_strcmp(cmd, "export") ||
 		!ft_strcmp(cmd, "pwd") ||
 		!ft_strcmp(cmd, "unset"));
+}
+
+void	ft_close(int *fd)
+{
+	if (*fd != 0 && *fd != 1 && *fd != -1)
+	{
+		close(*fd);
+		*fd = -1;
+	}
 }

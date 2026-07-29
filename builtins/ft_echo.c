@@ -30,13 +30,13 @@ t_u16	is_n_flag(char *str)
 	return (1);
 }
 
-t_status	ft_echo(t_command *cmd, char **env)
+t_status	ft_echo(t_command *cmd, t_vars *vars)
 {
 	t_u16	flag_n;
 	int		i;
 
 	flag_n = 0;
-	(void)env;
+	(void)vars;
 	i = 0;
 	while (cmd->argv[1] && i < cmd->ac && is_n_flag(cmd->argv[i + 1]))
 	{
@@ -45,12 +45,12 @@ t_status	ft_echo(t_command *cmd, char **env)
 	}
 	while (cmd->argv[1] && (i + 1) < cmd->ac)
 	{
-		ft_printf(cmd->argv[i + 1]);
+		ft_putstr_fd(cmd->argv[i + 1], cmd->fd_out);
 		if (i < (cmd->ac - 2))
-			ft_putstr_fd(" ", 1);
+			ft_putstr_fd(" ", cmd->fd_out);
 		i++;
 	}
 	if (!flag_n)
-		ft_printf("\n");
+		ft_putstr_fd("\n", cmd->fd_out);
 	return (0);
 }

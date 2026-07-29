@@ -12,19 +12,19 @@
 
 #include "../minishell.h"
 
-t_status	ft_unset(t_command *cmd, char ***env)
+t_status	ft_unset(t_command *cmd, t_vars *vars)
 {
 	int	i;
 
 	i = 0;
-	if (cmd->ac < 1)
+	if (cmd->ac < 2)
 	{
 		ft_putstr_fd("unset: not enough arguments\n", STDERR_FILENO);
 		return (1);
 	}
 	while ((i + 1) < cmd->ac)
 	{
-		env_remove(env, cmd->argv[i + 1]);
+		env_remove(vars, cmd->argv[i + 1]);
 		i++;
 	}
 	return (0);
