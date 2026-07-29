@@ -29,7 +29,7 @@
 #  define PATH_MAX 4096
 # endif
 # ifndef VERBOSE
-#  define VERBOSE 0
+#  define VERBOSE 1
 # endif
 
 typedef unsigned short	t_u16;

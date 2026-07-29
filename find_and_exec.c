@@ -28,6 +28,16 @@ char* getpath(char *str)
     return (path);
 }
 
+void        close_all_not_std_fds(t_command *head)
+{
+    while (head)
+    {
+        ft_close(&head->fd_in);
+        ft_close(&head->fd_out);
+        head = head->next;
+    }
+}
+
 t_status    find_and_exec(t_command *cmd, t_vars *vars)
 {
     char    *path_str = get_var("PATH", vars);
@@ -47,6 +57,7 @@ t_status    find_and_exec(t_command *cmd, t_vars *vars)
         path_scan = ft_strchr(path_scan + 1, ':');
     }
     free_arr((void **)vars->env);
+    close_all_not_std_fds(cmd);
     if (found == -1)
     {
         perror(cmd->command);

@@ -80,7 +80,7 @@ t_u16	establish_redirects(t_command *top_cmd)
 			{
 				if (pipe(pipe_fd) != 0)
 					return (1);
-				i = 0;
+				i = 1;
 				while (cmd->argv && cmd->argv[i])
 				{
 					write(pipe_fd[1], cmd->argv[i],
@@ -142,31 +142,25 @@ void	execute(t_command *cmd, t_vars *vars)
 		if (cmd->fd_in != 0)
 		{
 			dup2(cmd->fd_in, 0);
-			//ft_close(&cmd->fd_in);
+			//close(cmd->fd_in);
 		}
 		if (cmd->fd_out != 1)
 		{
 			dup2(cmd->fd_out, 1);
-			//ft_close(&cmd->fd_out);
+			//close(cmd->fd_out);
 		}
 		if (is_builtin(cmd->command))
 			execute_builtin(cmd, vars);
 		else
 			find_and_exec(cmd, vars);
+		//ft_close(&cmd->fd_in);
+		//ft_close(&cmd->fd_out);
 		exit(0);
 	}
 	else
 	{
-		if (cmd->fd_in >= 0 && cmd->fd_in != STDIN_FILENO)
-		{
-			ft_close(&cmd->fd_in);
-			cmd->fd_in = -1;
-		}
-		if (cmd->fd_out >= 0 && cmd->fd_out != STDOUT_FILENO)
-		{
-			ft_close(&cmd->fd_out);
-			cmd->fd_out = -1;
-		}
+		ft_close(&cmd->fd_in);
+		ft_close(&cmd->fd_out);
 		next_cmd = cmd->next;
 		while (next_cmd && next_cmd->limiter && is_redirect_limiter(next_cmd->limiter) && next_cmd->next)
 			next_cmd = next_cmd->next;
@@ -188,7 +182,7 @@ int	main(int ac, char **av, char **env)
 	(void)av;
 	vars = init_vars(env);
 	setup_parent_signals();
-	// print_banner();
+	print_banner();
 	while (vars->stop == 0)
 	{
 		input_process(vars);
