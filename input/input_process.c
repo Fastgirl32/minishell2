@@ -44,7 +44,8 @@ void	input_process(t_vars *vars)
 {
 	char	*line;
 
-	line = read_shell_line(vars, "minishell> ");
+	printf("%s\n", get_var("PS1", vars));
+	line = read_shell_line(vars, expand_str(get_var("PS1", vars), vars));
 	if (!line)
 	{
 		if (errno != EINTR)

@@ -102,6 +102,7 @@ char					*value(const char *str);
 char					*get_var(char *var, t_vars *vars);
 
 t_u16					is_builtin(char *cmd);
+char					*expand_str(char *format, t_vars *vars);
 
 t_status				ft_echo(t_command *cmd, t_vars *vars);
 t_status				ft_cd(t_command *cmd, t_vars *vars);
