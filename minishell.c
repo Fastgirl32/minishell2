@@ -140,21 +140,13 @@ void	execute(t_command *cmd, t_vars *vars)
 	{
 		setup_child_signals();
 		if (cmd->fd_in != 0)
-		{
 			dup2(cmd->fd_in, 0);
-			//close(cmd->fd_in);
-		}
 		if (cmd->fd_out != 1)
-		{
 			dup2(cmd->fd_out, 1);
-			//close(cmd->fd_out);
-		}
 		if (is_builtin(cmd->command))
 			execute_builtin(cmd, vars);
 		else
 			find_and_exec(cmd, vars);
-		//ft_close(&cmd->fd_in);
-		//ft_close(&cmd->fd_out);
 		exit(0);
 	}
 	else
