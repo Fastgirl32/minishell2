@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   execute_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 14:02:27 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/30 17:36:07 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/30 23:07:57 by lstarek          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
-#include "minishell.h"
-#include <sys/types.h>
+#include "../minishell.h"
 
 int	ft_strcmp(const char *s1, const char *s2)
 {

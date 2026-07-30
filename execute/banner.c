@@ -6,11 +6,11 @@
 /*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:03:48 by lstarek           #+#    #+#             */
-/*   Updated: 2026/05/07 14:04:37 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/07/30 23:07:05 by lstarek          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	print_banner(void)
 {

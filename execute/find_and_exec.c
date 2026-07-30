@@ -6,11 +6,11 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/03 14:11:28 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/21 15:46:50 by saecker          ###   ########.fr       */
+/*   Updated: 2026/07/30 23:08:14 by lstarek          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char* getpath(char *str)
 {
