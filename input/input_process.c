@@ -43,9 +43,20 @@ char	*read_continued_lines(t_vars *vars, char *line)
 void	input_process(t_vars *vars)
 {
 	char	*line;
+	char	*prompt;
+	char	*tmp;
 
-	printf("%s\n", get_var("PS1", vars));
-	line = read_shell_line(vars, expand_str(get_var("PS1", vars), vars));
+	prompt = get_var("PS1", vars);
+	if (!prompt)
+		prompt = ft_strdup("minishell>");
+	else
+	{
+		tmp = prompt;
+		prompt = expand_str(tmp, vars);
+		free(tmp);
+	}
+	line = read_shell_line(vars, prompt);//expand_str(get_var("PS1", vars), vars));
+	free(prompt);
 	if (!line)
 	{
 		if (errno != EINTR)

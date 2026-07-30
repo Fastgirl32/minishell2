@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 14:02:27 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/09 20:21:16 by baal             ###   ########.fr       */
+/*   Updated: 2026/07/30 17:36:07 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,7 +287,7 @@ void	print_env_fd(int fd, char *format, t_vars *vars)
 	}
 }
 
-char	*expand_str(char *format, t_vars *vars)
+char	*expand_str_call(char *format, t_vars *vars)
 {
 	char	*rstr = ft_calloc(ft_strlen(format) + 1, 1);
 	char	*tmp = malloc(ft_strlen(format) + 1);
@@ -332,6 +332,21 @@ char	*expand_str(char *format, t_vars *vars)
 	free(rstr);
 	free(tmp);
 	rstr = tmptmp;
+	return (rstr);
+}
+
+char	*expand_str(char *format, t_vars *vars)
+{
+	char	*rstr;
+	char	*tmp;
+
+	rstr = expand_str_call(format, vars);
+	while (ft_strchr(rstr, '$'))
+	{
+		tmp = rstr;
+		rstr = expand_str_call(tmp, vars);
+		free(tmp);
+	}
 	return (rstr);
 }
 
