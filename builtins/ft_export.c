@@ -23,7 +23,7 @@ t_status	ft_export(t_command *cmd, t_vars *vars)
 	char	*val_;
 
 	i = 0;
-	if (cmd->ac == 0)
+	if (cmd->ac == 1)
 	{
 		while (vars->env
 			&& (vars->env)[i] != NULL
@@ -31,7 +31,10 @@ t_status	ft_export(t_command *cmd, t_vars *vars)
 		{
 			key_ = key((vars->env)[i]);
 			val_ = value((vars->env)[i]);
-			printf("declare -x %s=\"%s\"\n", key_, val_);
+			if (val_)
+				printf("declare -x %s=\"%s\"\n", key_, val_);
+			else
+			 	printf("declare -x %s\n", key_);;
 			free(key_);
 			free(val_);
 			i++;

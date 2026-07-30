@@ -87,8 +87,12 @@ char	*value(const char *str)
 
 	i = 0;
 	j = 0;
-	while (str[i] && str[i] != '=' && str[i] != '\n')
+	while (str[i] != '=')
+	{
+		if (!str[i] || str[i] == '\n')
+			return (NULL);
 		i++;
+	}
 	while (str[i + j])
 		j++;
 	k = j;
@@ -345,6 +349,9 @@ char	*expand_str(char *format, t_vars *vars)
 		rstr = expand_str_call(tmp, vars);
 		free(tmp);
 	}
+	tmp = rstr;
+	rstr = ft_strtrim(tmp, " ");
+	free(tmp);
 	return (rstr);
 }
 

@@ -47,15 +47,17 @@ void	input_process(t_vars *vars)
 	char	*tmp;
 
 	prompt = get_var("PS1", vars);
-	if (!prompt)
-		prompt = ft_strdup("minishell>");
+	if (!prompt || !prompt[0])
+		prompt = ft_strdup("minishell> ");
 	else
 	{
 		tmp = prompt;
 		prompt = expand_str(tmp, vars);
 		free(tmp);
 	}
-	line = read_shell_line(vars, prompt);//expand_str(get_var("PS1", vars), vars));
+	if (!prompt || !prompt[0])
+		prompt = ft_strdup("minishell> ");
+	line = read_shell_line(vars, prompt);
 	free(prompt);
 	if (!line)
 	{
