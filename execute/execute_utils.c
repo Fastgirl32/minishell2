@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 14:02:27 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/06 15:43:25 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/06 17:29:03 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,32 +94,24 @@ char	*value(const char *str)
 {
 	int		i;
 	int		j;
-	int		k;
 	char	*value;
 
 	i = 0;
-	j = 0;
 	while (str[i] != '=')
 	{
 		if (!str[i] || str[i] == '\n')
 			return (NULL);
 		i++;
 	}
+	j = 0;
 	while (str[i + j])
 		j++;
-	k = j;
 	value = malloc(j + 1);
 	if (!value)
 		return (NULL);
-	j = 0;
 	i++;
-	while (j < k)
-	{
-		value[j] = str[i];
-		i++;
-		j++;
-	}
-	value[j - 1] = 0;
+	ft_memcpy(value, str + i, j);
+	value[j] = 0;
 	return (value);
 }
 
@@ -282,7 +274,9 @@ char	*expand_str_call(char *format, t_vars *vars)
 	char	*tmp = malloc(ft_strlen(format) + 1);
 	char	*tmptmp;
 	char	*var;
-	int		i[3] = {0};
+	int		i[3];
+
+	ft_bzero(i, 3);
 	while (format[i[0]])
 	{
 		i[1] = 0;

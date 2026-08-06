@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/03 14:11:28 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/06 16:16:00 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/06 17:13:53 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ int         access_path(char *path_scan, char **path, t_command *cmd)
     char    *tmp;
     int     found;
 
+    if (!path)
+        return (-1);
     free(*path);
     *path = getpath(path_scan + 1);
     tmp = ft_strjoin(*path, "/");
@@ -83,7 +85,6 @@ t_status    find_and_exec(t_command *cmd, t_vars *vars)
     }
     free_arr((void **)vars->env);
     close_all_not_std_fds(cmd);
-    printf("%s\n", path);
     if (found == -1)
     {
         perror(cmd->command);
