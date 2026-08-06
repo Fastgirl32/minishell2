@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:07:13 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/06 15:30:29 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/06 18:11:09 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,48 @@
 int	g_status = 0;
 
 /*
-frees a t_command linked list.
+Executes a built-in directly in the current process.
+In a pipeline, this will not be the root process.
+In a single command, it is.
 */
-void	free_list(t_command *cmd)
+void	execute_builtin(t_command *cmd, t_vars *vars)
 {
-	t_command	*next;
+	if (!ft_strcmp(cmd->command, "echo"))
+		ft_echo(cmd, vars);
+	else if (!ft_strcmp(cmd->command, "cd"))
+		ft_cd(cmd, vars);
+	else if (!ft_strcmp(cmd->command, "pwd"))
+		ft_pwd(cmd);
+	else if (!ft_strcmp(cmd->command, "export"))
+		ft_export(cmd, vars);
+	else if (!ft_strcmp(cmd->command, "unset"))
+		ft_unset(cmd, vars);
+	else if (!ft_strcmp(cmd->command, "env"))
+		ft_env(cmd, vars);
+	else if (!ft_strcmp(cmd->command, "exit"))
+		ft_exit(cmd);
+}
 
-	while (cmd)
+/*
+For single command. dups all file descriptors
+returns 0 on success
+*/
+t_status	redirect_all(t_command *cmd)
+{
+	setup_child_signals();
+	if (cmd->fd_in != 0)
 	{
-		next = cmd->next;
+		if (dup2(cmd->fd_in, 0) == -1)
+			return (ft_close(&cmd->fd_in), 1);
 		ft_close(&cmd->fd_in);
-		ft_close(&cmd->fd_out);
-		free(cmd->command);
-		free(cmd->limiter);
-		free_arr((void **)cmd->argv);
-		free(cmd);
-		cmd = next;
 	}
+	if (cmd->fd_out != 1)
+	{
+		if (dup2(cmd->fd_out, 1) == -1)
+			return (ft_close(&cmd->fd_out), 1);
+		ft_close(&cmd->fd_out);
+	}
+	return (0);
 }
 
 /*
@@ -39,86 +64,73 @@ executes a command that is not part of a pipeline.
 If it is builtin, it executes directly in the main process.
 Otherwise, it forks once and runs the program in the child.
 */
-void	execute_single_command(t_command *head, t_vars *vars)
+void	execute_single_command(t_command *cmd, t_vars *vars)
 {
 	pid_t	child_pid;
 
-	if (is_builtin(head->command))
+	if (is_builtin(cmd->command))
 	{
-		execute_builtin(head, vars);
-		ft_close(&head->fd_in);
-		ft_close(&head->fd_out);
+		execute_builtin(cmd, vars);
+		ft_close(&cmd->fd_in);
+		ft_close(&cmd->fd_out);
 		return ;
 	}
 	child_pid = fork();
 	if (!child_pid)
 	{
-		setup_child_signals();
-		if (head->fd_in != 0)
-		{
-			dup2(head->fd_in, 0);
-			ft_close(&head->fd_in);
-		}
-		if (head->fd_out != 1)
-		{
-			dup2(head->fd_out, 1);
-			ft_close(&head->fd_out);
-		}
-		find_and_exec(head, vars);
+		if (redirect_all(cmd))
+			exit(1);
+		find_and_exec(cmd, vars);
 	}
 	else
 		waitpid(child_pid, NULL, 0);
 }
 
-int	should_skip_list(t_command *head, t_vars *vars)
+/*
+For pipeline command. dups all file descriptors
+returns 0 on success
+*/
+t_status	dup_all(t_command *cmd)
 {
-	if (!head->next && head->command && head->command[0] == '\0')
-		return (1);
-	if (!head->next && !ft_strcmp(head->command, "history"))
+	setup_child_signals();
+	if (cmd->fd_in != 0)
 	{
-		history_print(vars);
-		return (1);
+		if (dup2(cmd->fd_in, 0) == -1)
+			return (1);
+	}
+	if (cmd->fd_out != 1)
+	{
+		if (dup2(cmd->fd_out, 1) == -1)
+			return (1);
 	}
 	return (0);
 }
 
-t_command	*build_command_list(t_vars *vars, const char *line)
+/*
+Executes a pipeline recursively.
+*/
+void	execute(t_command *cmd, t_vars *vars)
 {
-	struct s_redir	rd;
-	t_command		*head;
-	t_command		*tail;
-	size_t			i;
+	pid_t		child_pid;
 
-	head = NULL;
-	tail = NULL;
-	rd.head = &head;
-	rd.tail = &tail;
-	rd.vars = vars;
-	i = skip_blanks(line, 0);
-	if (line[i] == '#')
-		return (NULL);
-	while (line[i] && line[i] != '\n')
-		i = parse_and_move(&rd, line, i);
-	return (head);
-}
-
-void	make_list(t_vars *vars, char *line)
-{
-	t_command	*head;
-
-	head = build_command_list(vars, line);
-	vars->list = head;
-	if (!head || should_skip_list(head, vars))
-		return (free_list(head), (void)(vars->list = NULL));
-	if (!connect_pipes(head) && !prepare_heredocs(head)
-		&& !establish_redirects(head))
+	if (!cmd)
+		return ;
+	child_pid = fork();
+	if (!child_pid) // in the child
 	{
-		print_command_list(head);
-		if (head->next)
-			execute(head, vars);
+		if (dup_all(cmd))
+			exit(1);
+		if (is_builtin(cmd->command))
+			execute_builtin(cmd, vars);
 		else
-			execute_single_command(head, vars);
+			find_and_exec(cmd, vars);
+		exit(0);
 	}
-	free_list(head);
-	vars->list = NULL;
+	else
+	{
+		ft_close(&cmd->fd_in);
+		ft_close(&cmd->fd_out);
+		execute(cmd->next, vars);
+		waitpid(child_pid, NULL, 0);
+	}
 }
