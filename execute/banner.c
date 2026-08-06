@@ -3,15 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   banner.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:03:48 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/30 23:07:05 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/08/06 15:30:48 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/*
+Prints the MAHLERSHELL banner.
+*/
 void	print_banner(void)
 {
 	ft_printf(" ▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\

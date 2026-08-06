@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:07:13 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/30 23:07:23 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/08/06 15:30:29 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 int	g_status = 0;
 
+/*
+frees a t_command linked list.
+*/
 void	free_list(t_command *cmd)
 {
 	t_command	*next;
@@ -31,6 +34,11 @@ void	free_list(t_command *cmd)
 	}
 }
 
+/*
+executes a command that is not part of a pipeline.
+If it is builtin, it executes directly in the main process.
+Otherwise, it forks once and runs the program in the child.
+*/
 void	execute_single_command(t_command *head, t_vars *vars)
 {
 	pid_t	child_pid;

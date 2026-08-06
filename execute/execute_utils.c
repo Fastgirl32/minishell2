@@ -6,12 +6,15 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 14:02:27 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/30 23:07:57 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/08/06 15:43:25 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/*
+Compares two strings. Easier to use than strncmp.
+*/
 int	ft_strcmp(const char *s1, const char *s2)
 {
 	size_t	i;
@@ -55,6 +58,11 @@ char	*get_input(int fd)
 	}
 	return (input);
 }
+
+/*
+Returns a (char *) key from a (char *) like: "XXX=YYY" (key: "XXX")
+Or the entire string if no '=' is found.
+*/
 char	*key(const char *str)
 {
 	int		i;
@@ -78,6 +86,10 @@ char	*key(const char *str)
 	return (key);
 }
 
+/*
+Returns a (char *) value from a (char *) like: "XXX=YYY" (value: "YYY")
+Or NULL if no '=' is found.
+*/
 char	*value(const char *str)
 {
 	int		i;
@@ -111,6 +123,9 @@ char	*value(const char *str)
 	return (value);
 }
 
+/*
+Duplicates an environment on the heap.
+*/
 char	**recreate_env(char **env)
 {
 	int		i;
@@ -130,6 +145,9 @@ char	**recreate_env(char **env)
 	return (new_env);
 }
 
+/*
+Frees a double pointer passed as (void **)
+*/
 void	free_arr(void **arr)
 {
 	int		i;
@@ -143,7 +161,10 @@ void	free_arr(void **arr)
 	free(arr);
 }
 
-
+/*
+Returns 1 if the environment in vars contains the variable var,
+0 otherwise.
+*/
 t_status	contains_var(t_vars *vars, char *var)
 {
 	int		i;
@@ -171,6 +192,9 @@ t_status	contains_var(t_vars *vars, char *var)
 	return (0);
 }
 
+/*
+Appends a variable string to the environment in vars.
+*/
 void	env_append(t_vars *vars, char *str)
 {
 	int			i;
@@ -197,6 +221,9 @@ void	env_append(t_vars *vars, char *str)
 	return ;
 }
 
+/*
+Removes a variable string from the environment in vars.
+*/
 void		env_remove(t_vars *vars, char *str)
 {
 	int		i;
@@ -224,23 +251,10 @@ void		env_remove(t_vars *vars, char *str)
 	return ;
 }
 
-void	print_var(int fd, char *var, t_vars *vars)
-{
-	int	i;
-
-	i = 0;
-	while (vars->env[i])
-	{
-		if (!ft_strncmp(var, vars->env[i], ft_strlen(var)))
-		{
-			ft_putstr_fd(value(vars->env[i]), fd);
-			return  ;
-		}
-		i++;
-	}
-	return ;
-}
-
+/*
+Returns the value of a key, found in the environment of vars.
+NULL if it is not found.
+*/
 char*	get_var(char *var, t_vars *vars)
 {
 	int		i;
@@ -259,36 +273,9 @@ char*	get_var(char *var, t_vars *vars)
 	return (NULL);
 }
 
-void	print_env_fd(int fd, char *format, t_vars *vars)
-{
-	int		i;
-	int		j;
-	char	*var;
-
-	i = 0;
-	while (format[i])
-	{
-		j = 0;
-		if (format[i] != '$')
-			write(1, format+i, 1);
-		else
-		{
-			i++;
-			while (format[i + j] && format[i + j] != ' ' && format[i + j] != '$')
-				j++;
-			if (j == 0)
-				continue ;
-			var = malloc(j + 1);
-			ft_memcpy(var, format + i , j);
-			var[j] = 0;
-			print_var(fd, var, vars);
-			free(var);
-			i += (j - 1);
-		}
-		i++;
-	}
-}
-
+/*
+Expands a string once according to environment variables.
+*/
 char	*expand_str_call(char *format, t_vars *vars)
 {
 	char	*rstr = ft_calloc(ft_strlen(format) + 1, 1);
@@ -337,6 +324,9 @@ char	*expand_str_call(char *format, t_vars *vars)
 	return (rstr);
 }
 
+/*
+Recursively expands a string according to environment variables.
+*/
 char	*expand_str(char *format, t_vars *vars)
 {
 	char	*rstr;
@@ -354,7 +344,10 @@ char	*expand_str(char *format, t_vars *vars)
 	free(tmp);
 	return (rstr);
 }
-
+/*
+Returns 1 if a command is builtin.
+0 otherwise
+*/
 t_u16	is_builtin(char *cmd)
 {
 	return (!ft_strcmp(cmd, "cd") ||
@@ -365,10 +358,12 @@ t_u16	is_builtin(char *cmd)
 		!ft_strcmp(cmd, "pwd") ||
 		!ft_strcmp(cmd, "unset"));
 }
-
+/*
+Closes a fd, passed by reference, if it is not standard and sets it to -1 to avoid double closing.
+*/
 void	ft_close(int *fd)
 {
-	if (*fd != 0 && *fd != 1 && *fd != -1)
+	if (*fd != 0 && *fd != 1 && *fd != 2 && *fd != -1)
 	{
 		close(*fd);
 		*fd = -1;
