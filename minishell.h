@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/07/31 13:12:01 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/06 18:15:45 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ int						ft_strcmp(const char *s1, const char *s2);
 char					*key(const char *str);
 char					*value(const char *str);
 char					*get_var(char *var, t_vars *vars);
+t_status				contains_var(t_vars *vars, char *var);
 
 t_u16					is_builtin(char *cmd);
 char					*expand_str(char *format, t_vars *vars);

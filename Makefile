@@ -6,8 +6,8 @@ CFLAGGEN = -Wall -Wextra -Werror -g -I.
 CC = cc
 
 QUELLE_DATEIEN = builtins/ft_cd.c builtins/ft_env.c builtins/ft_export.c builtins/ft_unset.c builtins/ft_exit.c builtins/ft_pwd.c builtins/ft_echo.c \
-execute/execute_utils.c execute/banner.c \
-execute/find_and_exec.c \
+execute/execute_utils.c execute/banner.c execute/environment.c \
+execute/find_and_exec.c execute/key_value.c\
 minishell.c \
 input/shared.c input/signals.c input/history_core.c \
 input/expand_base.c input/expand_token.c input/expand_copy.c \
