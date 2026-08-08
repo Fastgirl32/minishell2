@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/06 18:15:45 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/07 14:58:04 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ struct					s_redir
 };
 
 int						ft_strcmp(const char *s1, const char *s2);
+char					*ft_strndup(char *str, size_t n);
+char					*ft_str_append(char *s1, char *s2);
 
 char					*key(const char *str);
 char					*value(const char *str);
