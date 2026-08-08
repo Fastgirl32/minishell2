@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:05:45 by lstarek           #+#    #+#             */
-/*   Updated: 2026/05/07 14:05:46 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/08/08 13:28:31 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,17 @@
 input wie export var=ex und var="ex" und var=""ex" (quote) handeln plz
 ich handle nur geparsten string wie export var=ex.
 */
+
+void	declare(char *key, char *val)
+{
+	if (val && key)
+		printf("declare -x %s=\"%s\"\n", key, val);
+	else if (key)
+		printf("declare -x %s\n", key);
+	free(key);
+	free(val);
+}
+
 t_status	ft_export(t_command *cmd, t_vars *vars)
 {
 	int		i;
@@ -25,18 +36,11 @@ t_status	ft_export(t_command *cmd, t_vars *vars)
 	i = 0;
 	if (cmd->ac == 1)
 	{
-		while (vars->env
-			&& (vars->env)[i] != NULL
-			&& (vars->env)[i][0] != '\0')
+		while (vars->env && (vars->env)[i] && (vars->env)[i][0])
 		{
 			key_ = key((vars->env)[i]);
 			val_ = value((vars->env)[i]);
-			if (val_)
-				printf("declare -x %s=\"%s\"\n", key_, val_);
-			else
-			 	printf("declare -x %s\n", key_);;
-			free(key_);
-			free(val_);
+			declare(key_, val_);
 			i++;
 		}
 	}

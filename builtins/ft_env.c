@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:05:27 by lstarek           #+#    #+#             */
-/*   Updated: 2026/05/07 14:05:28 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/08/08 13:29:34 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ t_status	ft_env(t_command *cmd, t_vars *vars)
 
 	i = 0;
 	if (cmd->ac > 1)
-//ändern, stimmt ned
 		return ((void)printf("env: too many arguments\n"), 2);
 	while (vars->env[i])
 	{

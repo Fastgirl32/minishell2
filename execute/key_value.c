@@ -60,6 +60,7 @@ char	*value(const char *str)
 /*
 Returns 1 if the environment in vars contains the variable var,
 0 otherwise.
+Replaces the value of the variable with the value of var, if they differ.
 */
 t_status	contains_var(t_vars *vars, char *var)
 {

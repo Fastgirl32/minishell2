@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:05:08 by lstarek           #+#    #+#             */
-/*   Updated: 2026/05/07 14:05:10 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/08/08 13:33:51 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,30 @@ char	*home_var(char **env)
 	}
 	return (NULL);
 }
+
+/*
+Attemps to change directory or gives proper error message and exit code on fail.
+*/
+t_status	change_directory(t_command *cmd, t_vars *vars, char *curpath, char *home)
+{
+	if (chdir(curpath))
+	{
+		if (cmd->argv[1] == NULL)
+			printf("cd: no such file or directory: %s\n", curpath);
+		else
+			printf("cd: no such file or directory: <%s>\n", curpath);
+		return (free(curpath), free(home), 1);
+	}
+	return (free(curpath), free(home), 0);	
+}
+
 /*
 possible cases:
 	-absolute path given
 	-relative path given
 	-no path given & HOME is set
 	-no path given & HOME is unset
+based on 'man cd'
 */
 t_status	ft_cd(t_command *cmd, t_vars *vars)
 {
@@ -68,14 +86,6 @@ t_status	ft_cd(t_command *cmd, t_vars *vars)
 		curpath = ft_strdup(cmd->argv[1]);
 	else
 		curpath = ft_strjoin(path, cmd->argv[1]);
-	if (chdir(curpath))
-	{
-		if (cmd->argv[1] == NULL)
-			printf("cd: no such file or directory: %s\n", curpath);
-		else
-			printf("cd: no such file or directory: <%s>\n", curpath);
-		return (free(curpath), free(home), 1);
-	}
-	return (free(curpath), free(home), 0);
+	return (change_directory(cmd, vars, curpath, home));
 }
 
