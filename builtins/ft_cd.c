@@ -42,7 +42,7 @@ char	*home_var(char **env)
 /*
 Attemps to change directory or gives proper error message and exit code on fail.
 */
-t_status	change_directory(t_command *cmd, t_vars *vars, char *curpath, char *home)
+t_status	change_dir(t_command *cmd, t_vars *vars, char *curpath, char *home)
 {
 	if (chdir(curpath))
 	{
@@ -52,7 +52,7 @@ t_status	change_directory(t_command *cmd, t_vars *vars, char *curpath, char *hom
 			printf("cd: no such file or directory: <%s>\n", curpath);
 		return (free(curpath), free(home), 1);
 	}
-	return (free(curpath), free(home), 0);	
+	return (free(curpath), free(home), 0);
 }
 
 /*
@@ -86,6 +86,5 @@ t_status	ft_cd(t_command *cmd, t_vars *vars)
 		curpath = ft_strdup(cmd->argv[1]);
 	else
 		curpath = ft_strjoin(path, cmd->argv[1]);
-	return (change_directory(cmd, vars, curpath, home));
+	return (change_dir(cmd, vars, curpath, home));
 }
-

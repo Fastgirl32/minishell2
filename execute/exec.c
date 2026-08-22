@@ -116,7 +116,7 @@ void	execute(t_command *cmd, t_vars *vars)
 	if (!cmd)
 		return ;
 	child_pid = fork();
-	if (!child_pid) // in the child
+	if (!child_pid)
 	{
 		if (dup_all(cmd))
 			exit(1);

@@ -210,8 +210,7 @@ int						append_redirect_nodes(struct s_redir *rd);
 int						handle_redirect_segment(struct s_redir *rd);
 int						has_pipe_after_segment(const char *line, size_t end);
 void					append_plain_segment(struct s_redir *rd);
-int					consume_redir_only_segment(struct s_redir *rd);
-
+int						consume_redir_only_segment(struct s_redir *rd);
 
 void					parse_segment(struct s_redir *rd, const char *line,
 							size_t start);

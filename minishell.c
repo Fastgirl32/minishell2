@@ -54,7 +54,9 @@ t_u16	connect_pipes(t_command *top_cmd)
 /*
 MUSS GEFIXT WERDEN (HEREDOC)
 Assumes pipes have been connected.
-Establishes redirections in the linked list by opening the right file descriptors and removing elements with the > separator, leaving only a (possibly broken) pipeline.
+Establishes redirections in the linked list by
+opening the right file descriptors and removing
+elements with the > separator, leaving only a (possibly broken) pipeline.
 */
 t_u16	establish_redirects(t_command *top_cmd)
 {
@@ -112,7 +114,6 @@ t_u16	establish_redirects(t_command *top_cmd)
 	prev->next = NULL;
 	return (0);
 }
-
 
 /*
 ENTRY POINT

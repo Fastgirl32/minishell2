@@ -38,10 +38,10 @@ void	print_argv_debug(char **argv)
 
 void	print_command_list(t_command *head)
 {
+	int	idx;
+	
 	if (!VERBOSE)
 		return ;
-	int	idx;
-
 	ft_printf("\n--- command list ---\n");
 	if (!head)
 		return ((void)ft_printf("(empty)\n"));

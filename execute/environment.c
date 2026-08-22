@@ -1,4 +1,3 @@
-
 #include "../minishell.h"
 
 /*
@@ -55,7 +54,7 @@ void	env_append(t_vars *vars, char *str)
 /*
 Removes a variable string from the environment in vars.
 */
-void		env_remove(t_vars *vars, char *str)
+void	env_remove(t_vars *vars, char *str)
 {
 	int		i;
 	int		j;

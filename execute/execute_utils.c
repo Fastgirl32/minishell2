@@ -114,16 +114,18 @@ Returns 1 if a command is builtin.
 */
 t_u16	is_builtin(char *cmd)
 {
-	return (!ft_strcmp(cmd, "cd") ||
-		!ft_strcmp(cmd, "echo") ||
-		!ft_strcmp(cmd, "env") ||
-		!ft_strcmp(cmd, "exit") ||
-		!ft_strcmp(cmd, "export") ||
-		!ft_strcmp(cmd, "pwd") ||
-		!ft_strcmp(cmd, "unset"));
+	return (!ft_strcmp(cmd, "cd")
+		|| !ft_strcmp(cmd, "echo")
+		|| !ft_strcmp(cmd, "env")
+		|| !ft_strcmp(cmd, "exit")
+		|| !ft_strcmp(cmd, "export")
+		|| !ft_strcmp(cmd, "pwd")
+		|| !ft_strcmp(cmd, "unset"));
 }
+
 /*
-Closes a fd, passed by reference, if it is not standard and sets it to -1 to avoid double closing.
+Closes a fd, passed by reference,
+if it is not standard and sets it to -1 to avoid double closing.
 */
 void	ft_close(int *fd)
 {
