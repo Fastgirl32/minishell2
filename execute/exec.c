@@ -14,27 +14,41 @@
 
 int	g_status = 0;
 
+int		exit_status(int status)
+{
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+		return (WTERMSIG(status));
+	else
+	{
+		printf("mysterious cause of death\n");
+		return (EXIT_FAILURE);
+	}
+}
+
 /*
 Executes a built-in directly in the current process.
 In a pipeline, this will not be the root process.
 In a single command, it is.
 */
-void	execute_builtin(t_command *cmd, t_vars *vars)
+int		execute_builtin(t_command *cmd, t_vars *vars)
 {
 	if (!ft_strcmp(cmd->command, "echo"))
-		ft_echo(cmd, vars);
+		return ft_echo(cmd, vars);
 	else if (!ft_strcmp(cmd->command, "cd"))
-		ft_cd(cmd, vars);
+		return ft_cd(cmd, vars);
 	else if (!ft_strcmp(cmd->command, "pwd"))
-		ft_pwd(cmd);
+		return ft_pwd(cmd);
 	else if (!ft_strcmp(cmd->command, "export"))
-		ft_export(cmd, vars);
+		return ft_export(cmd, vars);
 	else if (!ft_strcmp(cmd->command, "unset"))
-		ft_unset(cmd, vars);
+		return ft_unset(cmd, vars);
 	else if (!ft_strcmp(cmd->command, "env"))
-		ft_env(cmd, vars);
+		return ft_env(cmd, vars);
 	else if (!ft_strcmp(cmd->command, "exit"))
-		ft_exit(cmd);
+		return ft_exit(cmd, vars);
+	return (1);
 }
 
 /*
@@ -67,10 +81,11 @@ Otherwise, it forks once and runs the program in the child.
 void	execute_single_command(t_command *cmd, t_vars *vars)
 {
 	pid_t	child_pid;
+	int		stat;
 
 	if (is_builtin(cmd->command))
 	{
-		execute_builtin(cmd, vars);
+		g_status = execute_builtin(cmd, vars);
 		ft_close(&cmd->fd_in);
 		ft_close(&cmd->fd_out);
 		return ;
@@ -83,7 +98,10 @@ void	execute_single_command(t_command *cmd, t_vars *vars)
 		find_and_exec(cmd, vars);
 	}
 	else
-		waitpid(child_pid, NULL, 0);
+	{
+		waitpid(child_pid, &stat, 0);
+		g_status = exit_status(stat);
+	}
 }
 
 /*
@@ -112,6 +130,7 @@ Executes a pipeline recursively.
 void	execute(t_command *cmd, t_vars *vars)
 {
 	pid_t		child_pid;
+	int			stat;
 
 	if (!cmd)
 		return ;
@@ -131,6 +150,7 @@ void	execute(t_command *cmd, t_vars *vars)
 		ft_close(&cmd->fd_in);
 		ft_close(&cmd->fd_out);
 		execute(cmd->next, vars);
-		waitpid(child_pid, NULL, 0);
+		waitpid(child_pid, &stat, 0);
+		g_status = exit_status(stat);
 	}
 }

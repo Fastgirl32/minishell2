@@ -113,13 +113,13 @@ t_status				ft_pwd(t_command *cmd);
 t_status				ft_export(t_command *cmd, t_vars *vars);
 t_status				ft_unset(t_command *cmd, t_vars *vars);
 t_status				ft_env(t_command *cmd, t_vars *vars);
-t_status				ft_exit(t_command *cmd);
+t_status				ft_exit(t_command *cmd, t_vars *vars);
 
 t_status				find_and_exec(t_command *cmd, t_vars *vars);
 
 t_u16					connect_pipes(t_command *top_cmd);
 t_u16					establish_redirects(t_command *top_cmd);
-void					execute_builtin(t_command *cmd, t_vars *vars);
+int						execute_builtin(t_command *cmd, t_vars *vars);
 void					execute(t_command *cmd, t_vars *vars);
 
 char					*get_input(int fd);

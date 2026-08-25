@@ -132,5 +132,6 @@ int	main(int ac, char **av, char **env)
 		input_process(vars);
 	}
 	free_arr((void **)(vars->env));
-	return (0);
+	ft_putstr_fd("exit\n", 2);
+	return (g_status);
 }
