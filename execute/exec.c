@@ -140,10 +140,9 @@ void	execute(t_command *cmd, t_vars *vars)
 		if (dup_all(cmd))
 			exit(1);
 		if (is_builtin(cmd->command))
-			execute_builtin(cmd, vars);
+			exit(execute_builtin(cmd, vars));
 		else
 			find_and_exec(cmd, vars);
-		exit(0);
 	}
 	else
 	{
@@ -151,6 +150,7 @@ void	execute(t_command *cmd, t_vars *vars)
 		ft_close(&cmd->fd_out);
 		execute(cmd->next, vars);
 		waitpid(child_pid, &stat, 0);
-		g_status = exit_status(stat);
+		if (is_builtin(cmd->command))
+			g_status = exit_status(stat);
 	}
 }
