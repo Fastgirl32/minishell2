@@ -39,7 +39,7 @@ char	*expand_str_call(char *format, t_vars *vars)
 
 	rstr = ft_calloc(ft_strlen(format) + 1, 1);
 	tmp = malloc(ft_strlen(format) + 1);
-	ft_bzero(i, 3);
+	ft_bzero(&i, sizeof(i));
 	while (format[i[0]])
 	{
 		i[1] = 0;

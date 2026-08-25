@@ -14,6 +14,9 @@
 
 int	g_status = 0;
 
+/*
+Translates the info in "status" into a usable exit code.
+*/
 int		exit_status(int status)
 {
 	if (WIFEXITED(status))
@@ -150,7 +153,7 @@ void	execute(t_command *cmd, t_vars *vars)
 		ft_close(&cmd->fd_out);
 		execute(cmd->next, vars);
 		waitpid(child_pid, &stat, 0);
-		if (is_builtin(cmd->command))
+		if (!(cmd->next))
 			g_status = exit_status(stat);
 	}
 }
