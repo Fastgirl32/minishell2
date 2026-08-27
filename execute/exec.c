@@ -6,13 +6,11 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:07:13 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/08 13:20:47 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/27 23:04:38 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	g_status = 0;
 
 /*
 Translates the info in "status" into a usable exit code.
@@ -88,7 +86,7 @@ void	execute_single_command(t_command *cmd, t_vars *vars)
 
 	if (is_builtin(cmd->command))
 	{
-		g_status = execute_builtin(cmd, vars);
+		*(vars->status) = execute_builtin(cmd, vars);
 		ft_close(&cmd->fd_in);
 		ft_close(&cmd->fd_out);
 		return ;
@@ -103,7 +101,7 @@ void	execute_single_command(t_command *cmd, t_vars *vars)
 	else
 	{
 		waitpid(child_pid, &stat, 0);
-		g_status = exit_status(stat);
+		*(vars->status) = exit_status(stat);
 	}
 }
 
@@ -154,6 +152,6 @@ void	execute(t_command *cmd, t_vars *vars)
 		execute(cmd->next, vars);
 		waitpid(child_pid, &stat, 0);
 		if (!(cmd->next))
-			g_status = exit_status(stat);
+			*(vars->status) = exit_status(stat);
 	}
 }

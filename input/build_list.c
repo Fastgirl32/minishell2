@@ -28,7 +28,7 @@ t_command	*build_command_list(t_vars *vars, const char *line)
 	if (line[i] == '#')
 		return (NULL);
 	while (line[i] && line[i] != '\n')
-		i = parse_and_move(&rd, line, i);
+		i = parse_and_move(&rd, line, i, vars->status);
 	return (head);
 }
 

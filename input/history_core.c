@@ -74,7 +74,7 @@ void	history_print(t_vars *vars)
 	}
 }
 
-t_vars	*init_vars(char **env)
+t_vars	*init_vars(char **env, int *status_loc)
 {
 	t_vars	*vars;
 
@@ -86,5 +86,6 @@ t_vars	*init_vars(char **env)
 	vars->history_count = 0;
 	vars->history_cap = 0;
 	vars->stop = 0;
+	vars->status = status_loc;
 	return (vars);
 }

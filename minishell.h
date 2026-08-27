@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/08 12:26:48 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/27 23:35:10 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct s_vars
 	int					history_count;
 	int					history_cap;
 	int					stop;
+	int					*status;
 	t_command			*list;
 }						t_vars;
 
@@ -82,6 +83,7 @@ struct					s_split
 	char				**av;
 	size_t				i;
 	size_t				j;
+	int					**status;
 };
 
 struct					s_redir
@@ -138,7 +140,7 @@ void					print_env_fd(int fd, char *format, t_vars *vars);
 
 void					input_process(t_vars *vars);
 void					make_list(t_vars *vars, char *line);
-t_vars					*init_vars(char **env);
+t_vars					*init_vars(char **env, int *status_loc);
 
 int						is_blank(char c);
 int						is_blank_line(const char *s);
@@ -154,16 +156,15 @@ int						append_char(char **str, size_t *len, size_t *cap,
 int						append_str(char **str, size_t *len, size_t *cap,
 							const char *src);
 char					*check_env(char **env, const char *name);
-int						append_status(char **dyn, size_t *len, size_t *cap);
+int						append_status(char **dyn, size_t *len, size_t *cap, int *status);
 int						append_env_var(struct s_expand *ex);
-int						handle_dollar(struct s_expand *ex);
+int						handle_dollar(struct s_expand *ex, int *status);
 int						consume_quote_char(struct s_expand *ex);
-int						append_token_piece(struct s_expand *ex);
+int						append_token_piece(struct s_expand *ex, int *status);
 char					*alloc_token_buffer(void);
 void					setup_expand(struct s_expand *ex, const char *line,
 							char **env, char *dyn);
-char					*copy_token(const char *line, size_t start, size_t end,
-							char **env);
+char					*copy_token(struct s_split *sp, size_t start);
 
 char					*read_line_prompt(t_vars *vars, const char *prompt);
 char					*read_line_plain(void);
@@ -213,10 +214,10 @@ void					append_plain_segment(struct s_redir *rd);
 int						consume_redir_only_segment(struct s_redir *rd);
 
 void					parse_segment(struct s_redir *rd, const char *line,
-							size_t start);
+							size_t start, int *status);
 size_t					skip_blanks(const char *line, size_t i);
 size_t					parse_and_move(struct s_redir *rd, const char *line,
-							size_t i);
+							size_t i, int *status);
 size_t					next_segment_start(const char *line, size_t pos);
 t_command				*build_command_list(t_vars *vars, const char *line);
 void					execute_single_command(t_command *head, t_vars *vars);
@@ -244,7 +245,5 @@ int						fill_split_tokens(struct s_split *sp);
 char					**split_tokens(const char *line, size_t start,
 							size_t end, struct s_split *sp);
 void					free_tokens(char **av, size_t used);
-
-extern int				g_status;
 
 #endif // MINISHELL_H

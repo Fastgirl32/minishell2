@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/06 18:08:31 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/27 23:02:15 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,10 +121,11 @@ ENTRY POINT
 int	main(int ac, char **av, char **env)
 {
 	t_vars	*vars;
+	int		status;
 
 	(void)ac;
 	(void)av;
-	vars = init_vars(env);
+	vars = init_vars(env, &status);
 	setup_parent_signals();
 	print_banner();
 	while (vars->stop == 0)
@@ -133,5 +134,5 @@ int	main(int ac, char **av, char **env)
 	}
 	free_arr((void **)(vars->env));
 	ft_putstr_fd("exit\n", 2);
-	return (g_status);
+	return (status);
 }

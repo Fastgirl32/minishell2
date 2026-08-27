@@ -11,7 +11,7 @@ void	setup_expand(struct s_expand *ex, const char *line, char **env,
 	ex->quote = 0;
 }
 
-char	*copy_token(const char *line, size_t start, size_t end, char **env)
+char	*copy_token(struct s_split *sp, size_t start)
 {
 	struct s_expand	ex;
 	char			*token;
@@ -21,13 +21,13 @@ char	*copy_token(const char *line, size_t start, size_t end, char **env)
 	if (!dyn)
 		return (NULL);
 	ex.i = start;
-	ex.end = end;
-	setup_expand(&ex, line, env, dyn);
+	ex.end = sp->i;
+	setup_expand(&ex, sp->line, sp->env, dyn);
 	while (ex.i < ex.end)
 	{
 		if (consume_quote_char(&ex))
 			continue ;
-		if (!append_token_piece(&ex))
+		if (!append_token_piece(&ex, *(sp->status)))
 		{
 			free(dyn);
 			return (NULL);

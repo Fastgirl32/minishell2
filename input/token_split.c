@@ -23,7 +23,7 @@ int	push_word_token(struct s_split *sp)
 
 	start = sp->i;
 	sp->i = next_word_end(sp->line, sp->i, sp->end);
-	token = copy_token(sp->line, start, sp->i, sp->env);
+	token = copy_token(sp, start);
 	if (!token)
 		return (0);
 	sp->av[(sp->j)++] = token;

@@ -12,7 +12,7 @@ void	append_plain_segment(struct s_redir *rd)
 	rd->av = NULL;
 }
 
-void	parse_segment(struct s_redir *rd, const char *line, size_t start)
+void	parse_segment(struct s_redir *rd, const char *line, size_t start, int *status)
 {
 	struct s_split	sp;
 	size_t			end;
@@ -20,6 +20,7 @@ void	parse_segment(struct s_redir *rd, const char *line, size_t start)
 	end = segment_end(line, start);
 	sp.env = rd->vars->env;
 	sp.ac = &rd->ac;
+	sp.status = &status;
 	rd->av = split_tokens(line, start, end, &sp);
 	if (!rd->av)
 		return ;
@@ -37,12 +38,12 @@ size_t	skip_blanks(const char *line, size_t i)
 	return (i);
 }
 
-size_t	parse_and_move(struct s_redir *rd, const char *line, size_t i)
+size_t	parse_and_move(struct s_redir *rd, const char *line, size_t i, int *status)
 {
 	i = skip_blanks(line, i);
 	if (!line[i] || line[i] == '\n')
 		return (i);
-	parse_segment(rd, line, i);
+	parse_segment(rd, line, i, status);
 	return (next_segment_start(line, segment_end(line, i)));
 }
 

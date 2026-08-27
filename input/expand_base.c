@@ -68,11 +68,11 @@ char	*check_env(char **env, const char *name)
 	return (NULL);
 }
 
-int	append_status(char **dyn, size_t *len, size_t *cap)
+int	append_status(char **dyn, size_t *len, size_t *cap, int *status)
 {
 	char	*status_str;
 
-	status_str = ft_itoa(g_status);
+	status_str = ft_itoa(*status);
 	if (!status_str)
 		return (0);
 	if (!append_str(dyn, len, cap, status_str))

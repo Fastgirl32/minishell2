@@ -27,13 +27,13 @@ int	append_env_var(struct s_expand *ex)
 	return (1);
 }
 
-int	handle_dollar(struct s_expand *ex)
+int	handle_dollar(struct s_expand *ex, int *status)
 {
 	int	res;
 
 	if ((ex->i + 1) < ex->end && ex->line[ex->i + 1] == '?')
 	{
-		if (!append_status(&ex->dyn, &ex->len, &ex->cap))
+		if (!append_status(&ex->dyn, &ex->len, &ex->cap, status))
 			return (-1);
 		ex->i += 2;
 		return (1);
@@ -63,13 +63,13 @@ int	consume_quote_char(struct s_expand *ex)
 	return (0);
 }
 
-int	append_token_piece(struct s_expand *ex)
+int	append_token_piece(struct s_expand *ex, int *status)
 {
 	int	res;
 
 	if (ex->line[ex->i] == '$' && ex->quote != '\'')
 	{
-		res = handle_dollar(ex);
+		res = handle_dollar(ex, status);
 		if (res < 0)
 			return (0);
 		if (res > 0)
