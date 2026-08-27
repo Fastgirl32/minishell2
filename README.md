@@ -1,5 +1,7 @@
 ## was tun fisch (Lennert)
--exit status geht meistens nicht (waitpid und WEXITSTATUS oder so)  
+ - sachen overprotecten
+ - exit "numeric argument" limit int -> long int
+ - ctrl + c exit status
  
  ## was tun fisch (Sabrina)
  - heredoc Georg Friedrich Heindeln  
