@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/27 23:35:10 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/27 23:42:41 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 #  define PATH_MAX 4096
 # endif
 # ifndef VERBOSE
-#  define VERBOSE 1
+#  define VERBOSE 0
 # endif
 
 typedef unsigned short	t_u16;

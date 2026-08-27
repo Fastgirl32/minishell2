@@ -1,6 +1,7 @@
 ## was tun fisch (Lennert)
--exit status geht meistens nicht (waitpid und WEXITSTATUS oder so)  
- 
+ - alles protecten wisch
+ - exit builtin limit korregieren (int / long int)
+
  ## was tun fisch (Sabrina)
  - heredoc Georg Friedrich Heindeln  
    
