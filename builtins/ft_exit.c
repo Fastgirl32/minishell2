@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 14:05:40 by lstarek           #+#    #+#             */
-/*   Updated: 2026/05/07 14:05:41 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/08/28 16:23:30 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ t_status	ft_exit(t_command *cmd, t_vars *vars)
 	}
 	if (cmd->ac > 0)
 	{
-		status = (t_status)(ft_atoi(cmd->argv[1]) % 256);
-		numberified = ft_itoa(ft_atoi(cmd->argv[1]));
+		status = (t_status)(ft_atol(cmd->argv[1]) % 256);
+		numberified = ft_ltoa(ft_atol(cmd->argv[1]));
 		if (ft_strcmp(numberified, cmd->argv[1]))
 			status = status2_message(cmd);
 		free(numberified);
