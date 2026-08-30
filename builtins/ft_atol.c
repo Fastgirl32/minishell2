@@ -59,8 +59,8 @@ long int	ft_atol(const char *str)
 
 char	*ft_ltoa(long int n)
 {
-	char		*str;
-	int			len;
+	char			*str;
+	int				len;
 	long long int	nb;
 
 	nb = n;
