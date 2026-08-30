@@ -1,9 +1,9 @@
 ## was tun fisch (Lennert)
  - alles protecten wisch
- - ctrl + c Georg Friedrich heindln
 
  ## was tun fisch (Sabrina)
  - heredoc Georg Friedrich Heindeln  
+ - ctrl + c Georg Friedrich heindln
    
  ## anderer scheis
  -norminette  
