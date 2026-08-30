@@ -3,7 +3,7 @@
 
  ## was tun fisch (Sabrina)
  - heredoc Georg Friedrich Heindeln  
- - ctrl + c Georg Friedrich heindln
+ - ctrl + c in interactive mode fixen ! (es wartet mit dem printen des promptes.)
    
  ## anderer scheis
  -norminette  

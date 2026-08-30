@@ -6,7 +6,7 @@
 /*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:07:13 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/27 23:04:38 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/30 09:43:59 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,8 @@ int		exit_status(int status)
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	if (WIFSIGNALED(status))
-		return (WTERMSIG(status));
-	else
-	{
-		printf("mysterious cause of death\n");
-		return (EXIT_FAILURE);
-	}
+		return (128 + WTERMSIG(status));
+	return (EXIT_FAILURE);
 }
 
 /*
