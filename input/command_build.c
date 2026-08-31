@@ -12,13 +12,11 @@ int	set_pipe_limiter(t_command *cmd, int has_pipe)
 
 int	fill_command_base(t_command *cmd, char **av, int *ac, int has_pipe)
 {
-	int		redirect_start;
 	char	*limiter;
 
-	redirect_start = 0;
 	limiter = NULL;
-	extract_redirections(av, ac, &limiter, &redirect_start);
-	if (redirect_start || *ac < 1 || !av[0])
+	extract_redirections(av, ac, &limiter, NULL);
+	if (*ac < 1 || !av[0])
 		return (free(limiter), 0);
 	cmd->command = ft_strdup(av[0]);
 	if (!cmd->command)

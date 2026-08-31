@@ -1,5 +1,45 @@
 #include "../minishell.h"
 
+static int	has_syntax_error(const char *line)
+{
+	size_t	i;
+	char	quote;
+	int		op_len;
+
+	i = 0;
+	quote = 0;
+	while (line[i] && line[i] != '\n')
+	{
+		if (!quote && (line[i] == '\'' || line[i] == '"'))
+			quote = line[i++];
+		else if (quote && line[i] == quote)
+			quote = 0, i++;
+		else if (!quote && line[i] == '|')
+		{
+			op_len = (int)(i + 1);
+			while (is_blank(line[op_len]))
+				op_len++;
+			if (i == skip_blanks(line, 0) || line[op_len] == '|'
+				|| !line[op_len] || line[op_len] == '\n')
+				return (1);
+			i++;
+		}
+		else if (!quote && redir_op_len(line, i, 0))
+		{
+			op_len = redir_op_len(line, i, 0);
+			i += (size_t)op_len;
+			while (is_blank(line[i]))
+				i++;
+			if (!line[i] || line[i] == '\n' || line[i] == '|'
+				|| redir_op_len(line, i, 0))
+				return (1);
+		}
+		else
+			i++;
+	}
+	return (0);
+}
+
 int	should_skip_list(t_command *head, t_vars *vars)
 {
 	if (!head->next && head->command && head->command[0] == '\0')
@@ -27,6 +67,12 @@ t_command	*build_command_list(t_vars *vars, const char *line)
 	i = skip_blanks(line, 0);
 	if (line[i] == '#')
 		return (NULL);
+	if (has_syntax_error(line))
+	{
+		ft_putstr_fd("minishell: syntax error\n", 2);
+		*(vars->status) = 2;
+		return (NULL);
+	}
 	while (line[i] && line[i] != '\n')
 		i = parse_and_move(&rd, line, i, vars->status);
 	return (head);
@@ -40,8 +86,13 @@ void	make_list(t_vars *vars, char *line)
 	vars->list = head;
 	if (!head || should_skip_list(head, vars))
 		return (free_list(head), (void)(vars->list = NULL));
-	if (!connect_pipes(head) && !prepare_heredocs(head)
-		&& !establish_redirects(head))
+	if (connect_pipes(head) || prepare_heredocs(head)
+		|| establish_redirects(head))
+	{
+		*(vars->status) = 1;
+		return (free_list(head), (void)(vars->list = NULL));
+	}
+	else
 	{
 		print_command_list(head);
 		if (head->next)

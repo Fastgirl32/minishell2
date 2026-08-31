@@ -3,7 +3,8 @@
 int	is_redirect_op(const char *s)
 {
 	return (s && (!ft_strcmp(s, "<") || !ft_strcmp(s, ">")
-			|| !ft_strcmp(s, "<<") || !ft_strcmp(s, ">>")));
+			|| !ft_strcmp(s, "<<") || !ft_strcmp(s, ">>")
+			|| !ft_strcmp(s, ">|")));
 }
 
 int	is_heredoc_op(const char *s)

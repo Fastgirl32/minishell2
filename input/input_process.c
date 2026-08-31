@@ -59,6 +59,8 @@ void	input_process(t_vars *vars)
 		prompt = ft_strdup("minishell> ");
 	line = read_shell_line(vars, prompt);
 	free(prompt);
+	if (take_interactive_sigint())
+		*(vars->status) = 130;
 	if (!line)
 	{
 		if (errno != EINTR)

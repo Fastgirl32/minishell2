@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/27 23:02:15 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/31 15:54:25 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	is_redirect_limiter(const char *s)
 {
 	return (s && (!ft_strcmp(s, "<") || !ft_strcmp(s, ">") || !ft_strcmp(s,
-				"<<") || !ft_strcmp(s, ">>")));
+				"<<") || !ft_strcmp(s, ">>") || !ft_strcmp(s, ">|")));
 }
 
 /*
@@ -74,10 +74,17 @@ t_u16	establish_redirects(t_command *top_cmd)
 		{
 			if (!cmd->next || !cmd->next->command)
 				break ;
-			if (!ft_strcmp(cmd->limiter, ">"))
+			if (!ft_strcmp(cmd->limiter, ">")
+				|| !ft_strcmp(cmd->limiter, ">|"))
 			{
 				fd_tmp = prev->fd_out;
 				prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+				ft_close(&fd_tmp);
+			}
+			else if (!ft_strcmp(cmd->limiter, "<"))
+			{
+				fd_tmp = prev->fd_in;
+				prev->fd_in = open(cmd->next->command, O_RDONLY);
 				ft_close(&fd_tmp);
 			}
 			if (!ft_strcmp(cmd->limiter, ">>"))
@@ -90,17 +97,17 @@ t_u16	establish_redirects(t_command *top_cmd)
 			{
 				if (pipe(pipe_fd) != 0)
 					return (1);
-				i = 1;
-				while (cmd->argv && cmd->argv[i])
+				i = 0;
+				while (cmd->next->argv && cmd->next->argv[i])
 				{
-					write(pipe_fd[1], cmd->argv[i],
-						ft_strlen(cmd->argv[i]));
+					write(pipe_fd[1], cmd->next->argv[i],
+						ft_strlen(cmd->next->argv[i]));
 					write(pipe_fd[1], "\n", 1);
 					i++;
 				}
 				ft_close(&pipe_fd[1]);
-				ft_close(&cmd->fd_in);
-				cmd->fd_in = pipe_fd[0];
+				ft_close(&prev->fd_in);
+				prev->fd_in = pipe_fd[0];
 			}
 			cmd = cmd->next;
 		}
@@ -125,14 +132,15 @@ int	main(int ac, char **av, char **env)
 
 	(void)ac;
 	(void)av;
+	status = 0;
 	vars = init_vars(env, &status);
 	setup_parent_signals();
-	print_banner();
+	// print_banner();
 	while (vars->stop == 0)
 	{
 		input_process(vars);
 	}
 	free_arr((void **)(vars->env));
-	ft_putstr_fd("exit\n", 2);
+	// ft_putstr_fd("exit\n", 2);
 	return (status);
 }

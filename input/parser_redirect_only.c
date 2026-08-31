@@ -3,6 +3,7 @@
 int	consume_redir_only_segment(struct s_redir *rd)
 {
 	t_command	*heredoc;
+	int		fd;
 
 	rd->op_i = 0;
 	while (rd->op_i + 1 < rd->ac && is_redirect_op(rd->av[rd->op_i]))
@@ -18,6 +19,29 @@ int	consume_redir_only_segment(struct s_redir *rd)
 			if (!heredoc)
 				return (-1);
 			free_list(heredoc);
+		}
+		else if (!ft_strcmp(rd->av[rd->op_i], ">"))
+		{
+			fd = open(rd->av[rd->op_i + 1], O_WRONLY | O_CREAT | O_TRUNC,
+					0666);
+			if (fd < 0)
+				return (-1);
+			close(fd);
+		}
+		else if (!ft_strcmp(rd->av[rd->op_i], ">>"))
+		{
+			fd = open(rd->av[rd->op_i + 1], O_WRONLY | O_CREAT | O_APPEND,
+					0666);
+			if (fd < 0)
+				return (-1);
+			close(fd);
+		}
+		else if (!ft_strcmp(rd->av[rd->op_i], "<"))
+		{
+			fd = open(rd->av[rd->op_i + 1], O_RDONLY);
+			if (fd < 0)
+				return (-1);
+			close(fd);
 		}
 		rd->op_i += 2;
 	}

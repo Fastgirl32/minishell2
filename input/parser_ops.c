@@ -27,15 +27,50 @@ t_command	*new_single_arg_command(char *arg)
 	return (cmd);
 }
 
+static char	**copy_command_args(char **av, int ac, int *out_ac)
+{
+	char	**args;
+	int		i;
+	int		j;
+
+	args = malloc(sizeof(char *) * (size_t)(ac + 1));
+	if (!args)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (i < ac)
+	{
+		if (is_redirect_op(av[i]))
+			i += 2;
+		else
+		{
+			args[j] = ft_strdup(av[i]);
+			if (!args[j])
+				return (args[j] = NULL, free_arr((void **)args), NULL);
+			j++;
+			i++;
+		}
+	}
+	args[j] = NULL;
+	*out_ac = j;
+	return (args);
+}
+
 int	append_redirect_nodes(struct s_redir *rd)
 {
 	t_command	*cmd;
 
 	cmd = *rd->tail;
-	while (rd->op_i + 1 < rd->ac && rd->av[rd->op_i]
-		&& is_redirect_op(rd->av[rd->op_i]))
+	rd->op_i = 0;
+	while (rd->op_i < rd->ac)
 	{
-		if (!set_command_limiter(cmd, rd->av[rd->op_i]))
+		if (!is_redirect_op(rd->av[rd->op_i]))
+		{
+			rd->op_i++;
+			continue ;
+		}
+		if (rd->op_i + 1 >= rd->ac
+			|| !set_command_limiter(cmd, rd->av[rd->op_i]))
 			return (0);
 		if (!ft_strcmp(rd->av[rd->op_i], "<<"))
 			cmd = build_heredoc(rd->av[rd->op_i + 1]);
@@ -64,13 +99,14 @@ int	handle_redirect_segment(struct s_redir *rd)
 	int			left_ac;
 
 	rd->op_i = first_redir_index(rd->av, rd->ac);
-	if (rd->op_i < 0 || rd->op_i + 1 >= rd->ac)
+	if (rd->op_i < 0)
 		return (0);
-	if (rd->op_i == 0)
-		return (consume_redir_only_segment(rd));
-	left_av = dup_token_range(rd->av, 0, rd->op_i, &left_ac);
+	left_av = copy_command_args(rd->av, rd->ac, &left_ac);
 	if (!left_av)
 		return (-1);
+	if (left_ac == 0)
+		return (free_arr((void **)left_av),
+			consume_redir_only_segment(rd));
 	cmd = new_command(left_av, left_ac, 0);
 	if (!cmd)
 		return (free_arr((void **)left_av), -1);

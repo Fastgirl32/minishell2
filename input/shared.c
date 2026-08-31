@@ -29,6 +29,8 @@ int	redir_op_len(const char *line, size_t i, char quote)
 	{
 		if (line[i + 1] == line[i])
 			return (2);
+		if (line[i] == '>' && line[i + 1] == '|')
+			return (2);
 		return (1);
 	}
 	return (0);
@@ -47,6 +49,11 @@ size_t	segment_end(const char *line, size_t start)
 			quote = line[i];
 		else if (quote && line[i] == quote)
 			quote = 0;
+		else if (!quote && redir_op_len(line, i, 0))
+		{
+			i += (size_t)redir_op_len(line, i, 0);
+			continue ;
+		}
 		else if (!quote && line[i] == '|')
 			break ;
 		i++;

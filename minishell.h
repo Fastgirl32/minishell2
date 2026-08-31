@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/28 16:20:08 by baal             ###   ########.fr       */
+/*   Updated: 2026/08/31 14:45:03 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,7 @@ void					print_banner(void);
 
 void					setup_parent_signals(void);
 void					setup_child_signals(void);
+int					take_interactive_sigint(void);
 
 char					**recreate_env(char **env);
 void					env_append(t_vars *vars, char *str);
