@@ -135,12 +135,12 @@ int	main(int ac, char **av, char **env)
 	status = 0;
 	vars = init_vars(env, &status);
 	setup_parent_signals();
-	// print_banner();
+	//print_banner();
 	while (vars->stop == 0)
 	{
 		input_process(vars);
 	}
 	free_arr((void **)(vars->env));
-	// ft_putstr_fd("exit\n", 2);
+	ft_putstr_fd("exit\n", 2);
 	return (status);
 }

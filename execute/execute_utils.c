@@ -100,6 +100,8 @@ void	free_arr(void **arr)
 	int		i;
 
 	i = 0;
+	if (!arr)
+		return ;
 	while (arr[i])
 	{
 		free(arr[i]);

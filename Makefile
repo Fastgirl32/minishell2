@@ -5,6 +5,8 @@ CFLAGGEN = -Wall -Wextra -Werror -g -I.
 
 CC = cc
 
+SUPRESSION_FILE = readline.supp
+
 QUELLE_DATEIEN = builtins/ft_cd.c builtins/ft_env.c builtins/ft_export.c builtins/ft_unset.c builtins/ft_exit.c builtins/ft_pwd.c builtins/ft_echo.c \
 builtins/ft_atol.c \
 execute/execute_utils.c execute/banner.c execute/environment.c execute/expand.c\
@@ -40,5 +42,11 @@ fclean: clean
 	rm -f $(LIBNAME)
 
 re: fclean all
+
+vg: | $(SUPRESSION_FILE)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=all --suppressions=readline.supp ./minishell
+
+$(SUPRESSION_FILE):
+	printf "{\n\t<readline-stupidities>\n\tMemcheck:Leak\n\t...\n\tfun:readline\n}\n{\n\t<history-stupoidities>\n\tMemcheck:Leak\n\t...\n\tfun:add_history\n}" | cat > readline.supp
 
 .PHONY: all clean flcean re

@@ -63,6 +63,7 @@ int	access_path(char *path_scan, char path[][4096], t_command *cmd)
 	free(tmp);
 	found = access(tmp2, F_OK);
 	ft_memcpy(*path, tmp2, ft_strlen(tmp2) + 1);
+	free(tmp2);
 	return (found);
 }
 
