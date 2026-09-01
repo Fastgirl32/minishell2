@@ -14,7 +14,7 @@
 #include <stddef.h>
 
 /*
-Compares two strings. Easier to use than strncmp.
+Compares two C-strings. Easier to use than strncmp.
 */
 int	ft_strcmp(const char *s1, const char *s2)
 {

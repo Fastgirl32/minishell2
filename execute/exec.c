@@ -37,7 +37,7 @@ int	execute_builtin(t_command *cmd, t_vars *vars)
 }
 
 /*
-For single command. dups all file descriptors
+For a given command. dups all file descriptors
 returns 0 on success
 */
 t_status	redirect_all(t_command *cmd)
