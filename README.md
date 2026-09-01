@@ -52,5 +52,7 @@ Listed below are resources used to create the project.
 - People on campus that helped:  
 @kmautner, @flaltens, @fscharf.  
 
+- Readline suppression (make vg) by @kmautner
+
 - Link that leads nowhere that EVERY github repo needs to have:  
 [Very important resource](https://www.shfdjhsfjhsjdfh.sjdfkjskfdj)  

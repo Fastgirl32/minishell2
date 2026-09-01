@@ -93,24 +93,6 @@ char	*get_input(int fd)
 }
 
 /*
-Frees a double pointer passed as (void **)
-*/
-void	free_arr(void **arr)
-{
-	int		i;
-
-	i = 0;
-	if (!arr)
-		return ;
-	while (arr[i])
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
-}
-
-/*
 Returns 1 if a command is builtin.
 0 otherwise
 */

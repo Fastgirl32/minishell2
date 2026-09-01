@@ -33,7 +33,7 @@ int	history_reserve(t_vars *vars)
 	i = -1;
 	while (++i < vars->history_count)
 		new_history[i] = vars->history[i];
-	free_arr((void **)vars->history);
+	free_arr((void **)(vars->history));
 	vars->history = new_history;
 	vars->history_cap = new_cap;
 	return (1);

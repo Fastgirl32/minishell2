@@ -139,6 +139,7 @@ char					**recreate_env(char **env);
 void					env_append(t_vars *vars, char *str);
 void					env_remove(t_vars *vars, char *str);
 void					free_arr(void **arr);
+void					free_vars(t_vars *vars);
 void					print_env_fd(int fd, char *format, t_vars *vars);
 
 void					input_process(t_vars *vars);

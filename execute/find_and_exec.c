@@ -88,7 +88,7 @@ t_status	find_and_exec(t_command *cmd, t_vars *vars)
 		path_scan = ft_strchr(path_scan + 1, ':');
 	}
 	free(path_scan_dup);
-	free_arr((void **)vars->env);
+	free_vars(vars);
 	close_all_not_std_fds(cmd);
 	if (found == -1)
 	{
