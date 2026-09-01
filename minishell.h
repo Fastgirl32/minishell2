@@ -133,7 +133,7 @@ void					print_banner(void);
 
 void					setup_parent_signals(void);
 void					setup_child_signals(void);
-int					take_interactive_sigint(void);
+int						take_interactive_sigint(void);
 
 char					**recreate_env(char **env);
 void					env_append(t_vars *vars, char *str);
@@ -160,7 +160,8 @@ int						append_char(char **str, size_t *len, size_t *cap,
 int						append_str(char **str, size_t *len, size_t *cap,
 							const char *src);
 char					*check_env(char **env, const char *name);
-int						append_status(char **dyn, size_t *len, size_t *cap, int *status);
+int						append_status(char **dyn, size_t *len,
+							size_t *cap, int *status);
 int						append_env_var(struct s_expand *ex);
 int						handle_dollar(struct s_expand *ex, int *status);
 int						consume_quote_char(struct s_expand *ex);

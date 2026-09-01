@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_flow.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/01 17:25:12 by lstarek           #+#    #+#             */
+/*   Updated: 2026/09/01 17:25:16 by lstarek          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 void	append_plain_segment(struct s_redir *rd)
@@ -12,7 +24,8 @@ void	append_plain_segment(struct s_redir *rd)
 	rd->av = NULL;
 }
 
-void	parse_segment(struct s_redir *rd, const char *line, size_t start, int *status)
+void	parse_segment(struct s_redir *rd, const char *line,
+	size_t start, int *status)
 {
 	struct s_split	sp;
 	size_t			end;
@@ -38,7 +51,8 @@ size_t	skip_blanks(const char *line, size_t i)
 	return (i);
 }
 
-size_t	parse_and_move(struct s_redir *rd, const char *line, size_t i, int *status)
+size_t	parse_and_move(struct s_redir *rd, const char *line,
+	size_t i, int *status)
 {
 	i = skip_blanks(line, i);
 	if (!line[i] || line[i] == '\n')

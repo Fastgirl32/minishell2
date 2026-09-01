@@ -44,6 +44,7 @@ void	close_all_not_std_fds(t_command *head)
 		head = head->next;
 	}
 }
+
 /*
 Truncates path_scan,
 	attempts to access it and returns the return value of the access syscall.

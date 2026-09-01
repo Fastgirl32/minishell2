@@ -15,7 +15,7 @@
 /*
 Translates the info in "status" into a usable exit code.
 */
-int		exit_status(int status)
+int	exit_status(int status)
 {
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
@@ -29,22 +29,22 @@ Executes a built-in directly in the current process.
 In a pipeline, this will not be the root process.
 In a single command, it is.
 */
-int		execute_builtin(t_command *cmd, t_vars *vars)
+int	execute_builtin(t_command *cmd, t_vars *vars)
 {
 	if (!ft_strcmp(cmd->command, "echo"))
-		return ft_echo(cmd, vars);
+		return (ft_echo(cmd, vars));
 	else if (!ft_strcmp(cmd->command, "cd"))
-		return ft_cd(cmd, vars);
+		return (ft_cd(cmd, vars));
 	else if (!ft_strcmp(cmd->command, "pwd"))
-		return ft_pwd(cmd);
+		return (ft_pwd(cmd));
 	else if (!ft_strcmp(cmd->command, "export"))
-		return ft_export(cmd, vars);
+		return (ft_export(cmd, vars));
 	else if (!ft_strcmp(cmd->command, "unset"))
-		return ft_unset(cmd, vars);
+		return (ft_unset(cmd, vars));
 	else if (!ft_strcmp(cmd->command, "env"))
-		return ft_env(cmd, vars);
+		return (ft_env(cmd, vars));
 	else if (!ft_strcmp(cmd->command, "exit"))
-		return ft_exit(cmd, vars);
+		return (ft_exit(cmd, vars));
 	return (1);
 }
 

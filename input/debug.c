@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   debug.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/01 17:18:22 by lstarek           #+#    #+#             */
+/*   Updated: 2026/09/01 17:18:27 by lstarek          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 char	*safe_text(char *s)
@@ -39,7 +51,7 @@ void	print_argv_debug(char **argv)
 void	print_command_list(t_command *head)
 {
 	int	idx;
-	
+
 	if (!VERBOSE)
 		return ;
 	ft_printf("\n--- command list ---\n");

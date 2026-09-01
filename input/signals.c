@@ -1,5 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signals.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/01 17:25:40 by lstarek           #+#    #+#             */
+/*   Updated: 2026/09/01 17:25:42 by lstarek          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
+//This is the only global.
 static volatile sig_atomic_t	g_interrupted;
 
 static void	sigint_handler(int sig)

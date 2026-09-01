@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_redirect_only.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/01 17:25:28 by lstarek           #+#    #+#             */
+/*   Updated: 2026/09/01 17:25:28 by lstarek          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int	consume_redir_only_segment(struct s_redir *rd)
 {
 	t_command	*heredoc;
-	int		fd;
+	int			fd;
 
 	rd->op_i = 0;
 	while (rd->op_i + 1 < rd->ac && is_redirect_op(rd->av[rd->op_i]))

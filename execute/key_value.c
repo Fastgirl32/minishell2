@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   key_value.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/01 17:35:24 by lstarek           #+#    #+#             */
+/*   Updated: 2026/09/01 17:35:26 by lstarek          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 /*
@@ -56,7 +68,6 @@ char	*value(const char *str)
 	return (value);
 }
 
-
 /*
 Returns 1 if the environment in vars contains the variable var,
 0 otherwise.
@@ -93,7 +104,7 @@ t_status	contains_var(t_vars *vars, char *var)
 Returns the value of a key, found in the environment of vars.
 NULL if it is not found.
 */
-char*	get_var(char *var, t_vars *vars)
+char	*get_var(char *var, t_vars *vars)
 {
 	int		i;
 	char	*val;

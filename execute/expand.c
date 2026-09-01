@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/01 17:35:06 by lstarek           #+#    #+#             */
+/*   Updated: 2026/09/01 17:35:14 by lstarek          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 /*
@@ -9,7 +21,8 @@ t_status	expand_str_util(char *format, char *rstr, int i[3], t_vars *vars)
 	char	*var;
 
 	i[0]++;
-	while (format[i[0] + i[1]] && format[i[0] + i[1]] != ' ' && format[i[0] + i[1]] != '$')
+	while (format[i[0] + i[1]] && format[i[0] + i[1]] != ' '
+		&& format[i[0] + i[1]] != '$')
 		(i[1])++;
 	if (i[1] == 0)
 		return (1);

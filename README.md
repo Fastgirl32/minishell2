@@ -2,8 +2,8 @@
  - alles protecten.
 
  ## was tun fisch (Sabrina)
- - heredoc Georg Friedrich Heindeln  
- - ctrl + c in interactive mode fixen ! (es wartet mit dem printen des promptes.)
+ - leaks!!!!! (make vg zum testen)
+ - ctrl + c printet prompt doppelt.
    
  ## anderer scheis
  -norminette  
