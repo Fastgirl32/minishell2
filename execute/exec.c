@@ -13,18 +13,6 @@
 #include "../minishell.h"
 
 /*
-Translates the info in "status" into a usable exit code.
-*/
-int	exit_status(int status)
-{
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status));
-	return (EXIT_FAILURE);
-}
-
-/*
 Executes a built-in directly in the current process.
 In a pipeline, this will not be the root process.
 In a single command, it is.

@@ -12,6 +12,18 @@
 
 #include "../minishell.h"
 
+/*
+Translates the info in "status" into a usable exit code.
+*/
+int	exit_status(int status)
+{
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
+	return (EXIT_FAILURE);
+}
+
 t_status	status2_message(t_command *cmd)
 {
 	ft_printf("exit: %s: numeric argument required\n", cmd->argv[1]);

@@ -13,6 +13,19 @@
 #include "../minishell.h"
 
 /*
+Closes a fd, passed by reference,
+if it is not standard and sets it to -1 to avoid double closing.
+*/
+void	ft_close(int *fd)
+{
+	if (*fd != 0 && *fd != 1 && *fd != 2 && *fd != -1)
+	{
+		close(*fd);
+		*fd = -1;
+	}
+}
+
+/*
 Truncates a path string after the ':' separator.
 */
 char	*getpath(char *str)

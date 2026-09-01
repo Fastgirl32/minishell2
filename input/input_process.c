@@ -56,15 +56,19 @@ char	*read_continued_lines(t_vars *vars, char *line)
 Returns what $PS1 expands to, or NULL otherwise.
 The caller will then use the fallback.
 */
-char	*get_prompt(t_vars *vars, char *backup)
+char	*get_prompt(t_vars *vars, char *backup, _Bool *fallback_used)
 {
 	char	*prompt;
 	char	*tmp;
 
+	*fallback_used = 0;
 	ft_memcpy(backup, "minishell> ", 12);
 	prompt = get_var("PS1", vars);
 	if (!prompt || !prompt[0])
+	{
 		prompt = NULL;
+		*fallback_used = 1;
+	}
 	else
 	{
 		tmp = prompt;
@@ -72,7 +76,10 @@ char	*get_prompt(t_vars *vars, char *backup)
 		free(tmp);
 	}
 	if (!prompt || !prompt[0])
+	{
 		prompt = NULL;
+		*fallback_used = 1;
+	}
 	return (prompt);
 }
 
@@ -85,13 +92,15 @@ void	input_process(t_vars *vars)
 {
 	char	*line;
 	char	*prompt;
-	char	prompt_backup[12];
+	char	prompt_fallback[12];
+	_Bool	fallback_used;
 
-	prompt = get_prompt(vars, prompt_backup);
+	prompt = get_prompt(vars, prompt_fallback, &fallback_used);
 	if (!prompt)
-		prompt = prompt_backup;
+		prompt = prompt_fallback;
 	line = read_shell_line(vars, prompt);
-	free(prompt);
+	if (!fallback_used)
+		free(prompt);
 	if (take_interactive_sigint())
 		*(vars->status) = 130;
 	if (!line)

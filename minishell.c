@@ -52,7 +52,6 @@ t_u16	connect_pipes(t_command *top_cmd)
 }
 
 /*
-MUSS GEFIXT WERDEN (HEREDOC)
 Assumes pipes have been connected.
 Establishes redirections in the linked list by
 opening the right file descriptors and removing

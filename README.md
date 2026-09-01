@@ -3,17 +3,9 @@
 
  ## was tun fisch (Sabrina)
  - leaks!!!!! (make vg zum testen)
+ - norminette in deinen Files
  - ctrl + c printet prompt doppelt.
    
- ## anderer scheis
- -norminette  
-
-
-
-
-
-
-
 
 
 

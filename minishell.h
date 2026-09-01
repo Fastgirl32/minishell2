@@ -119,6 +119,7 @@ t_status				ft_unset(t_command *cmd, t_vars *vars);
 t_status				ft_env(t_command *cmd, t_vars *vars);
 t_status				ft_exit(t_command *cmd, t_vars *vars);
 
+int						exit_status(int status);
 t_status				find_and_exec(t_command *cmd, t_vars *vars);
 
 t_u16					connect_pipes(t_command *top_cmd);

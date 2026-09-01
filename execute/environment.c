@@ -71,6 +71,7 @@ void	env_remove(t_vars *vars, char *str)
 	int		i;
 	int		j;
 	char	**new_env;
+	char	*tmp;
 
 	i = 0;
 	j = 0;
@@ -80,8 +81,10 @@ void	env_remove(t_vars *vars, char *str)
 	i = 0;
 	while ((vars->env)[j])
 	{
-		if (!ft_strcmp(key((vars->env)[j]), str))
+		tmp = key((vars->env)[j]);
+		if (!ft_strcmp(tmp, str))
 			j++;
+		free(tmp);
 		new_env[i] = ft_strdup((vars->env)[j]);
 		j++;
 		i++;

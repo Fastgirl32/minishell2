@@ -106,16 +106,3 @@ t_u16	is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "pwd")
 		|| !ft_strcmp(cmd, "unset"));
 }
-
-/*
-Closes a fd, passed by reference,
-if it is not standard and sets it to -1 to avoid double closing.
-*/
-void	ft_close(int *fd)
-{
-	if (*fd != 0 && *fd != 1 && *fd != 2 && *fd != -1)
-	{
-		close(*fd);
-		*fd = -1;
-	}
-}
