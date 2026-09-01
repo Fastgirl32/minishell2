@@ -35,6 +35,7 @@ $(NAME): $(OBJEKT_DATEIEN) libft/libft.a
 
 clean: 
 	rm -f $(OBJEKT_DATEIEN)
+	rm -f $(SUPRESSION_FILE)
 	cd libft && make clean
 
 fclean: clean 

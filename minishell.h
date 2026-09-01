@@ -31,6 +31,9 @@
 # ifndef VERBOSE
 #  define VERBOSE 0
 # endif
+# ifndef DISPLAY_BANNER
+#  define DISPLAY_BANNER 1
+# endif
 
 typedef unsigned short	t_u16;
 typedef unsigned char	t_status;

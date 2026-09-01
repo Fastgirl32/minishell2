@@ -59,8 +59,10 @@ void	close_all_not_std_fds(t_command *head)
 }
 
 /*
-Truncates path_scan,
-	attempts to access it and returns the return value of the access syscall.
+if "cmd->command" starts with a '/', it is absolute,
+therefore not changed and directly accessed. 
+Else, "cmd->command" gets appended to "path_scan" and then accessed.
+Path is set to whatever it actually is.
 */
 int	access_path(char *path_scan, char path[][4096], t_command *cmd)
 {
@@ -70,6 +72,12 @@ int	access_path(char *path_scan, char path[][4096], t_command *cmd)
 
 	if (!path)
 		return (-1);
+	if (cmd->command[0] == '/')
+	{
+		found = access(cmd->command, F_OK);
+		ft_memcpy(*path, cmd->command, ft_strlen(cmd->command) + 1);
+		return (found);
+	}
 	tmp2 = getpath(path_scan + 1);
 	tmp = ft_strjoin(tmp2, "/");
 	free(tmp2);
