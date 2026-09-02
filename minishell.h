@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/31 14:45:03 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/02 12:59:01 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_command
 	struct s_command	*next;
 	int					fd_in;
 	int					fd_out;
+	int					redir_failed;
 }						t_command;
 
 typedef struct s_vars
@@ -84,6 +85,7 @@ struct					s_split
 	char				**env;
 	int					*ac;
 	char				**av;
+	int					*is_op;
 	size_t				i;
 	size_t				j;
 	int					**status;
@@ -95,6 +97,7 @@ struct					s_redir
 	t_command			**tail;
 	t_vars				*vars;
 	char				**av;
+	int					*is_op;
 	int					ac;
 	int					has_pipe;
 	int					op_i;
@@ -127,6 +130,12 @@ t_status				find_and_exec(t_command *cmd, t_vars *vars);
 
 t_u16					connect_pipes(t_command *top_cmd);
 t_u16					establish_redirects(t_command *top_cmd);
+int						is_redirect_limiter(const char *s);
+void					free_redir_node(t_command *node);
+void					open_redirect_target(t_command *cmd,
+							t_command *prev);
+t_status				handle_heredoc_redirect(t_command *cmd,
+							t_command *prev);
 int						execute_builtin(t_command *cmd, t_vars *vars);
 void					execute(t_command *cmd, t_vars *vars);
 
@@ -136,6 +145,8 @@ void					ft_close(int *fd);
 void					print_banner(void);
 
 void					setup_parent_signals(void);
+void					ignore_parent_sigint(void);
+void					restore_parent_sigint(void);
 void					setup_child_signals(void);
 int						take_interactive_sigint(void);
 
@@ -213,9 +224,11 @@ int						fill_command_base(t_command *cmd, char **av, int *ac,
 char					**dup_token_range(char **av, int start, int end,
 							int *out_ac);
 t_command				*new_command(char **av, int ac, int has_pipe);
-int						first_redir_index(char **av, int ac);
+int						first_redir_index(char **av, int *is_op, int ac);
 int						set_command_limiter(t_command *cmd, char *lim);
 t_command				*new_single_arg_command(char *arg);
+char					**copy_command_args(char **av, int *is_op, int ac,
+							int *out_ac);
 int						append_redirect_nodes(struct s_redir *rd);
 int						handle_redirect_segment(struct s_redir *rd);
 int						has_pipe_after_segment(const char *line, size_t end);
@@ -231,6 +244,7 @@ size_t					next_segment_start(const char *line, size_t pos);
 t_command				*build_command_list(t_vars *vars, const char *line);
 void					execute_single_command(t_command *head, t_vars *vars);
 int						should_skip_list(t_command *head, t_vars *vars);
+int						has_syntax_error(const char *line);
 
 char					*safe_text(char *s);
 void					print_one_command(int idx, t_command *head);

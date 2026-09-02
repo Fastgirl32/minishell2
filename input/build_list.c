@@ -3,54 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   build_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:05 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:18:36 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/02 12:59:01 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-static int	has_syntax_error(const char *line)
-{
-	size_t	i;
-	char	quote;
-	int		op_len;
-
-	i = 0;
-	quote = 0;
-	while (line[i] && line[i] != '\n')
-	{
-		if (!quote && (line[i] == '\'' || line[i] == '"'))
-			quote = line[i++];
-		else if (quote && line[i] == quote)
-			quote = 0, i++;
-		else if (!quote && line[i] == '|')
-		{
-			op_len = (int)(i + 1);
-			while (is_blank(line[op_len]))
-				op_len++;
-			if (i == skip_blanks(line, 0) || line[op_len] == '|'
-				|| !line[op_len] || line[op_len] == '\n')
-				return (1);
-			i++;
-		}
-		else if (!quote && redir_op_len(line, i, 0))
-		{
-			op_len = redir_op_len(line, i, 0);
-			i += (size_t)op_len;
-			while (is_blank(line[i]))
-				i++;
-			if (!line[i] || line[i] == '\n' || line[i] == '|'
-				|| redir_op_len(line, i, 0))
-				return (1);
-		}
-		else
-			i++;
-	}
-	return (0);
-}
 
 int	should_skip_list(t_command *head, t_vars *vars)
 {
@@ -107,10 +67,12 @@ void	make_list(t_vars *vars, char *line)
 	else
 	{
 		print_command_list(head);
+		ignore_parent_sigint();
 		if (head->next)
 			execute(head, vars);
 		else
 			execute_single_command(head, vars);
+		restore_parent_sigint();
 	}
 	free_list(head);
 	vars->list = NULL;

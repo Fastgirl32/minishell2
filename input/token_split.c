@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_split.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:26:15 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:26:16 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/02 11:49:57 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	push_operator_token(struct s_split *sp)
 	token = ft_substr(sp->line, (unsigned int)(sp->i), (size_t)op_len);
 	if (!token)
 		return (-1);
+	sp->is_op[sp->j] = 1;
 	sp->av[(sp->j)++] = token;
 	sp->i += (size_t)op_len;
 	return (1);
@@ -38,6 +39,7 @@ int	push_word_token(struct s_split *sp)
 	token = copy_token(sp, start);
 	if (!token)
 		return (0);
+	sp->is_op[sp->j] = 0;
 	sp->av[(sp->j)++] = token;
 	return (1);
 }
@@ -67,12 +69,15 @@ char	**split_tokens(const char *line, size_t start, size_t end,
 	sp->av = malloc(sizeof(char *) * (count_tokens(line, start, end) + 1));
 	if (!sp->av)
 		return (NULL);
+	sp->is_op = malloc(sizeof(int) * (count_tokens(line, start, end) + 1));
+	if (!sp->is_op)
+		return (free(sp->av), NULL);
 	sp->line = line;
 	sp->end = end;
 	sp->i = start;
 	sp->j = 0;
 	if (!fill_split_tokens(sp))
-		return (free_tokens(sp->av, sp->j), NULL);
+		return (free(sp->is_op), free_tokens(sp->av, sp->j), NULL);
 	sp->av[sp->j] = NULL;
 	if (sp->ac)
 		*sp->ac = (int)sp->j;
