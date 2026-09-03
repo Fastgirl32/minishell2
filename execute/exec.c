@@ -125,12 +125,7 @@ void	execute(t_command *cmd, t_vars *vars)
 		if (dup_all(cmd))
 			exit(1);
 		if (is_builtin(cmd->command))
-		{
-			stat = execute_builtin(cmd, vars);
-			free_list(vars->list);
-			free_vars(vars);
-			exit(stat);
-		}
+			clean_exit(execute_builtin(cmd, vars), vars);
 		else
 			find_and_exec(cmd, vars);
 	}

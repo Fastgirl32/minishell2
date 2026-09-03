@@ -32,7 +32,7 @@
 #  define VERBOSE 0
 # endif
 # ifndef DISPLAY_BANNER
-#  define DISPLAY_BANNER 1
+#  define DISPLAY_BANNER 0
 # endif
 
 typedef unsigned short	t_u16;
@@ -132,6 +132,7 @@ void					execute(t_command *cmd, t_vars *vars);
 
 char					*get_input(int fd);
 void					ft_close(int *fd);
+void					clean_exit(t_status status, t_vars *vars);
 
 void					print_banner(void);
 

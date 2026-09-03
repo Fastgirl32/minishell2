@@ -12,15 +12,6 @@
 
 #include "../minishell.h"
 
-int	set_command_limiter(t_command *cmd, char *lim)
-{
-	free(cmd->limiter);
-	cmd->limiter = ft_strdup(lim);
-	if (!cmd->limiter)
-		return (0);
-	return (1);
-}
-
 t_command	*new_single_arg_command(char *arg)
 {
 	char		**av;

@@ -51,7 +51,8 @@ t_u16	connect_pipes(t_command *top_cmd)
 	return (0);
 }
 
-t_u16	establish_redirect_helper(t_command *cmd, t_command *prev, int pipe_fd[2], int *i)
+t_u16	establish_redirect_helper(t_command *cmd, t_command *prev,
+	int pipe_fd[2], int *i)
 {
 	int			fd_tmp;
 
@@ -61,7 +62,8 @@ t_u16	establish_redirect_helper(t_command *cmd, t_command *prev, int pipe_fd[2],
 		|| !ft_strcmp(cmd->limiter, ">|"))
 	{
 		fd_tmp = prev->fd_out;
-		prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+		prev->fd_out = open(cmd->next->command,
+				O_WRONLY | O_CREAT | O_TRUNC, 0666);
 		ft_close(&fd_tmp);
 	}
 	else if (!ft_strcmp(cmd->limiter, "<"))
@@ -73,7 +75,8 @@ t_u16	establish_redirect_helper(t_command *cmd, t_command *prev, int pipe_fd[2],
 	if (!ft_strcmp(cmd->limiter, ">>"))
 	{
 		fd_tmp = prev->fd_out;
-		prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_APPEND, 0666);
+		prev->fd_out = open(cmd->next->command,
+				O_WRONLY | O_CREAT | O_APPEND, 0666);
 		ft_close(&fd_tmp);
 	}
 	else if (!ft_strcmp(cmd->limiter, "<<"))

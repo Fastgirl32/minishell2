@@ -25,7 +25,10 @@ static int	has_syntax_error(const char *line)
 		if (!quote && (line[i] == '\'' || line[i] == '"'))
 			quote = line[i++];
 		else if (quote && line[i] == quote)
-			quote = 0, i++;
+		{
+			quote = 0;
+			i++;
+		}
 		else if (!quote && line[i] == '|')
 		{
 			op_len = (int)(i + 1);

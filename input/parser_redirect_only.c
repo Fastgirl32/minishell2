@@ -68,3 +68,12 @@ int	has_pipe_after_segment(const char *line, size_t end)
 		return (1);
 	return (0);
 }
+
+int	set_command_limiter(t_command *cmd, char *lim)
+{
+	free(cmd->limiter);
+	cmd->limiter = ft_strdup(lim);
+	if (!cmd->limiter)
+		return (0);
+	return (1);
+}
