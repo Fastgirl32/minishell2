@@ -9,8 +9,8 @@ SUPRESSION_FILE = readline.supp
 
 QUELLE_DATEIEN = builtins/ft_cd.c builtins/ft_env.c builtins/ft_export.c builtins/ft_unset.c builtins/ft_exit.c builtins/ft_pwd.c builtins/ft_echo.c \
 builtins/ft_atol.c \
-execute/execute_utils.c execute/banner.c execute/environment.c execute/expand.c\
-execute/find_and_exec.c execute/key_value.c execute/free.c\
+execute/execute_utils.c execute/banner.c execute/environment.c execute/expand.c \
+execute/find_and_exec.c execute/key_value.c execute/free.c execute/connect.c \
 minishell.c \
 input/shared.c input/signals.c input/history_core.c \
 input/expand_base.c input/expand_token.c input/expand_copy.c \

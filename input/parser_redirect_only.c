@@ -12,6 +12,31 @@
 
 #include "../minishell.h"
 
+/*
+0x241 means O_WRONLY | O_CREAT | O_TRUNC.
+0x441 means O_WRONLY | O_CREAT | O_APPEND.
+*/
+int	consume_redir_helper(struct s_redir *rd, t_command **heredoc, int *fd)
+{
+	if (!ft_strcmp(rd->av[rd->op_i], "<<"))
+	{
+		*heredoc = build_heredoc(rd->av[rd->op_i + 1]);
+		if (!heredoc)
+			return (-1);
+		free_list(*heredoc);
+	}
+	else if (!ft_strcmp(rd->av[rd->op_i], ">"))
+		*fd = open(rd->av[rd->op_i + 1], 0x241, 0666);
+	else if (!ft_strcmp(rd->av[rd->op_i], ">>"))
+		*fd = open(rd->av[rd->op_i + 1], 0x441, 0666);
+	else if (!ft_strcmp(rd->av[rd->op_i], "<"))
+		*fd = open(rd->av[rd->op_i + 1], O_RDONLY);
+	if (fd < 0)
+		return (-1);
+	ft_close(fd);
+	return (0);
+}
+
 int	consume_redir_only_segment(struct s_redir *rd)
 {
 	t_command	*heredoc;
@@ -25,36 +50,9 @@ int	consume_redir_only_segment(struct s_redir *rd)
 	rd->op_i = 0;
 	while (rd->op_i + 1 < rd->ac)
 	{
-		if (!ft_strcmp(rd->av[rd->op_i], "<<"))
-		{
-			heredoc = build_heredoc(rd->av[rd->op_i + 1]);
-			if (!heredoc)
-				return (-1);
-			free_list(heredoc);
-		}
-		else if (!ft_strcmp(rd->av[rd->op_i], ">"))
-		{
-			fd = open(rd->av[rd->op_i + 1], O_WRONLY | O_CREAT | O_TRUNC,
-					0666);
-			if (fd < 0)
-				return (-1);
-			close(fd);
-		}
-		else if (!ft_strcmp(rd->av[rd->op_i], ">>"))
-		{
-			fd = open(rd->av[rd->op_i + 1], O_WRONLY | O_CREAT | O_APPEND,
-					0666);
-			if (fd < 0)
-				return (-1);
-			close(fd);
-		}
-		else if (!ft_strcmp(rd->av[rd->op_i], "<"))
-		{
-			fd = open(rd->av[rd->op_i + 1], O_RDONLY);
-			if (fd < 0)
-				return (-1);
-			close(fd);
-		}
+		fd = -1;
+		if (consume_redir_helper(rd, &heredoc, &fd) == -1)
+			return (-1);
 		rd->op_i += 2;
 	}
 	return (1);

@@ -12,6 +12,34 @@
 
 #include "../minishell.h"
 
+static int	syntax_err_helper(const char *line, char quote,
+		int *op_len, size_t *i)
+{
+	if (!quote && line[*i] == '|')
+	{
+		*op_len = (int)(*i + 1);
+		while (is_blank(line[*op_len]))
+			op_len++;
+		if (*i == skip_blanks(line, 0) || line[*op_len] == '|'
+			|| !line[*op_len] || line[*op_len] == '\n')
+			return (1);
+		(*i)++;
+	}
+	else if (!quote && redir_op_len(line, *i, 0))
+	{
+		*op_len = redir_op_len(line, *i, 0);
+		(*i) += (size_t)(*op_len);
+		while (is_blank(line[*i]))
+			(*i)++;
+		if (!line[*i] || line[*i] == '\n' || line[*i] == '|'
+			|| redir_op_len(line, *i, 0))
+			return (1);
+	}
+	else
+		(*i)++;
+	return (0);
+}
+
 static int	has_syntax_error(const char *line)
 {
 	size_t	i;
@@ -23,34 +51,14 @@ static int	has_syntax_error(const char *line)
 	while (line[i] && line[i] != '\n')
 	{
 		if (!quote && (line[i] == '\'' || line[i] == '"'))
-			quote = line[i++];
+			quote = line[(i)++];
 		else if (quote && line[i] == quote)
 		{
 			quote = 0;
 			i++;
 		}
-		else if (!quote && line[i] == '|')
-		{
-			op_len = (int)(i + 1);
-			while (is_blank(line[op_len]))
-				op_len++;
-			if (i == skip_blanks(line, 0) || line[op_len] == '|'
-				|| !line[op_len] || line[op_len] == '\n')
-				return (1);
-			i++;
-		}
-		else if (!quote && redir_op_len(line, i, 0))
-		{
-			op_len = redir_op_len(line, i, 0);
-			i += (size_t)op_len;
-			while (is_blank(line[i]))
-				i++;
-			if (!line[i] || line[i] == '\n' || line[i] == '|'
-				|| redir_op_len(line, i, 0))
-				return (1);
-		}
-		else
-			i++;
+		else if (syntax_err_helper(line, quote, &op_len, &i))
+			return (1);
 	}
 	return (0);
 }
@@ -117,24 +125,4 @@ void	make_list(t_vars *vars, char *line)
 	}
 	free_list(head);
 	vars->list = NULL;
-}
-
-/*
-frees a t_command linked list.
-*/
-void	free_list(t_command *cmd)
-{
-	t_command	*next;
-
-	while (cmd)
-	{
-		next = cmd->next;
-		ft_close(&cmd->fd_in);
-		ft_close(&cmd->fd_out);
-		free(cmd->command);
-		free(cmd->limiter);
-		free_arr((void **)cmd->argv);
-		free(cmd);
-		cmd = next;
-	}
 }

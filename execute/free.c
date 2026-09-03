@@ -48,3 +48,23 @@ void	clean_exit(t_status status, t_vars *vars)
 	free_vars(vars);
 	exit(status);
 }
+
+/*
+frees a t_command linked list.
+*/
+void	free_list(t_command *cmd)
+{
+	t_command	*next;
+
+	while (cmd)
+	{
+		next = cmd->next;
+		ft_close(&cmd->fd_in);
+		ft_close(&cmd->fd_out);
+		free(cmd->command);
+		free(cmd->limiter);
+		free_arr((void **)cmd->argv);
+		free(cmd);
+		cmd = next;
+	}
+}
