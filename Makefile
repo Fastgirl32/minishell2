@@ -21,7 +21,7 @@ input/debug.c input/redirect_extract.c input/command_build.c input/build_list.c 
 input/syntax_check.c \
 input/parser_ops.c input/parser_args.c input/parser_flow.c \
 input/parser_redirect_only.c \
-input/redirect_setup.c input/redirect_chain.c execute/exec.c
+input/redirect_setup.c execute/exec.c
 
 OBJEKT_DATEIEN = $(QUELLE_DATEIEN:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/02 12:59:01 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/03 17:27:59 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 #  define PATH_MAX 4096
 # endif
 # ifndef VERBOSE
-#  define VERBOSE 0
+#  define VERBOSE 1
 # endif
 # ifndef DISPLAY_BANNER
 #  define DISPLAY_BANNER 1
@@ -130,7 +130,6 @@ t_status				find_and_exec(t_command *cmd, t_vars *vars);
 
 t_u16					connect_pipes(t_command *top_cmd);
 t_u16					establish_redirects(t_command *top_cmd);
-int						is_redirect_limiter(const char *s);
 void					free_redir_node(t_command *node);
 void					open_redirect_target(t_command *cmd,
 							t_command *prev);
