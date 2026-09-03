@@ -1,7 +1,7 @@
 NAME = minishell
 LIBNAME = libft/libft.a
 
-CFLAGGEN = -Wall -Wextra -Werror -g -I.
+CFLAGGEN = -Wall -Wextra -Werror -g
 
 CC = cc
 
@@ -48,6 +48,6 @@ vg: | $(SUPRESSION_FILE)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=all --suppressions=readline.supp ./minishell
 
 $(SUPRESSION_FILE):
-	printf "{\n\t<readline-faxen>\n\tMemcheck:Leak\n\t...\n\tfun:readline\n}\n{\n\t<history-faxen>\n\tMemcheck:Leak\n\t...\n\tfun:add_history\n}" | cat > readline.supp
+	printf "{\n\t<readline-faxen>\n\tMemcheck:Leak\n\t...\n\tfun:readline\n}\n{\n\t<readline-internal-faxen>\n\tMemcheck:Leak\n\t...\n\tfun:readline_internal_char\n}\n{\n\t<history-faxen>\n\tMemcheck:Leak\n\t...\n\tfun:add_history\n}" | cat > readline.supp
 
 .PHONY: all clean flcean re

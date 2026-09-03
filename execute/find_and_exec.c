@@ -115,6 +115,7 @@ t_status	find_and_exec(t_command *cmd, t_vars *vars)
 	if (found == -1)
 	{
 		perror(cmd->command);
+		free_list(cmd);
 		exit(1);
 	}
 	else

@@ -127,8 +127,8 @@ void	execute(t_command *cmd, t_vars *vars)
 		if (is_builtin(cmd->command))
 		{
 			stat = execute_builtin(cmd, vars);
+			free_list(vars->list);
 			free_vars(vars);
-			free_list(cmd);
 			exit(stat);
 		}
 		else

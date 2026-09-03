@@ -66,7 +66,10 @@ void	history_add(t_vars *vars, const char *line)
 		return ;
 	}
 	if (!history_reserve(vars))
-		return (free(entry));
+	{
+		free(entry);
+		return ;
+	}
 	vars->history[vars->history_count++] = entry;
 	vars->history[vars->history_count] = NULL;
 	add_history(entry);

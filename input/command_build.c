@@ -18,7 +18,7 @@ int	set_pipe_limiter(t_command *cmd, int has_pipe)
 
 	tmp = ft_strdup("|");
 	if (cmd->limiter || !has_pipe)
-		return (1);
+		return (free(tmp), 1);
 	cmd->limiter = tmp;
 	if (!cmd->limiter)
 		return (0);
