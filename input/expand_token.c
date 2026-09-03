@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_token.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:04 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/02 11:24:02 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/01 17:24:07 by lstarek          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,6 @@ int	append_token_piece(struct s_expand *ex, int *status)
 {
 	int	res;
 
-	if (!ex->quote && ex->line[ex->i] == '$'
-		&& (ex->line[ex->i + 1] == '\'' || ex->line[ex->i + 1] == '"'))
-	{
-		ex->i++;
-		return (1);
-	}
 	if (ex->line[ex->i] == '$' && ex->quote != '\'')
 	{
 		res = handle_dollar(ex, status);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_build.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:12 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/02 11:51:36 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/01 17:18:14 by lstarek          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,12 @@
 
 int	set_pipe_limiter(t_command *cmd, int has_pipe)
 {
+	char	*tmp;
+
+	tmp = ft_strdup("|");
 	if (cmd->limiter || !has_pipe)
 		return (1);
-	cmd->limiter = ft_strdup("|");
+	cmd->limiter = tmp;
 	if (!cmd->limiter)
 		return (0);
 	return (1);
@@ -24,12 +27,16 @@ int	set_pipe_limiter(t_command *cmd, int has_pipe)
 
 int	fill_command_base(t_command *cmd, char **av, int *ac, int has_pipe)
 {
+	char	*limiter;
+
+	limiter = NULL;
+	extract_redirections(av, ac, &limiter, NULL);
 	if (*ac < 1 || !av[0])
-		return (0);
+		return (free(limiter), 0);
 	cmd->command = ft_strdup(av[0]);
 	if (!cmd->command)
-		return (0);
-	cmd->limiter = NULL;
+		return (free(limiter), 0);
+	cmd->limiter = limiter;
 	if (!set_pipe_limiter(cmd, has_pipe))
 		return (free(cmd->command), free(cmd->limiter), 0);
 	cmd->ac = *ac;
@@ -78,16 +85,15 @@ t_command	*new_command(char **av, int ac, int has_pipe)
 	cmd->next = NULL;
 	cmd->fd_in = 0;
 	cmd->fd_out = 1;
-	cmd->redir_failed = 0;
 	return (cmd);
 }
 
-int	first_redir_index(char **av, int *is_op, int ac)
+int	first_redir_index(char **av, int ac)
 {
 	int	i;
 
 	i = 0;
-	while (i < ac && !(is_op[i] && is_redirect_op(av[i])))
+	while (i < ac && !is_redirect_op(av[i]))
 		i++;
 	if (i >= ac)
 		return (-1);

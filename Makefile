@@ -12,16 +12,13 @@ builtins/ft_atol.c \
 execute/execute_utils.c execute/banner.c execute/environment.c execute/expand.c\
 execute/find_and_exec.c execute/key_value.c execute/free.c\
 minishell.c \
-input/shared.c input/signals.c input/signals_child.c input/history_core.c \
+input/shared.c input/signals.c input/history_core.c \
 input/expand_base.c input/expand_token.c input/expand_copy.c \
 input/token_scan.c input/token_split.c \
 input/heredoc_io.c input/heredoc_setup.c input/heredoc_collect.c \
 input/input_read.c input/input_process.c \
 input/debug.c input/redirect_extract.c input/command_build.c input/build_list.c \
-input/syntax_check.c \
-input/parser_ops.c input/parser_args.c input/parser_flow.c \
-input/parser_redirect_only.c \
-input/redirect_setup.c execute/exec.c
+input/parser_ops.c input/parser_flow.c input/parser_redirect_only.c execute/exec.c
 
 OBJEKT_DATEIEN = $(QUELLE_DATEIEN:.c=.o)
 

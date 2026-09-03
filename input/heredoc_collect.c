@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_collect.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:11 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/02 11:19:20 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/01 17:24:13 by lstarek          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ t_command	*alloc_heredoc_cmd(char **lines, int count)
 	cmd->next = NULL;
 	cmd->fd_in = 0;
 	cmd->fd_out = 1;
-	cmd->redir_failed = 0;
 	return (cmd);
 }
 

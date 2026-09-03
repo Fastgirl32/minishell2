@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:07:13 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/02 13:08:19 by saecker          ###   ########.fr       */
+/*   Updated: 2026/08/30 12:49:18 by baal             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,12 @@ void	execute(t_command *cmd, t_vars *vars)
 		if (dup_all(cmd))
 			exit(1);
 		if (is_builtin(cmd->command))
-			exit(execute_builtin(cmd, vars));
+		{
+			stat = execute_builtin(cmd, vars);
+			free_vars(vars);
+			free_list(cmd);
+			exit(stat);
+		}
 		else
 			find_and_exec(cmd, vars);
 	}

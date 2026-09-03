@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_flow.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:12 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/02 11:50:04 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/01 17:25:16 by lstarek          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,11 @@ void	parse_segment(struct s_redir *rd, const char *line,
 	rd->av = split_tokens(line, start, end, &sp);
 	if (!rd->av)
 		return ;
-	rd->is_op = sp.is_op;
 	rd->has_pipe = has_pipe_after_segment(line, end);
 	if (handle_redirect_segment(rd) == 0)
 		append_plain_segment(rd);
 	if (rd->av)
 		free_arr((void **)rd->av);
-	free(rd->is_op);
-	rd->is_op = NULL;
 }
 
 size_t	skip_blanks(const char *line, size_t i)

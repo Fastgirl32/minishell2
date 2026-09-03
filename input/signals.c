@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
+/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:40 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/02 12:58:19 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/01 17:25:42 by lstarek          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,21 +32,16 @@ void	setup_parent_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-/*
-While a foreground child is running, the parent must not react to
-SIGINT itself (the child already gets it via the shared terminal
-process group). Otherwise the parent's handler would redisplay the
-prompt while the child is still busy, printing it twice.
-*/
-void	restore_parent_sigint(void)
-{
-	signal(SIGINT, sigint_handler);
-}
-
 int	take_interactive_sigint(void)
 {
 	if (!g_interrupted)
 		return (0);
 	g_interrupted = 0;
 	return (1);
+}
+
+void	setup_child_signals(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }
