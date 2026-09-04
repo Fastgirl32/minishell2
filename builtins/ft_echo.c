@@ -17,6 +17,8 @@ t_u16	is_n_flag(char *str)
 	size_t	c;
 
 	c = 0;
+	if (!str)
+		return (0);
 	while (str[c])
 	{
 		if (c == 0 && str[c] != '-')

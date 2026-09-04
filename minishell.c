@@ -31,6 +31,6 @@ int	main(int ac, char **av, char **env)
 		input_process(vars);
 	}
 	free_vars(vars);
-	ft_putstr_fd("exit\n", 2);
+	//ft_putstr_fd("exit\n", 2); //shall be commented in when abgeben.
 	return (status);
 }

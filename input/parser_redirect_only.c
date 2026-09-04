@@ -32,7 +32,7 @@ int	consume_redir_helper(struct s_redir *rd, t_command **heredoc, int *fd)
 	else if (!ft_strcmp(rd->av[rd->op_i], "<"))
 		*fd = open(rd->av[rd->op_i + 1], O_RDONLY);
 	if (*fd < 0)
-		return (-1);
+		return (perror("minishell:"), -1);
 	ft_close(fd);
 	return (0);
 }

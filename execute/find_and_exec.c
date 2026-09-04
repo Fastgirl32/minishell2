@@ -116,7 +116,7 @@ t_status	find_and_exec(t_command *cmd, t_vars *vars)
 	{
 		perror(cmd->command);
 		free_list(cmd);
-		exit(1);
+		exit(127);
 	}
 	else
 		execv(path, cmd->argv);

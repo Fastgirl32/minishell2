@@ -103,6 +103,8 @@ t_u16	establish_redirect_helper(t_command *cmd, t_command *prev,
 	{
 		fd_tmp = prev->fd_in;
 		prev->fd_in = open(cmd->next->command, O_RDONLY);
+		if (prev->fd_in < 0)
+			perror("minishell");
 		ft_close(&fd_tmp);
 	}
 	return (establish_redirect_helper2(cmd, prev, pipe_fd, i));
