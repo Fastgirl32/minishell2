@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:34:55 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:34:57 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/04 12:53:26 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ char	**recreate_env(char **env)
 	while (env[i])
 		i++;
 	new_env = malloc(sizeof(char *) * (i + 1));
+	if (!new_env)
+    	return (NULL);
 	i = 0;
 	while (env[i])
 	{
@@ -50,6 +52,8 @@ void	env_append(t_vars *vars, char *str)
 	if (expand)
 		return ;
 	new_env = malloc(sizeof(char *) * (i + 2));
+	if (!new_env)
+    	return;
 	i = 0;
 	while ((vars->env)[i])
 	{
@@ -78,6 +82,8 @@ void	env_remove(t_vars *vars, char *str)
 	while ((vars->env)[i])
 		i++;
 	new_env = malloc(sizeof(char **) * (i + 1));
+	if (!new_env)
+    	return;
 	i = 0;
 	while ((vars->env)[j])
 	{
@@ -85,9 +91,8 @@ void	env_remove(t_vars *vars, char *str)
 		if (!ft_strcmp(tmp, str))
 			j++;
 		free(tmp);
-		new_env[i] = ft_strdup((vars->env)[j]);
+		new_env[i++] = ft_strdup((vars->env)[j]);
 		j++;
-		i++;
 	}
 	new_env[i] = NULL;
 	free_arr((void **)vars->env);

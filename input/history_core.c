@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history_core.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:54 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:24:55 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/04 12:56:24 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,7 @@ void	history_add(t_vars *vars, const char *line)
 		return ;
 	}
 	if (!history_reserve(vars))
-	{
-		free(entry);
-		return ;
-	}
+		return (free(entry));
 	vars->history[vars->history_count++] = entry;
 	vars->history[vars->history_count] = NULL;
 	add_history(entry);
@@ -97,6 +94,11 @@ t_vars	*init_vars(char **env, int *status_loc)
 	if (!vars)
 		return (NULL);
 	vars->env = recreate_env(env);
+	if (!vars->env)
+	{
+		free(vars);
+		return (NULL);
+	}
 	vars->history = NULL;
 	vars->history_count = 0;
 	vars->history_cap = 0;
