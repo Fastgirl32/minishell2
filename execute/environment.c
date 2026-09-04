@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:34:55 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/04 12:53:26 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/04 13:24:54 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,7 @@ void	env_remove(t_vars *vars, char *str)
 		if (!ft_strcmp(tmp, str))
 			j++;
 		free(tmp);
-		new_env[i++] = ft_strdup((vars->env)[j]);
-		j++;
+		new_env[i++] = ft_strdup((vars->env)[j++]);
 	}
 	new_env[i] = NULL;
 	free_arr((void **)vars->env);

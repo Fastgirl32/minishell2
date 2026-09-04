@@ -18,7 +18,8 @@ input/token_scan.c input/token_split.c \
 input/heredoc_io.c input/heredoc_setup.c input/heredoc_collect.c \
 input/input_read.c input/input_process.c \
 input/debug.c input/redirect_extract.c input/command_build.c input/build_list.c \
-input/parser_ops.c input/parser_flow.c input/parser_redirect_only.c execute/exec.c
+input/parser_ops.c input/parser_flow.c input/parser_redirect_only.c execute/exec.c \
+input/signals_child.c input/syntax_check.c
 
 OBJEKT_DATEIEN = $(QUELLE_DATEIEN:.c=.o)
 

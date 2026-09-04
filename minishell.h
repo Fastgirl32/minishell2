@@ -6,21 +6,21 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/31 14:45:03 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/04 13:48:20 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include "libft/libft.h"
+# include <errno.h>
 # include <fcntl.h>
+# include <readline/readline.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/types.h>
-# include <readline/readline.h>
 # include <sys/wait.h>
-# include <errno.h>
 # include <unistd.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1024
@@ -145,7 +145,6 @@ void					env_append(t_vars *vars, char *str);
 void					env_remove(t_vars *vars, char *str);
 void					free_arr(void **arr);
 void					free_vars(t_vars *vars);
-void					print_env_fd(int fd, char *format, t_vars *vars);
 
 void					input_process(t_vars *vars);
 void					make_list(t_vars *vars, char *line);
@@ -165,8 +164,8 @@ int						append_char(char **str, size_t *len, size_t *cap,
 int						append_str(char **str, size_t *len, size_t *cap,
 							const char *src);
 char					*check_env(char **env, const char *name);
-int						append_status(char **dyn, size_t *len,
-							size_t *cap, int *status);
+int						append_status(char **dyn, size_t *len, size_t *cap,
+							int *status);
 int						append_env_var(struct s_expand *ex);
 int						handle_dollar(struct s_expand *ex, int *status);
 int						consume_quote_char(struct s_expand *ex);
@@ -211,8 +210,6 @@ void					free_list(t_command *cmd);
 int						set_pipe_limiter(t_command *cmd, int has_pipe);
 int						fill_command_base(t_command *cmd, char **av, int *ac,
 							int has_pipe);
-char					**dup_token_range(char **av, int start, int end,
-							int *out_ac);
 t_command				*new_command(char **av, int ac, int has_pipe);
 int						first_redir_index(char **av, int ac);
 int						set_command_limiter(t_command *cmd, char *lim);
@@ -255,5 +252,7 @@ int						fill_split_tokens(struct s_split *sp);
 char					**split_tokens(const char *line, size_t start,
 							size_t end, struct s_split *sp);
 void					free_tokens(char **av, size_t used);
+void					setup_child_signals(void);
+int						has_syntax_error(const char *line);
 
 #endif // MINISHELL_H

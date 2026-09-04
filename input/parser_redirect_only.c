@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_redirect_only.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:28 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:25:28 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/04 13:26:09 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	consume_redir_helper(struct s_redir *rd, t_command **heredoc, int *fd)
 		*fd = open(rd->av[rd->op_i + 1], 0x441, 0666);
 	else if (!ft_strcmp(rd->av[rd->op_i], "<"))
 		*fd = open(rd->av[rd->op_i + 1], O_RDONLY);
-	if (fd < 0)
+	if (*fd < 0)
 		return (-1);
 	ft_close(fd);
 	return (0);
