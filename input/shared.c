@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shared.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:36 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:25:37 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/06 22:48:31 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,14 @@ size_t	segment_end(const char *line, size_t start)
 
 	i = start;
 	quote = 0;
-	while (line[i] && line[i] != '\n')
+	while (line[i])
 	{
 		if (!quote && (line[i] == '\'' || line[i] == '"'))
 			quote = line[i];
 		else if (quote && line[i] == quote)
 			quote = 0;
+		else if (!quote && line[i] == '\n')
+			break ;
 		else if (!quote && redir_op_len(line, i, 0))
 		{
 			i += (size_t)redir_op_len(line, i, 0);

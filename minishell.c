@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/31 15:54:25 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/06 22:39:16 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ int	main(int ac, char **av, char **env)
 	(void)av;
 	status = 0;
 	vars = init_vars(env, &status);
+	if (!vars)
+		return (1);
 	setup_parent_signals();
 	print_banner();
 	while (vars->stop == 0)
@@ -31,6 +33,5 @@ int	main(int ac, char **av, char **env)
 		input_process(vars);
 	}
 	free_vars(vars);
-	//ft_putstr_fd("exit\n", 2); //shall be commented in when abgeben.
 	return (status);
 }

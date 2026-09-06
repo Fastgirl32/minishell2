@@ -6,11 +6,24 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:28 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/04 13:26:09 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/06 22:16:33 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+static void	print_heredoc(t_command *heredoc)
+{
+	int	i;
+
+	i = 0;
+	while (heredoc->argv && heredoc->argv[i])
+	{
+		ft_putstr_fd(heredoc->argv[i], STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		i++;
+	}
+}
 
 /*
 0x241 means O_WRONLY | O_CREAT | O_TRUNC.
@@ -21,9 +34,10 @@ int	consume_redir_helper(struct s_redir *rd, t_command **heredoc, int *fd)
 	if (!ft_strcmp(rd->av[rd->op_i], "<<"))
 	{
 		*heredoc = build_heredoc(rd->av[rd->op_i + 1]);
-		if (!heredoc)
+		if (!*heredoc)
 			return (-1);
-		free_list(*heredoc);
+		print_heredoc(*heredoc);
+		return (free_list(*heredoc), 0);
 	}
 	else if (!ft_strcmp(rd->av[rd->op_i], ">"))
 		*fd = open(rd->av[rd->op_i + 1], 0x241, 0666);
