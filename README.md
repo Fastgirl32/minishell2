@@ -1,14 +1,3 @@
-## was tun fisch (Lennert)
- - alles protecten.
-
- ## was tun fisch (Sabrina)
- - leaks!!!!! (make vg zum testen)
- - norminette in deinen Files
- - ctrl + c printet prompt doppelt.
-   
-
-
-
 _This project has been created as part of the 42 curriculum by lstarek, saecker._
 
 saecker was in charge for the "input" part, (parsing input into a usable struct and handling heredocs, prompts, history etc structured in the "input" subfolder)  
