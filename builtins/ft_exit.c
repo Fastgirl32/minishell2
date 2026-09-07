@@ -24,9 +24,19 @@ int	exit_status(int status)
 	return (EXIT_FAILURE);
 }
 
-t_status	status2_message(t_command *cmd)
+t_status	numericargs_message(t_command *cmd)
 {
-	ft_printf("exit: %s: numeric argument required\n", cmd->argv[1]);
+	ft_putstr_fd("exit: ", 2);
+	ft_putstr_fd(cmd->argv[1], 2);
+	ft_putstr_fd(": numeric argument required\n", 2);
+	return (2);
+}
+
+t_status	toomanyargs_message(t_command *cmd)
+{
+	ft_putstr_fd("exit: ", 2);
+	ft_putstr_fd(cmd->argv[1], 2);
+	ft_putstr_fd(": numeric argument required\n", 2);
 	return (2);
 }
 
@@ -35,19 +45,16 @@ t_status	ft_exit(t_command *cmd, t_vars *vars)
 	t_status	status;
 	char		*numberified;
 
-	if (cmd->ac <= 2)
-		status = 0;
-	if (cmd->ac > 2)
-	{
-		ft_putstr_fd("exit: too many arguments\n", 2);
-		return (1);
-	}
-	if (cmd->ac > 0)
+	if (cmd->ac < 2)
+		return (0);
+	else
 	{
 		status = (t_status)(ft_atol(cmd->argv[1]) % 256);
 		numberified = ft_ltoa(ft_atol(cmd->argv[1]));
 		if (ft_strcmp(numberified, cmd->argv[1]))
-			status = status2_message(cmd);
+			status = numericargs_message(cmd);
+		else if (cmd->ac > 2)
+			status = toomanyargs_message(cmd);
 		free(numberified);
 	}
 	vars->stop = 1;

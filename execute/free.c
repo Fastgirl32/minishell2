@@ -42,11 +42,11 @@ void	free_vars(t_vars *vars)
 	free(vars);
 }
 
-void	clean_exit(t_status status, t_vars *vars)
+void    clean_exit(t_status status, t_vars *vars)
 {
-	free_list(vars->list);
-	free_vars(vars);
-	exit(status);
+    free_list(vars->list);
+    free_vars(vars);
+    exit(status);
 }
 
 /*
