@@ -25,7 +25,7 @@ char	**recreate_env(char **env)
 		i++;
 	new_env = malloc(sizeof(char *) * (i + 1));
 	if (!new_env)
-    	return (NULL);
+		return (NULL);
 	i = 0;
 	while (env[i])
 	{
@@ -53,7 +53,7 @@ void	env_append(t_vars *vars, char *str)
 		return ;
 	new_env = malloc(sizeof(char *) * (i + 2));
 	if (!new_env)
-    	return;
+		return ;
 	i = 0;
 	while ((vars->env)[i])
 	{
@@ -100,7 +100,7 @@ void	env_remove(t_vars *vars, char *str)
 		i[0]++;
 	new_env = malloc(sizeof(char **) * (i[0] + 1));
 	if (!new_env)
-    	return;
+		return ;
 	i[0] = 0;
 	while ((vars->env)[i[1]])
 		env_remove_helper(i, vars, str, new_env);
