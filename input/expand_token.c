@@ -22,7 +22,7 @@ int	append_env_var(struct s_expand *ex)
 	while (j < ex->end && is_var_char(ex->line[j]))
 		j++;
 	if (j == ex->i + 1)
-		return ((!(ex->line[j + 1] == 0)) * 2);
+		return (0); //wenn das nächste element nicht der nullterminator ist, soll $ removed werden (e.g. $"HOME" -> HOME)
 	var = ft_substr(ex->line, (unsigned int)(ex->i + 1), j - (ex->i + 1));
 	if (!var)
 		return (-1);
@@ -54,11 +54,7 @@ int	handle_dollar(struct s_expand *ex, int *status)
 	if (res < 0)
 		return (-1);
 	if (res > 0)
-	{
-		if (res == 2)
-			printf("hey now\n"); //remove doler
 		return (1);
-	}
 	return (0);
 }
 
