@@ -46,7 +46,10 @@ t_status	ft_exit(t_command *cmd, t_vars *vars)
 	char		*numberified;
 
 	if (cmd->ac < 2)
+	{
+		vars->stop = 1;
 		return (0);
+	}
 	else
 	{
 		status = (t_status)(ft_atol(cmd->argv[1]) % 256);

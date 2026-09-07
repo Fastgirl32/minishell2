@@ -39,14 +39,16 @@ void	free_vars(t_vars *vars)
 		return ;
 	free_arr((void **)(vars->history));
 	free_arr((void **)(vars->env));
+	if (vars->line)
+		free(vars->line);
 	free(vars);
 }
 
-void    clean_exit(t_status status, t_vars *vars)
+void	clean_exit(t_status status, t_vars *vars)
 {
-    free_list(vars->list);
-    free_vars(vars);
-    exit(status);
+	free_list(vars->list);
+	free_vars(vars);
+	exit(status);
 }
 
 /*

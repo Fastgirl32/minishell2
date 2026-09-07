@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/04 13:48:20 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/07 16:41:54 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef struct s_vars
 	int					history_cap;
 	int					stop;
 	int					*status;
+	char				*line;
 	t_command			*list;
 }						t_vars;
 
@@ -254,5 +255,9 @@ char					**split_tokens(const char *line, size_t start,
 void					free_tokens(char **av, size_t used);
 void					setup_child_signals(void);
 int						has_syntax_error(const char *line);
+
+char					**copy_command_args(char **av, int ac, int *out_ac);
+t_command				*new_single_arg_command(char *arg);
+int						append_cat_heredoc(struct s_redir *rd);
 
 #endif // MINISHELL_H

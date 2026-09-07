@@ -3,30 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_setup.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:48 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:24:49 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/07 16:35:02 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+static void	clear_internal_cat(t_command *cmd)
+{
+	free(cmd->argv[1]);
+	cmd->argv[1] = NULL;
+	cmd->ac = 1;
+}
+
 int	setup_heredoc(t_command *cmd)
 {
-	int	pipe_fd[2];
+	int		pipe_fd[2];
+	char	*limiter;
 
-	if (!cmd || !cmd->limiter || !ft_strcmp(cmd->limiter, "|")
-		|| is_redirect_op(cmd->limiter))
+	if (!cmd || !cmd->limiter)
+		return (0);
+	limiter = cmd->limiter;
+	if (!ft_strcmp(limiter, "|") && !ft_strcmp(cmd->command, "cat")
+		&& cmd->ac == 2 && cmd->argv && cmd->argv[1])
+		limiter = cmd->argv[1];
+	else if (!ft_strcmp(limiter, "|") || is_redirect_op(limiter))
 		return (0);
 	if (pipe(pipe_fd) != 0)
 		return (1);
-	if (!fill_heredoc_pipe(pipe_fd[1], cmd->limiter))
+	if (!fill_heredoc_pipe(pipe_fd[1], limiter))
 	{
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 		return (1);
 	}
+	if (limiter != cmd->limiter)
+		clear_internal_cat(cmd);
 	close(pipe_fd[1]);
 	replace_cmd_fd_in(cmd, pipe_fd[0]);
 	return (0);
@@ -75,13 +90,4 @@ char	**grow_lines(char **lines, int count, char *line)
 	free(lines);
 	return (new_lines);
 }
-
-char	*normalize_heredoc_line(char *line)
-{
-	size_t	len;
-
-	len = ft_strlen(line);
-	if (len > 0 && line[len - 1] == '\n')
-		line[len - 1] = '\0';
-	return (line);
-}
+/* Input heredoc helpers. */

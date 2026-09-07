@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_process.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:58 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:25:02 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/07 16:24:43 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,15 @@ char	*get_prompt(t_vars *vars, char *backup, _Bool *fallback_used)
 	return (prompt);
 }
 
+static void	process_line(t_vars *vars, char *line)
+{
+	vars->line = line;
+	history_add(vars, line);
+	make_list(vars, line);
+	free(line);
+	vars->line = NULL;
+}
+
 /*
 Attempts to use $PS1 as prompt.
 If PS1 is not set or a malloc fails, "minishell> " is used as fallback.
@@ -112,7 +121,5 @@ void	input_process(t_vars *vars)
 	line = read_continued_lines(vars, line);
 	if (!line || vars->stop)
 		return (free(line));
-	history_add(vars, line);
-	make_list(vars, line);
-	free(line);
+	process_line(vars, line);
 }

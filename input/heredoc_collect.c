@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_collect.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:11 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:24:13 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/07 16:30:54 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+char	*normalize_heredoc_line(char *line)
+{
+	size_t	len;
+
+	len = ft_strlen(line);
+	if (len > 0 && line[len - 1] == '\n')
+		line[len - 1] = '\0';
+	return (line);
+}
 
 int	collect_heredoc_line(char ***lines, int *count, const char *limiter)
 {
