@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   input_read.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:07 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:25:08 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:33:37 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Reads one line with readline and updates history. */
 char	*read_line_prompt(t_vars *vars, const char *prompt)
 {
 	char	*line;
@@ -21,6 +22,7 @@ char	*read_line_prompt(t_vars *vars, const char *prompt)
 	return (line);
 }
 
+/* Reads one plain line from standard input. */
 char	*read_line_plain(void)
 {
 	char	*line;
@@ -36,6 +38,7 @@ char	*read_line_plain(void)
 	return (line);
 }
 
+/* Chooses interactive or plain shell input. */
 char	*read_shell_line(t_vars *vars, const char *prompt)
 {
 	if (isatty(STDIN_FILENO))
@@ -43,6 +46,7 @@ char	*read_shell_line(t_vars *vars, const char *prompt)
 	return (read_line_plain());
 }
 
+/* Joins a continued line to the previous input. */
 char	*append_line(char *line, char *more)
 {
 	char	*tmp;
@@ -58,6 +62,7 @@ char	*append_line(char *line, char *more)
 	return (joined);
 }
 
+/* Returns the prompt used for an unfinished quote. */
 const char	*quote_prompt(char q)
 {
 	if (q == '"')

@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   token_split.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:26:15 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:26:16 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:35:08 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Adds one operator token to the split result. */
 int	push_operator_token(struct s_split *sp)
 {
 	int		op_len;
@@ -20,14 +21,18 @@ int	push_operator_token(struct s_split *sp)
 	op_len = redir_op_len(sp->line, sp->i, 0);
 	if (!op_len)
 		return (0);
-	token = ft_substr(sp->line, (unsigned int)(sp->i), (size_t)op_len);
+	token = malloc((size_t)op_len + 2);
 	if (!token)
 		return (-1);
+	token[0] = REDIR_MARKER;
+	ft_memcpy(token + 1, sp->line + sp->i, (size_t)op_len);
+	token[op_len + 1] = '\0';
 	sp->av[(sp->j)++] = token;
 	sp->i += (size_t)op_len;
 	return (1);
 }
 
+/* Adds one expanded word token to the split result. */
 int	push_word_token(struct s_split *sp)
 {
 	size_t	start;
@@ -42,6 +47,7 @@ int	push_word_token(struct s_split *sp)
 	return (1);
 }
 
+/* Fills the split result with operators and words. */
 int	fill_split_tokens(struct s_split *sp)
 {
 	int	res;
@@ -61,6 +67,7 @@ int	fill_split_tokens(struct s_split *sp)
 	return (1);
 }
 
+/* Splits one input segment into expanded tokens. */
 char	**split_tokens(const char *line, size_t start, size_t end,
 		struct s_split *sp)
 {

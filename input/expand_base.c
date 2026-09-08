@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_base.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:23:56 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:23:57 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:32:52 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Grows a dynamic string buffer while preserving its contents. */
 static int	grow_str(char **str, size_t *cap, size_t len)
 {
 	char	*new_str;
@@ -39,6 +40,7 @@ static int	grow_str(char **str, size_t *cap, size_t len)
 	return (1);
 }
 
+/* Appends one character to a dynamic string. */
 int	append_char(char **str, size_t *len, size_t *cap, char c)
 {
 	if (*len + 2 > *cap && !grow_str(str, cap, *len))
@@ -48,6 +50,7 @@ int	append_char(char **str, size_t *len, size_t *cap, char c)
 	return (1);
 }
 
+/* Appends a complete string to a dynamic string. */
 int	append_str(char **str, size_t *len, size_t *cap, const char *src)
 {
 	size_t	i;
@@ -62,6 +65,7 @@ int	append_str(char **str, size_t *len, size_t *cap, const char *src)
 	return (1);
 }
 
+/* Returns a copied environment value for a variable name. */
 char	*check_env(char **env, const char *name)
 {
 	int		i;
@@ -80,6 +84,7 @@ char	*check_env(char **env, const char *name)
 	return (NULL);
 }
 
+/* Appends the current shell status to a dynamic string. */
 int	append_status(char **dyn, size_t *len, size_t *cap, int *status)
 {
 	char	*status_str;

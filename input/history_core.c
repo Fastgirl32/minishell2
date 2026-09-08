@@ -6,13 +6,14 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:54 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/04 12:56:24 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:33:37 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include <readline/history.h>
 
+/* Creates the stored form of one history line. */
 char	*trimmed_history_entry(const char *line)
 {
 	char	*entry;
@@ -28,6 +29,7 @@ char	*trimmed_history_entry(const char *line)
 	return (entry);
 }
 
+/* Ensures that history has room for another entry. */
 int	history_reserve(t_vars *vars)
 {
 	char	**new_history;
@@ -51,6 +53,7 @@ int	history_reserve(t_vars *vars)
 	return (1);
 }
 
+/* Adds a non-empty line to shell history. */
 void	history_add(t_vars *vars, const char *line)
 {
 	char	*entry;
@@ -72,6 +75,7 @@ void	history_add(t_vars *vars, const char *line)
 	add_history(entry);
 }
 
+/* Prints all stored history entries. */
 void	history_print(t_vars *vars)
 {
 	int	i;
@@ -86,6 +90,7 @@ void	history_print(t_vars *vars)
 	}
 }
 
+/* Initializes shell state from the inherited environment. */
 t_vars	*init_vars(char **env, int *status_loc)
 {
 	t_vars	*vars;

@@ -12,6 +12,25 @@
 
 #include "../minishell.h"
 
+/* Skips spaces and tabs starting at an input position. */
+size_t	skip_blanks(const char *line, size_t i)
+{
+	while (line[i] && is_blank(line[i]))
+		i++;
+	return (i);
+}
+
+/* Finds the start of the segment after a pipe. */
+size_t	next_segment_start(const char *line, size_t pos)
+{
+	while (line[pos] && is_blank(line[pos]))
+		pos++;
+	if (line[pos] == '|')
+		pos++;
+	return (pos);
+}
+
+/* Copies command arguments while removing redirection pairs. */
 char	**copy_command_args(char **av, int ac, int *out_ac)
 {
 	char	**args;
@@ -41,6 +60,7 @@ char	**copy_command_args(char **av, int ac, int *out_ac)
 	return (args);
 }
 
+/* Creates a command containing one argument. */
 t_command	*new_single_arg_command(char *arg)
 {
 	char		**av;
@@ -59,6 +79,7 @@ t_command	*new_single_arg_command(char *arg)
 	return (cmd);
 }
 
+/* Adds the internal cat command used for a piped heredoc. */
 int	append_cat_heredoc(struct s_redir *rd)
 {
 	char		**args;

@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_io.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:38 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:24:41 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:32:52 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Checks whether an input line matches a heredoc delimiter. */
 int	delimiter_found(const char *line, const char *delimiter)
 {
 	size_t	line_len;
@@ -26,6 +27,7 @@ int	delimiter_found(const char *line, const char *delimiter)
 	return (!ft_strncmp(line, delimiter, line_len));
 }
 
+/* Reads one heredoc line with or without an interactive prompt. */
 char	*read_heredoc_line(void)
 {
 	if (isatty(STDIN_FILENO))
@@ -33,6 +35,7 @@ char	*read_heredoc_line(void)
 	return (read_line_plain());
 }
 
+/* Writes one heredoc line to its pipe. */
 int	write_heredoc_line(int fd, const char *line)
 {
 	if (write(fd, line, ft_strlen(line)) < 0)
@@ -42,6 +45,7 @@ int	write_heredoc_line(int fd, const char *line)
 	return (1);
 }
 
+/* Replaces a command input descriptor and closes the old one. */
 void	replace_cmd_fd_in(t_command *cmd, int new_fd)
 {
 	if (cmd->fd_in > 2)
@@ -49,6 +53,7 @@ void	replace_cmd_fd_in(t_command *cmd, int new_fd)
 	cmd->fd_in = new_fd;
 }
 
+/* Reads heredoc lines and sends them through a pipe. */
 int	fill_heredoc_pipe(int fd, const char *limiter)
 {
 	char	*line;

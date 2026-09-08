@@ -6,12 +6,13 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:28 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/07 16:32:00 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:33:37 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Prints heredoc lines for a redirection-only command. */
 static void	print_heredoc(t_command *heredoc)
 {
 	int	i;
@@ -29,9 +30,10 @@ static void	print_heredoc(t_command *heredoc)
 0x241 means O_WRONLY | O_CREAT | O_TRUNC.
 0x441 means O_WRONLY | O_CREAT | O_APPEND.
 */
+/* Opens or prints one redirection-only operation. */
 int	consume_redir_helper(struct s_redir *rd, t_command **heredoc, int *fd)
 {
-	if (!ft_strcmp(rd->av[rd->op_i], "<<"))
+	if (is_heredoc_op(rd->av[rd->op_i]))
 	{
 		*heredoc = build_heredoc(rd->av[rd->op_i + 1]);
 		if (!*heredoc)
@@ -39,11 +41,11 @@ int	consume_redir_helper(struct s_redir *rd, t_command **heredoc, int *fd)
 		print_heredoc(*heredoc);
 		return (free_list(*heredoc), 0);
 	}
-	else if (!ft_strcmp(rd->av[rd->op_i], ">"))
+	else if (!ft_strcmp(rd->av[rd->op_i] + 1, ">"))
 		*fd = open(rd->av[rd->op_i + 1], 0x241, 0666);
-	else if (!ft_strcmp(rd->av[rd->op_i], ">>"))
+	else if (!ft_strcmp(rd->av[rd->op_i] + 1, ">>"))
 		*fd = open(rd->av[rd->op_i + 1], 0x441, 0666);
-	else if (!ft_strcmp(rd->av[rd->op_i], "<"))
+	else if (!ft_strcmp(rd->av[rd->op_i] + 1, "<"))
 		*fd = open(rd->av[rd->op_i + 1], O_RDONLY);
 	if (*fd < 0)
 		return (perror("minishell:"), -1);
@@ -51,6 +53,7 @@ int	consume_redir_helper(struct s_redir *rd, t_command **heredoc, int *fd)
 	return (0);
 }
 
+/* Executes a segment containing only redirections. */
 int	consume_redir_only_segment(struct s_redir *rd)
 {
 	t_command	*heredoc;
@@ -72,6 +75,7 @@ int	consume_redir_only_segment(struct s_redir *rd)
 	return (1);
 }
 
+/* Checks whether a pipe follows the current segment. */
 int	has_pipe_after_segment(const char *line, size_t end)
 {
 	while (line[end] && is_blank(line[end]))
@@ -81,9 +85,12 @@ int	has_pipe_after_segment(const char *line, size_t end)
 	return (0);
 }
 
+/* Stores the operation that limits a command node. */
 int	set_command_limiter(t_command *cmd, char *lim)
 {
 	free(cmd->limiter);
+	if (lim && lim[0] == REDIR_MARKER)
+		lim++;
 	cmd->limiter = ft_strdup(lim);
 	if (!cmd->limiter)
 		return (0);

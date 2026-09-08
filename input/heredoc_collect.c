@@ -6,12 +6,13 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:11 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/07 16:30:54 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:32:52 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Removes the newline from one heredoc input line. */
 char	*normalize_heredoc_line(char *line)
 {
 	size_t	len;
@@ -22,6 +23,7 @@ char	*normalize_heredoc_line(char *line)
 	return (line);
 }
 
+/* Reads and stores one heredoc line unless it is the delimiter. */
 int	collect_heredoc_line(char ***lines, int *count, const char *limiter)
 {
 	char	*line;
@@ -41,6 +43,7 @@ int	collect_heredoc_line(char ***lines, int *count, const char *limiter)
 	return (1);
 }
 
+/* Collects all lines belonging to one heredoc. */
 char	**collect_heredoc_lines(const char *limiter, int *out_count)
 {
 	char	**lines;
@@ -61,6 +64,7 @@ char	**collect_heredoc_lines(const char *limiter, int *out_count)
 	return (lines);
 }
 
+/* Creates a command node containing collected heredoc lines. */
 t_command	*alloc_heredoc_cmd(char **lines, int count)
 {
 	t_command	*cmd;
@@ -80,6 +84,7 @@ t_command	*alloc_heredoc_cmd(char **lines, int count)
 	return (cmd);
 }
 
+/* Reads a heredoc and returns it as a command node. */
 t_command	*build_heredoc(const char *limiter)
 {
 	char	**lines;

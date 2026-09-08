@@ -6,12 +6,13 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:05 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/04 13:44:43 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:32:52 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Checks whether a parsed command list needs no execution. */
 int	should_skip_list(t_command *head, t_vars *vars)
 {
 	if (!head->next && head->command && head->command[0] == '\0')
@@ -24,6 +25,7 @@ int	should_skip_list(t_command *head, t_vars *vars)
 	return (0);
 }
 
+/* Parses one input line into a command list. */
 t_command	*build_command_list(t_vars *vars, const char *line)
 {
 	struct s_redir	rd;
@@ -50,6 +52,7 @@ t_command	*build_command_list(t_vars *vars, const char *line)
 	return (head);
 }
 
+/* Builds, prepares, and executes the parsed command list. */
 void	make_list(t_vars *vars, char *line)
 {
 	t_command	*head;

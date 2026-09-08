@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   command_build.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:12 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:18:14 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:32:52 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Stores a pipe marker on a command when needed. */
 int	set_pipe_limiter(t_command *cmd, int has_pipe)
 {
 	char	*tmp;
@@ -25,6 +26,7 @@ int	set_pipe_limiter(t_command *cmd, int has_pipe)
 	return (1);
 }
 
+/* Fills a command with its name, arguments, and pipe state. */
 int	fill_command_base(t_command *cmd, char **av, int *ac, int has_pipe)
 {
 	char	*limiter;
@@ -45,6 +47,7 @@ int	fill_command_base(t_command *cmd, char **av, int *ac, int has_pipe)
 	return (1);
 }
 
+/* Copies a range of tokens into a new argument array. */
 char	**dup_token_range(char **av, int start, int end, int *out_ac)
 {
 	char	**copy;
@@ -72,6 +75,7 @@ char	**dup_token_range(char **av, int start, int end, int *out_ac)
 	return (copy);
 }
 
+/* Creates a command structure from parsed tokens. */
 t_command	*new_command(char **av, int ac, int has_pipe)
 {
 	t_command	*cmd;
@@ -88,6 +92,7 @@ t_command	*new_command(char **av, int ac, int has_pipe)
 	return (cmd);
 }
 
+/* Finds the first redirection token in an argument array. */
 int	first_redir_index(char **av, int ac)
 {
 	int	i;

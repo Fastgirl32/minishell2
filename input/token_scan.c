@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   token_scan.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:26:10 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:26:12 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:35:08 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Finds the end of one shell word. */
 size_t	next_word_end(const char *line, size_t i, size_t end)
 {
 	char	quote;
@@ -30,6 +31,7 @@ size_t	next_word_end(const char *line, size_t i, size_t end)
 	return (i);
 }
 
+/* Counts tokens before allocating the token array. */
 size_t	count_tokens(const char *line, size_t start, size_t end)
 {
 	size_t	i;
@@ -57,6 +59,7 @@ size_t	count_tokens(const char *line, size_t start, size_t end)
 	return (count);
 }
 
+/* Frees the tokens already built after an allocation failure. */
 void	free_tokens(char **av, size_t used)
 {
 	while (used > 0)

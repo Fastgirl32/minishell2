@@ -6,12 +6,13 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:48 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/07 16:35:02 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:33:37 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Removes the internal cat argument after heredoc setup. */
 static void	clear_internal_cat(t_command *cmd)
 {
 	free(cmd->argv[1]);
@@ -19,6 +20,7 @@ static void	clear_internal_cat(t_command *cmd)
 	cmd->ac = 1;
 }
 
+/* Connects a command to its prepared heredoc pipe. */
 int	setup_heredoc(t_command *cmd)
 {
 	int		pipe_fd[2];
@@ -47,6 +49,7 @@ int	setup_heredoc(t_command *cmd)
 	return (0);
 }
 
+/* Prepares every heredoc in a command list. */
 int	prepare_heredocs(t_command *head)
 {
 	while (head)
@@ -58,6 +61,7 @@ int	prepare_heredocs(t_command *head)
 	return (0);
 }
 
+/* Frees collected heredoc lines after an allocation failure. */
 void	free_lines_partial(char **lines, int count)
 {
 	int	i;
@@ -71,6 +75,7 @@ void	free_lines_partial(char **lines, int count)
 	free(lines);
 }
 
+/* Grows the heredoc line array and appends one line. */
 char	**grow_lines(char **lines, int count, char *line)
 {
 	char	**new_lines;

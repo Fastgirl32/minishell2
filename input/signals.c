@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:40 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/04 13:32:41 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:34:28 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 //This is the only global.
 static volatile sig_atomic_t	g_interrupted;
 
+/* Handles SIGINT while the parent shell is waiting for input. */
 static void	sigint_handler(int sig)
 {
 	(void)sig;
@@ -25,6 +26,7 @@ static void	sigint_handler(int sig)
 	rl_redisplay();
 }
 
+/* Installs the shell's interactive signal handlers. */
 void	setup_parent_signals(void)
 {
 	signal(SIGINT, sigint_handler);
@@ -37,11 +39,13 @@ SIGINT itself (the child already gets it via the shared terminal
 process group). Otherwise the parent's handler would redisplay the
 prompt while the child is still busy, printing it twice.
 */
+/* Restores the default SIGINT behavior for the parent. */
 void	restore_parent_sigint(void)
 {
 	signal(SIGINT, sigint_handler);
 }
 
+/* Returns and clears the pending interactive SIGINT state. */
 int	take_interactive_sigint(void)
 {
 	if (!g_interrupted)

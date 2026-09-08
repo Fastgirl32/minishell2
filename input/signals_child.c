@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 13:10:00 by saecker           #+#    #+#             */
-/*   Updated: 2026/09/02 12:58:19 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:34:28 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@ SIGINT itself (the child already gets it via the shared terminal
 process group). Otherwise the parent's handler would redisplay the
 prompt while the child is still busy, printing it twice.
 */
+/* Ignores SIGINT in the parent while a child runs. */
 void	ignore_parent_sigint(void)
 {
 	signal(SIGINT, SIG_IGN);
 }
 
+/* Installs signal behavior for child processes. */
 void	setup_child_signals(void)
 {
 	signal(SIGINT, SIG_DFL);

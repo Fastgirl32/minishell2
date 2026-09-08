@@ -6,12 +6,13 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:22 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/07 16:42:18 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:33:37 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Creates command nodes for all redirections in a segment. */
 int	append_redirect_nodes(struct s_redir *rd)
 {
 	t_command	*cmd;
@@ -28,7 +29,7 @@ int	append_redirect_nodes(struct s_redir *rd)
 		if (rd->op_i + 1 >= rd->ac
 			|| !set_command_limiter(cmd, rd->av[rd->op_i]))
 			return (-1);
-		if (!ft_strcmp(rd->av[rd->op_i], "<<"))
+		if (!ft_strcmp(rd->av[rd->op_i] + 1, "<<"))
 			cmd = build_heredoc(rd->av[rd->op_i + 1]);
 		else
 			cmd = new_single_arg_command(rd->av[rd->op_i + 1]);
@@ -40,6 +41,7 @@ int	append_redirect_nodes(struct s_redir *rd)
 	return (1);
 }
 
+/* Adds a pipe marker to the last command when required. */
 static int	set_segment_pipe(struct s_redir *rd)
 {
 	if (rd->has_pipe && *rd->tail && !(*rd->tail)->limiter
@@ -48,6 +50,7 @@ static int	set_segment_pipe(struct s_redir *rd)
 	return (1);
 }
 
+/* Builds a command and attaches its redirection nodes. */
 static int	build_redirect_command(struct s_redir *rd, char **args, int ac)
 {
 	t_command	*cmd;
@@ -61,6 +64,7 @@ static int	build_redirect_command(struct s_redir *rd, char **args, int ac)
 	return (1);
 }
 
+/* Chooses the correct builder for a redirected segment. */
 int	handle_redirect_segment(struct s_redir *rd)
 {
 	char		**left_av;

@@ -6,12 +6,13 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 13:15:00 by saecker           #+#    #+#             */
-/*   Updated: 2026/09/02 13:03:02 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:34:28 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Checks whether a pipe is followed by valid syntax. */
 static int	pipe_is_syntax_error(const char *line, size_t *i)
 {
 	int	op_len;
@@ -26,6 +27,7 @@ static int	pipe_is_syntax_error(const char *line, size_t *i)
 	return (0);
 }
 
+/* Checks whether a redirection has a valid target. */
 static int	redir_is_syntax_error(const char *line, size_t *i)
 {
 	int	op_len;
@@ -40,6 +42,7 @@ static int	redir_is_syntax_error(const char *line, size_t *i)
 	return (0);
 }
 
+/* Updates quote state while scanning shell syntax. */
 static void	toggle_quote(const char *line, size_t *i, char *quote)
 {
 	if (!*quote && (line[*i] == '\'' || line[*i] == '"'))
@@ -51,6 +54,7 @@ static void	toggle_quote(const char *line, size_t *i, char *quote)
 	}
 }
 
+/* Checks the input line for pipe and redirection syntax errors. */
 int	has_syntax_error(const char *line)
 {
 	size_t	i;

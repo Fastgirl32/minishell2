@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_token.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:04 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:24:07 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:32:52 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Appends one environment variable value to the token. */
 int	append_env_var(struct s_expand *ex)
 {
 	size_t	j;
@@ -22,7 +23,7 @@ int	append_env_var(struct s_expand *ex)
 	while (j < ex->end && is_var_char(ex->line[j]))
 		j++;
 	if (j == ex->i + 1)
-		return (0); //wenn das nächste element nicht der nullterminator ist, soll $ removed werden (e.g. $"HOME" -> HOME)
+		return (0);
 	var = ft_substr(ex->line, (unsigned int)(ex->i + 1), j - (ex->i + 1));
 	if (!var)
 		return (-1);
@@ -39,6 +40,7 @@ int	append_env_var(struct s_expand *ex)
 	return (1);
 }
 
+/* Handles a dollar expression during token expansion. */
 int	handle_dollar(struct s_expand *ex, int *status)
 {
 	int	res;
@@ -58,30 +60,16 @@ int	handle_dollar(struct s_expand *ex, int *status)
 	return (0);
 }
 
-int	consume_quote_char(struct s_expand *ex)
-{
-	if (!ex->quote && (ex->line[ex->i] == '\'' || ex->line[ex->i] == '"'))
-	{
-		ex->quote = ex->line[ex->i];
-		ex->i++;
-		return (1);
-	}
-	if (ex->quote && ex->line[ex->i] == ex->quote)
-	{
-		ex->quote = 0;
-		ex->i++;
-		return (1);
-	}
-	return (0);
-}
-
+/* Appends the next expanded piece of a token. */
 int	append_token_piece(struct s_expand *ex, int *status)
 {
 	int	res;
 
+	if (ex->line[ex->i] == '\\' && ex->quote != '\'')
+		return (append_escaped_piece(ex));
 	if (ex->line[ex->i] == '$' && ex->quote != '\'')
 	{
-		res = handle_dollar(ex, status);
+		res = append_dollar_piece(ex, status);
 		if (res < 0)
 			return (0);
 		if (res > 0)
@@ -93,6 +81,7 @@ int	append_token_piece(struct s_expand *ex, int *status)
 	return (1);
 }
 
+/* Allocates an empty initial token buffer. */
 char	*alloc_token_buffer(void)
 {
 	char	*dyn;

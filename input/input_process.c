@@ -6,12 +6,13 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:58 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/07 16:24:43 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:33:37 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Returns the quote character that is still open, if any. */
 char	find_unclosed_quote(const char *s)
 {
 	char	q;
@@ -28,6 +29,7 @@ char	find_unclosed_quote(const char *s)
 	return (q);
 }
 
+/* Reads additional lines until all quotes are closed. */
 char	*read_continued_lines(t_vars *vars, char *line)
 {
 	char	q;
@@ -56,6 +58,7 @@ char	*read_continued_lines(t_vars *vars, char *line)
 Returns what $PS1 expands to, or NULL otherwise.
 The caller will then use the fallback.
 */
+/* Builds the prompt from PS1 or the default fallback. */
 char	*get_prompt(t_vars *vars, char *backup, _Bool *fallback_used)
 {
 	char	*prompt;
@@ -83,6 +86,7 @@ char	*get_prompt(t_vars *vars, char *backup, _Bool *fallback_used)
 	return (prompt);
 }
 
+/* Stores, parses, and frees one complete input line. */
 static void	process_line(t_vars *vars, char *line)
 {
 	vars->line = line;
@@ -97,6 +101,7 @@ Attempts to use $PS1 as prompt.
 If PS1 is not set or a malloc fails, "minishell> " is used as fallback.
 Then calls the other function that read, parse and execute a new command.
 */
+/* Reads and processes the next shell command line. */
 void	input_process(t_vars *vars)
 {
 	char	*line;

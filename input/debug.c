@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lstarek <lstarek@student.42vienna.com      +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:22 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/01 17:18:27 by lstarek          ###   ########.fr       */
+/*   Updated: 2026/09/08 08:32:52 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* Returns text or a visible placeholder for a null string. */
 char	*safe_text(char *s)
 {
 	if (s)
@@ -19,12 +20,14 @@ char	*safe_text(char *s)
 	return ("(null)");
 }
 
+/* Prints one command in debug mode. */
 void	print_one_command(int idx, t_command *head)
 {
 	ft_printf("[%d] cmd='%s' limiter='%s' ac=%d\n", idx,
 		safe_text(head->command), safe_text(head->limiter), head->ac);
 }
 
+/* Appends a command to a linked command list. */
 void	append_command(t_command **head, t_command **tail, t_command *new_cmd)
 {
 	if (!new_cmd)
@@ -36,6 +39,7 @@ void	append_command(t_command **head, t_command **tail, t_command *new_cmd)
 	*tail = new_cmd;
 }
 
+/* Prints command arguments in debug mode. */
 void	print_argv_debug(char **argv)
 {
 	int	i;
@@ -48,6 +52,7 @@ void	print_argv_debug(char **argv)
 	}
 }
 
+/* Prints the complete command list in debug mode. */
 void	print_command_list(t_command *head)
 {
 	int	idx;
