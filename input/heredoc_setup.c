@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:48 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 08:33:37 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 13:18:33 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ int	setup_heredoc(t_command *cmd)
 	if (!ft_strcmp(limiter, "|") && !ft_strcmp(cmd->command, "cat")
 		&& cmd->ac == 2 && cmd->argv && cmd->argv[1])
 		limiter = cmd->argv[1];
-	else if (!ft_strcmp(limiter, "|") || is_redirect_op(limiter))
+	else if (!ft_strcmp(limiter, "|") || limiter[0] == '<'
+		|| limiter[0] == '>')
 		return (0);
 	if (pipe(pipe_fd) != 0)
 		return (1);

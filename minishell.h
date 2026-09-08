@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 08:29:58 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/08 13:10:49 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,6 @@
 typedef unsigned short		t_u16;
 typedef unsigned char		t_status;
 
-// command = erwartet builtin wie "echo" oder name von executabe "printf"
-// ac = ac. 1 weniger als "echte länge" vom array, weil name & nullterminator.
-// argv = konvention: erstes argument = command, letztes = NULL.
-// next = pointer zu nächstem kommand
-// fd in & out: nicht beachten.
 typedef struct s_command
 {
 	char					*command;
@@ -91,13 +86,12 @@ struct						s_split
 	int						**status;
 };
 
-struct						s_raw_word
+typedef struct s_raw_word
 {
 	char					**word;
 	size_t					*len;
 	size_t					*cap;
-};
-typedef struct s_raw_word	t_raw;
+}							t_raw;
 
 struct						s_delimiter
 {
@@ -130,6 +124,7 @@ char						*value(const char *str);
 char						*get_var(char *var, t_vars *vars);
 t_status					contains_var(t_vars *vars, char *var);
 
+void						cmd_not_found(char *cmd);
 t_u16						is_builtin(char *cmd);
 char						*expand_str(char *format, t_vars *vars);
 
@@ -149,7 +144,7 @@ t_u16						establish_redirects(t_command *top_cmd);
 int							execute_builtin(t_command *cmd, t_vars *vars);
 void						execute(t_command *cmd, t_vars *vars);
 
-void						cmd_not_found(char *cmd);
+char						*get_input(int fd);
 void						ft_close(int *fd);
 void						clean_exit(t_status status, t_vars *vars);
 
