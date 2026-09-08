@@ -48,6 +48,7 @@ typedef struct s_command
 	struct s_command		*next;
 	int						fd_in;
 	int						fd_out;
+	_Bool					is_single;
 }							t_command;
 
 typedef struct s_vars

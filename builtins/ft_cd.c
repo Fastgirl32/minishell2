@@ -76,7 +76,7 @@ t_status	ft_cd(t_command *cmd, t_vars *vars)
 		path[i + 2] = 0;
 	}
 	if (!home && cmd->argv[1] == NULL)
-		return ((void)printf("cd: HOME not set\n"), 1);
+		return ((void)printf("cd: HOME not set\n"), 2);
 	else if (home && cmd->argv[1] == NULL)
 		curpath = ft_strdup(home);
 	else if (cmd->argv[1] && cmd->argv[1][0] == '/')

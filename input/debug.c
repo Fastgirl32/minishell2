@@ -25,6 +25,7 @@ void	print_one_command(int idx, t_command *head)
 {
 	ft_printf("[%d] cmd='%s' limiter='%s' ac=%d\n", idx,
 		safe_text(head->command), safe_text(head->limiter), head->ac);
+	ft_printf("fd_in: %d. fd_out: %d\n", head->fd_in, head->fd_out);
 }
 
 /* Appends a command to a linked command list. */

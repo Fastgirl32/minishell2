@@ -84,11 +84,3 @@ char	*ft_ltoa(long int n)
 	return (str);
 }
 
-/*
-#include <stdio.h>
-int main(){
- printf("%d\n", ft_atoi("2147483648"));
- printf("%d\n", ft_atoi("420"));
- printf("%d\n", ft_atoi("-420"));
- printf("%d\n", ft_atoi("0"));
- } */

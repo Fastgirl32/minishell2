@@ -55,7 +55,7 @@ void	parse_segment(struct s_redir *rd, const char *line,
 	rd->av = split_tokens(line, start, end, &sp);
 	if (!rd->av)
 		return ;
-	preserve_heredoc_delimiters(rd->av, line, start, end);
+	//preserve_heredoc_delimiters(rd->av, line, start, end);
 	rd->has_pipe = has_pipe_after_segment(line, end);
 	if (handle_redirect_segment(rd) == 0)
 		append_plain_segment(rd);

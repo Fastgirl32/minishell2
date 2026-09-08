@@ -17,12 +17,27 @@ input wie export var=ex und var="ex" und var=""ex" (quote) handeln plz
 ich handle nur geparsten string wie export var=ex.
 */
 
-void	declare(char *key, char *val)
+void	declare(char *key, char *val, t_command *cmd)
 {
+	int		out;
+
+	out = STDOUT_FILENO;
+	if (cmd->is_single)
+		out = cmd->fd_out;
+	if (val || key)
+		ft_putstr_fd("declare -x ", out);
 	if (val && key)
-		printf("declare -x %s=\"%s\"\n", key, val);
+	{
+		ft_putstr_fd(key, out);
+		ft_putstr_fd("=", out);
+		ft_putstr_fd(val, out);
+		ft_putstr_fd("\n", out);
+	}
 	else if (key)
-		printf("declare -x %s\n", key);
+	{
+		ft_putstr_fd(key, out);
+		ft_putstr_fd("\n", out);
+	}
 	free(key);
 	free(val);
 }
@@ -52,7 +67,7 @@ _Bool	identifier_valid(char *var)
 	return (1);
 }
 
-void	print_exported(t_vars *vars)
+void	print_exported(t_vars *vars, t_command *cmd)
 {
 	char	*key_;
 	char	*val_;
@@ -63,7 +78,7 @@ void	print_exported(t_vars *vars)
 	{
 		key_ = key((vars->env)[i]);
 		val_ = value((vars->env)[i]);
-		declare(key_, val_);
+		declare(key_, val_, cmd);
 		i++;
 	}
 }
@@ -76,7 +91,7 @@ t_status	ft_export(t_command *cmd, t_vars *vars)
 	i = 0;
 	failed = 0;
 	if (cmd->ac == 1)
-		print_exported(vars);
+		print_exported(vars, cmd);
 	else
 	{
 		while ((i + 1) < cmd->ac)

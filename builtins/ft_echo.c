@@ -36,7 +36,11 @@ t_status	ft_echo(t_command *cmd, t_vars *vars)
 {
 	t_u16	flag_n;
 	int		i;
+	int		out;
 
+	out = STDOUT_FILENO;
+	if (cmd->is_single)
+		out = cmd->fd_out;
 	flag_n = 0;
 	(void)vars;
 	i = 0;
@@ -47,12 +51,12 @@ t_status	ft_echo(t_command *cmd, t_vars *vars)
 	}
 	while (cmd->argv[1] && (i + 1) < cmd->ac)
 	{
-		ft_putstr_fd(cmd->argv[i + 1], 1);
+		ft_putstr_fd(cmd->argv[i + 1], out);
 		if (i < (cmd->ac - 2))
-			ft_putstr_fd(" ", 1);
+			ft_putstr_fd(" ", out);
 		i++;
 	}
 	if (!flag_n)
-		ft_putstr_fd("\n", 1);
+		ft_putstr_fd("\n", out);
 	return (0);
 }

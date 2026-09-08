@@ -61,8 +61,7 @@ void	make_list(t_vars *vars, char *line)
 	vars->list = head;
 	if (!head || should_skip_list(head, vars))
 		return (free_list(head), (void)(vars->list = NULL));
-	if (connect_pipes(head) || prepare_heredocs(head)
-		|| establish_redirects(head))
+	if (connect_pipes(head) || establish_redirects(head))
 	{
 		*(vars->status) = 1;
 		return (free_list(head), (void)(vars->list = NULL));
@@ -75,6 +74,6 @@ void	make_list(t_vars *vars, char *line)
 		else
 			execute_single_command(head, vars);
 	}
-	free_list(head);
+	free_list(vars->list);
 	vars->list = NULL;
 }

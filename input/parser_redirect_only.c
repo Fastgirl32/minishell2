@@ -59,6 +59,7 @@ int	consume_redir_only_segment(struct s_redir *rd)
 	t_command	*heredoc;
 	int			fd;
 
+	printf("wtf\n");
 	rd->op_i = 0;
 	while (rd->op_i + 1 < rd->ac && is_redirect_op(rd->av[rd->op_i]))
 		rd->op_i += 2;

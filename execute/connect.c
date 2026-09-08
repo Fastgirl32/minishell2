@@ -120,6 +120,7 @@ t_u16	establish_redirects(t_command *top_cmd)
 {
 	t_command	*cmd;
 	t_command	*prev;
+	t_command	*tmp;
 	int			pipe_fd[2];
 	int			i;
 
@@ -135,11 +136,15 @@ t_u16	establish_redirects(t_command *top_cmd)
 		}
 		if (cmd->limiter && !ft_strcmp(cmd->limiter, "|"))
 		{
+			tmp = cmd;
 			cmd = cmd->next;
+			tmp->next = NULL;
+			free_list(prev->next);
 			prev->next = cmd;
 			prev = cmd;
 		}
 	}
+	free_list(prev->next);
 	prev->next = NULL;
 	return (0);
 }

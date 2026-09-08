@@ -16,7 +16,11 @@ t_status	ft_env(t_command *cmd, t_vars *vars)
 {
 	int		i;
 	char	*val;
+	int		out;
 
+	out = STDOUT_FILENO;
+	if (cmd->is_single)
+		out = cmd->fd_out;
 	i = 0;
 	if (cmd->ac > 1)
 		return ((void)printf("env: too many arguments\n"), 2);
@@ -24,7 +28,9 @@ t_status	ft_env(t_command *cmd, t_vars *vars)
 	{
 		val = value(vars->env[i]);
 		if (val)
-			printf("%s\n", vars->env[i]);
+		{
+			ft_putendl_fd(vars->env[i], out);
+		}
 		free(val);
 		i++;
 	}

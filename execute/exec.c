@@ -68,6 +68,7 @@ void	execute_single_command(t_command *cmd, t_vars *vars)
 	pid_t	child_pid;
 	int		stat;
 
+	cmd->is_single = 1;
 	if (is_builtin(cmd->command))
 	{
 		*(vars->status) = execute_builtin(cmd, vars);
@@ -120,6 +121,7 @@ void	execute(t_command *cmd, t_vars *vars)
 	if (!cmd)
 		return ;
 	child_pid = fork();
+	cmd->is_single = 0;
 	if (!child_pid)
 	{
 		if (dup_all(cmd))

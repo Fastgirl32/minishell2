@@ -15,10 +15,13 @@
 t_status	ft_pwd(t_command *cmd)
 {
 	char	path[PATH_MAX];
+	int		out;
 
-	(void)cmd;
+	out = STDOUT_FILENO;
+	if (cmd->is_single)
+		out = cmd->fd_out;
 	getcwd(path, PATH_MAX);
-	ft_putstr_fd(path, 1);
-	ft_putstr_fd("\n", 1);
+	ft_putstr_fd(path, out);
+	ft_putstr_fd("\n", out);
 	return (0);
 }
