@@ -64,7 +64,7 @@ therefore not changed and directly accessed.
 Else, "cmd->command" gets appended to "path_scan" and then accessed.
 Path is set to whatever it actually is.
 */
-int	access_path(char *path_scan, char path[][4096], t_command *cmd)
+int	access_path(char *path_scan, char path[PATH_MAX], t_command *cmd)
 {
 	char	*tmp;
 	char	*tmp2;
@@ -75,7 +75,7 @@ int	access_path(char *path_scan, char path[][4096], t_command *cmd)
 	if (cmd->command[0] == '/')
 	{
 		found = access(cmd->command, F_OK);
-		ft_memcpy(*path, cmd->command, ft_strlen(cmd->command) + 1);
+		ft_memcpy(path, cmd->command, ft_strlen(cmd->command) + 1);
 		return (found);
 	}
 	tmp2 = getpath(path_scan + 1);
@@ -84,7 +84,7 @@ int	access_path(char *path_scan, char path[][4096], t_command *cmd)
 	tmp2 = ft_strjoin(tmp, cmd->command);
 	free(tmp);
 	found = access(tmp2, F_OK);
-	ft_memcpy(*path, tmp2, ft_strlen(tmp2) + 1);
+	ft_memcpy(path, tmp2, ft_strlen(tmp2) + 1);
 	free(tmp2);
 	return (found);
 }
@@ -106,7 +106,7 @@ t_status	find_and_exec(t_command *cmd, t_vars *vars)
 	found = -1;
 	while (path_scan && found == -1)
 	{
-		found = access_path(path_scan, &path, cmd);
+		found = access_path(path_scan, path, cmd);
 		path_scan = ft_strchr(path_scan + 1, ':');
 	}
 	free(path_scan_dup);
@@ -114,7 +114,7 @@ t_status	find_and_exec(t_command *cmd, t_vars *vars)
 	close_all_not_std_fds(cmd);
 	if (found == -1)
 	{
-		perror(cmd->command);
+		cmd_not_found(cmd->command);
 		free_list(cmd);
 		exit(127);
 	}

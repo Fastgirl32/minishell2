@@ -149,7 +149,7 @@ t_u16						establish_redirects(t_command *top_cmd);
 int							execute_builtin(t_command *cmd, t_vars *vars);
 void						execute(t_command *cmd, t_vars *vars);
 
-char						*get_input(int fd);
+void						cmd_not_found(char *cmd);
 void						ft_close(int *fd);
 void						clean_exit(t_status status, t_vars *vars);
 

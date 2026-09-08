@@ -47,12 +47,12 @@ t_status	ft_echo(t_command *cmd, t_vars *vars)
 	}
 	while (cmd->argv[1] && (i + 1) < cmd->ac)
 	{
-		ft_putstr_fd(cmd->argv[i + 1], cmd->fd_out);
+		ft_putstr_fd(cmd->argv[i + 1], 1);
 		if (i < (cmd->ac - 2))
-			ft_putstr_fd(" ", cmd->fd_out);
+			ft_putstr_fd(" ", 1);
 		i++;
 	}
 	if (!flag_n)
-		ft_putstr_fd("\n", cmd->fd_out);
+		ft_putstr_fd("\n", 1);
 	return (0);
 }

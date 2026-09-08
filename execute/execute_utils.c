@@ -64,32 +64,11 @@ char	*ft_str_append(char *s1, char *s2)
 	return (rstr);
 }
 
-char	*get_input(int fd)
+void	cmd_not_found(char *cmd)
 {
-	char	*input;
-	char	*tmp;
-	char	readbuf[BUFFER_SIZE + 1];
-	int		br;
-	int		i;
-
-	input = malloc(BUFFER_SIZE + 1);
-	br = read(fd, input, BUFFER_SIZE);
-	input[br] = 0;
-	while (br > 0)
-	{
-		tmp = malloc(ft_strlen(input) + 1);
-		i = -1;
-		while (input[++i])
-			tmp[i] = input[i];
-		tmp[i] = 0;
-		br = read(fd, readbuf, BUFFER_SIZE);
-		readbuf[br] = 0;
-		free(input);
-		input = ft_strjoin(tmp, readbuf);
-		ft_bzero(readbuf, BUFFER_SIZE + 1);
-		free(tmp);
-	}
-	return (input);
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": command not found\n ", 2);
 }
 
 /*
