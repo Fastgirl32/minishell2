@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/09 23:52:59 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/10 00:19:05 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ typedef struct s_vars
 	int					history_cap;
 	int					stop;
 	unsigned int		heredoc_number;
+	int					heredoc_interrupted;
 	int					*status;
 	char				*line;
 	char				*history_entry;

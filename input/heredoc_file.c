@@ -51,11 +51,12 @@ static int	write_heredoc_lines(int fd, char **path, t_vars *vars,
 		line = read_shell_line(vars, "heredoc> ");
 		if (take_heredoc_sigint())
 		{
+			rl_done = 0;
 			close(fd);
 			unlink(*path);
 			free(*path);
 			*path = NULL;
-			return (0);
+			return (-1);
 		}
 		if (!line)
 			break ;
@@ -90,6 +91,7 @@ char	*create_heredoc_file(t_vars *vars, const char *delimiter)
 {
 	char	*path;
 	int		fd;
+	int		ret;
 
 	set_heredoc_signal_mode(1);
 	fd = open_heredoc_file(&path, vars);
@@ -98,12 +100,10 @@ char	*create_heredoc_file(t_vars *vars, const char *delimiter)
 		set_heredoc_signal_mode(0);
 		return (NULL);
 	}
-	if (!write_heredoc_lines(fd, &path, vars, delimiter))
-	{
-		set_heredoc_signal_mode(0);
-		return (NULL);
-	}
-	close(fd);
+	ret = write_heredoc_lines(fd, &path, vars, delimiter);
 	set_heredoc_signal_mode(0);
+	if (ret <= 0)
+		return (NULL);
+	close(fd);
 	return (path);
 }

@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:58 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/10 00:02:13 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/10 00:20:35 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,16 @@ static void	process_line(t_vars *vars, char *line)
 			vars->history_entry[len - 1] = '\0';
 	}
 	make_list(vars, line);
+	if (vars->heredoc_interrupted)
+	{
+		*(vars->status) = 130;
+		vars->heredoc_interrupted = 0;
+		free(vars->history_entry);
+		vars->history_entry = NULL;
+		free(line);
+		vars->line = NULL;
+		return ;
+	}
 	setup_parent_signals();
 	history_add(vars, vars->history_entry);
 	free(vars->history_entry);
