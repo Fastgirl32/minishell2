@@ -76,7 +76,11 @@ static int	prepare_heredoc(struct s_redir *rd, int i)
 
 	name = create_heredoc_file(rd->vars, rd->av[i + 1]);
 	if (!name)
+	{
+		if (heredoc_was_interrupted())
+			rd->vars->heredoc_interrupted = 1;
 		return (0);
+	}
 	free(rd->av[i]);
 	free(rd->av[i + 1]);
 	rd->av[i] = name;

@@ -51,7 +51,6 @@ static int	write_heredoc_lines(int fd, char **path, t_vars *vars,
 		line = read_shell_line(vars, "heredoc> ");
 		if (take_heredoc_sigint())
 		{
-			rl_done = 0;
 			close(fd);
 			unlink(*path);
 			free(*path);

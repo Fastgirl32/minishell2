@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:40 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/10 00:14:16 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/10 00:44:04 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,9 @@ static void	sigint_handler(int sig)
 
 static void	set_sigint_handler(void)
 {
-	struct sigaction	sa;
 
-	ft_bzero(&sa, sizeof(sa));
-	sa.sa_handler = sigint_handler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGINT, &sa, NULL);
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	setup_parent_signals(void)
@@ -75,6 +71,10 @@ int	take_heredoc_sigint(void)
 	if (g_interrupted != 3)
 		return (0);
 	g_interrupted = 0;
-	rl_done = 0;
 	return (1);
+}
+
+int	heredoc_was_interrupted(void)
+{
+	return (g_interrupted == 3);
 }
