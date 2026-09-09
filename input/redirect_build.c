@@ -38,7 +38,7 @@ static int	append_redirect_target(struct s_redir *rd, int i)
 	return (1);
 }
 
-static void	append_redirect_targets(struct s_redir *rd)
+static int	append_redirect_targets(struct s_redir *rd)
 {
 	int	i;
 
@@ -48,9 +48,10 @@ static void	append_redirect_targets(struct s_redir *rd)
 		if (!is_redirect_token(rd->av[i]))
 			i++;
 		else if (!append_redirect_target(rd, i))
-			return ;
+			return (0);
 		i += 2;
 	}
+	return (1);
 }
 
 static void	append_regular_redirect(struct s_redir *rd, char **args, int count)
@@ -61,7 +62,8 @@ static void	append_regular_redirect(struct s_redir *rd, char **args, int count)
 	if (!cmd)
 		return ;
 	append_command(rd->head, rd->tail, cmd);
-	append_redirect_targets(rd);
+	if (!append_redirect_targets(rd))
+		return ;
 	if (rd->has_pipe)
 		set_command_limiter(*rd->tail, "|");
 }
@@ -90,7 +92,7 @@ void	append_redirect_segment(struct s_redir *rd)
 
 static void	append_commandless_heredoc(struct s_redir *rd)
 {
-	char **args;
+	char	**args;
 
 	args = malloc(sizeof(char *) * 2);
 	if (!args)
