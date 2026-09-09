@@ -6,11 +6,12 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:05 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/09 22:03:05 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/10 01:02:00 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
 /* Checks whether a parsed command list needs no execution. */
 int	should_skip_list(t_command *head, t_vars *vars)
 {
@@ -22,22 +23,6 @@ int	should_skip_list(t_command *head, t_vars *vars)
 		return (1);
 	}
 	return (0);
-}
-
-static void	execute_list(t_vars *vars, t_command *head)
-{
-	if (connect_pipes(head) || establish_redirects(head))
-	{
-		*(vars->status) = 1;
-		free_list(head);
-		vars->list = NULL;
-		return ;
-	}
-	print_command_list(head);
-	if (head->next)
-		execute(head, vars);
-	else
-		execute_single_command(head, vars);
 }
 
 /* Parses one input line into a command list. */
@@ -76,7 +61,19 @@ void	make_list(t_vars *vars, char *line)
 	vars->list = head;
 	if (!head || should_skip_list(head, vars))
 		return (free_list(head), (void)(vars->list = NULL));
-	execute_list(vars, head);
+	if (connect_pipes(head) || establish_redirects(head))
+	{
+		*(vars->status) = 1;
+		return (free_list(head), (void)(vars->list = NULL));
+	}
+	else
+	{
+		print_command_list(head);
+		if (head->next)
+			execute(head, vars);
+		else
+			execute_single_command(head, vars);
+	}
 	free_list(vars->list);
 	vars->list = NULL;
 }
