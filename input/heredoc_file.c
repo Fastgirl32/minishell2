@@ -49,7 +49,7 @@ static int	write_heredoc_lines(int fd, char **path, t_vars *vars,
 	while (1)
 	{
 		line = read_shell_line(vars, "heredoc> ");
-		if (take_interactive_sigint() == 3)
+		if (take_heredoc_sigint())
 		{
 			close(fd);
 			unlink(*path);
