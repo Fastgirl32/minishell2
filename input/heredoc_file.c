@@ -44,18 +44,27 @@ static int	write_heredoc_lines(int fd, char **path,
 {
 	char	*line;
 	char	*expanded;
+	int		is_delimiter;
 
 	while (1)
 	{
 		line = read_shell_line(vars, "heredoc> ");
-		history_add(vars, line);
-		if (!line || line_is_delimiter(line, delimiter))
-		{
+		if (!line)
+			break ;
+		if (line[ft_strlen(line) - 1] == '\n')
+			line[ft_strlen(line) - 1] = '\0';
+		is_delimiter = line_is_delimiter(line, delimiter);
+		expanded = NULL;
+		if (!is_delimiter)
+			expanded = expand_heredoc_line(line, vars);
+		if (vars->history_entry)
+			vars->history_entry = append_line(vars->history_entry, line);
+		else
 			free(line);
+		if (is_delimiter)
+		{
 			break ;
 		}
-		expanded = expand_heredoc_line(line, vars);
-		free(line);
 		if (!expanded || write(fd, expanded, ft_strlen(expanded)) < 0
 			|| write(fd, "\n", 1) < 0)
 		{

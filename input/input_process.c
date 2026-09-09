@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:58 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 08:33:37 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 22:03:05 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,21 @@ char	*get_prompt(t_vars *vars, char *backup, _Bool *fallback_used)
 /* Stores, parses, and frees one complete input line. */
 static void	process_line(t_vars *vars, char *line)
 {
+	size_t	len;
+
 	vars->line = line;
-	history_add(vars, line);
+	vars->history_entry = ft_strdup(line);
+	if (vars->history_entry)
+	{
+		len = ft_strlen(vars->history_entry);
+		if (len > 0 && vars->history_entry[len - 1] == '\n')
+			vars->history_entry[len - 1] = '\0';
+	}
 	make_list(vars, line);
+	setup_parent_signals();
+	history_add(vars, vars->history_entry);
+	free(vars->history_entry);
+	vars->history_entry = NULL;
 	free(line);
 	vars->line = NULL;
 }

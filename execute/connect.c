@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/03 22:34:57 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/09 17:31:08 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 22:08:31 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_u16	connect_pipes(t_command *top_cmd)
 0x441 means O_WRONLY | O_CREAT | O_APPEND.
 */
 t_u16	establish_redirect_helper2(t_command *cmd, t_command *prev,
-	int pipe_fd[2], int *i)
+		int pipe_fd[2], int *i)
 {
 	int	fd_tmp;
 
@@ -85,18 +85,17 @@ t_u16	establish_redirect_helper2(t_command *cmd, t_command *prev,
 }
 
 t_u16	establish_redirect_helper(t_command *cmd, t_command *prev,
-	int pipe_fd[2], int *i)
+		int pipe_fd[2], int *i)
 {
-	int			fd_tmp;
+	int	fd_tmp;
 
 	if (!cmd->next || !cmd->next->command)
 		return (0);
-	if (!ft_strcmp(cmd->limiter, ">")
-		|| !ft_strcmp(cmd->limiter, ">|"))
+	if (!ft_strcmp(cmd->limiter, ">") || !ft_strcmp(cmd->limiter, ">|"))
 	{
 		fd_tmp = prev->fd_out;
-		prev->fd_out = open(cmd->next->command,
-				O_WRONLY | O_CREAT | O_TRUNC, 0666);
+		prev->fd_out = open(cmd->next->command, O_WRONLY | O_CREAT | O_TRUNC,
+				0666);
 		ft_close(&fd_tmp);
 	}
 	else if (!ft_strcmp(cmd->limiter, "<"))

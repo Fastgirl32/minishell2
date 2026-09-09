@@ -6,13 +6,13 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:40 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 08:34:28 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 22:08:02 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//This is the only global.
+// This is the only global.
 static volatile sig_atomic_t	g_interrupted;
 
 /* Handles SIGINT while the parent shell is waiting for input. */
@@ -48,7 +48,7 @@ void	restore_parent_sigint(void)
 /* Returns and clears the pending interactive SIGINT state. */
 int	take_interactive_sigint(void)
 {
-	if (!g_interrupted)
+	if (g_interrupted == 0)
 		return (0);
 	g_interrupted = 0;
 	return (1);
