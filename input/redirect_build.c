@@ -12,6 +12,8 @@
 
 #include "../minishell.h"
 
+static void	append_commandless_heredoc(struct s_redir *rd);
+
 static int	append_redirect_target(struct s_redir *rd, int i)
 {
 	t_command	*target;
@@ -51,33 +53,7 @@ static void	append_redirect_targets(struct s_redir *rd)
 	}
 }
 
-static void	append_commandless_heredoc(struct s_redir *rd)
-{
-	char		**args;
-	t_command	*cmd;
-	t_command	*target;
-	char		*name;
-
-	args = malloc(sizeof(char *) * 2);
-	if (!args)
-		return ;
-	args[0] = ft_strdup("cat");
-	args[1] = NULL;
-	if (!args[0])
-		return (free(args));
-	cmd = new_command(args, 1, 0);
-	if (!cmd)
-		return ;
-	append_command(rd->head, rd->tail, cmd);
-	name = create_heredoc_file(rd->vars, rd->av[1]);
-	target = target_command(name);
-	free(name);
-	if (target && set_command_limiter(*rd->tail, "<"))
-		append_command(rd->head, rd->tail, target);
-}
-
-static void	append_regular_redirect(struct s_redir *rd,
-		char **args, int count)
+static void	append_regular_redirect(struct s_redir *rd, char **args, int count)
 {
 	t_command	*cmd;
 
@@ -92,8 +68,8 @@ static void	append_regular_redirect(struct s_redir *rd,
 
 void	append_redirect_segment(struct s_redir *rd)
 {
-	char		**args;
-	int			count;
+	char	**args;
+	int		count;
 
 	args = collect_command_args(rd->av, rd->ac, &count);
 	if (!args)
@@ -110,4 +86,18 @@ void	append_redirect_segment(struct s_redir *rd)
 		return ;
 	}
 	append_regular_redirect(rd, args, count);
+}
+
+static void	append_commandless_heredoc(struct s_redir *rd)
+{
+	char **args;
+
+	args = malloc(sizeof(char *) * 2);
+	if (!args)
+		return ;
+	args[0] = ft_strdup("cat");
+	args[1] = NULL;
+	if (!args[0])
+		return (free(args));
+	append_regular_redirect(rd, args, 1);
 }

@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/09 22:08:43 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 22:34:43 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,21 +202,6 @@ const char				*quote_prompt(char q);
 char					find_unclosed_quote(const char *s);
 char					*read_continued_lines(t_vars *vars, char *line);
 
-int						delimiter_found(const char *line,
-							const char *delimiter);
-char					*read_heredoc_line(void);
-int						write_heredoc_line(int fd, const char *line);
-void					replace_cmd_fd_in(t_command *cmd, int new_fd);
-int						fill_heredoc_pipe(int fd, const char *limiter);
-int						setup_heredoc(t_command *cmd);
-int						prepare_heredocs(t_command *head);
-void					free_lines_partial(char **lines, int count);
-char					**grow_lines(char **lines, int count, char *line);
-char					*normalize_heredoc_line(char *line);
-int						collect_heredoc_line(char ***lines, int *count,
-							const char *limiter);
-char					**collect_heredoc_lines(const char *limiter,
-							int *out_count);
 t_command				*alloc_heredoc_cmd(char **lines, int count);
 t_command				*build_heredoc(const char *limiter);
 
@@ -232,11 +217,7 @@ int						fill_command_base(t_command *cmd, char **av, int *ac,
 t_command				*new_command(char **av, int ac, int has_pipe);
 char					**dup_token_range(char **av, int start, int end,
 							int *out_ac);
-int						first_redir_index(char **av, int ac);
 int						set_command_limiter(t_command *cmd, char *lim);
-t_command				*new_single_arg_command(char *arg);
-int						append_redirect_nodes(struct s_redir *rd);
-int						handle_redirect_segment(struct s_redir *rd);
 int						has_pipe_after_segment(const char *line, size_t end);
 int						is_redirect_token(const char *token);
 int						is_heredoc_token(const char *token);
@@ -272,15 +253,6 @@ void					append_command(t_command **head, t_command **tail,
 void					print_argv_debug(char **argv);
 void					print_command_list(t_command *head);
 
-int						is_redirect_op(const char *s);
-int						is_heredoc_op(const char *s);
-void					set_redirect_limit(char **limit, char **av, int i,
-							int ac);
-int						skip_redirect_token(char **av, int i, int ac,
-							char **limit);
-void					extract_redirections(char **av, int *ac, char **limit,
-							int *redirect_start);
-
 int						push_operator_token(struct s_split *sp);
 int						push_word_token(struct s_split *sp);
 int						fill_split_tokens(struct s_split *sp);
@@ -290,8 +262,5 @@ void					free_tokens(char **av, size_t used);
 void					setup_child_signals(void);
 int						has_syntax_error(const char *line);
 
-char					**copy_command_args(char **av, int ac, int *out_ac);
-t_command				*new_single_arg_command(char *arg);
-int						append_cat_heredoc(struct s_redir *rd);
 
 #endif // MINISHELL_H
