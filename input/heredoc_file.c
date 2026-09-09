@@ -39,8 +39,8 @@ static int	open_heredoc_file(char **path, t_vars *vars)
 	}
 }
 
-static int	write_heredoc_lines(int fd, char **path,
-		t_vars *vars, const char *delimiter)
+static int	write_heredoc_lines(int fd, char **path, t_vars *vars,
+		const char *delimiter)
 {
 	char	*line;
 	char	*expanded;
@@ -49,6 +49,14 @@ static int	write_heredoc_lines(int fd, char **path,
 	while (1)
 	{
 		line = read_shell_line(vars, "heredoc> ");
+		if (take_interactive_sigint() == 3)
+		{
+			close(fd);
+			unlink(*path);
+			free(*path);
+			*path = NULL;
+			return (0);
+		}
 		if (!line)
 			break ;
 		if (line[ft_strlen(line) - 1] == '\n')
@@ -62,15 +70,15 @@ static int	write_heredoc_lines(int fd, char **path,
 		else
 			free(line);
 		if (is_delimiter)
-		{
 			break ;
-		}
 		if (!expanded || write(fd, expanded, ft_strlen(expanded)) < 0
 			|| write(fd, "\n", 1) < 0)
 		{
 			free(expanded);
 			close(fd);
+			unlink(*path);
 			free(*path);
+			*path = NULL;
 			return (0);
 		}
 		free(expanded);
@@ -83,11 +91,19 @@ char	*create_heredoc_file(t_vars *vars, const char *delimiter)
 	char	*path;
 	int		fd;
 
+	set_heredoc_signal_mode(1);
 	fd = open_heredoc_file(&path, vars);
 	if (fd < 0)
+	{
+		set_heredoc_signal_mode(0);
 		return (NULL);
+	}
 	if (!write_heredoc_lines(fd, &path, vars, delimiter))
+	{
+		set_heredoc_signal_mode(0);
 		return (NULL);
+	}
 	close(fd);
+	set_heredoc_signal_mode(0);
 	return (path);
 }

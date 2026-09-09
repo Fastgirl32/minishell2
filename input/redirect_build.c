@@ -12,7 +12,29 @@
 
 #include "../minishell.h"
 
-static void	append_commandless_heredoc(struct s_redir *rd);
+static int	add_implicit_cat(struct s_redir *rd)
+{
+	char	**new_av;
+	int		i;
+
+	new_av = malloc(sizeof(char *) * (rd->ac + 2));
+	if (!new_av)
+		return (0);
+	new_av[0] = ft_strdup("cat");
+	if (!new_av[0])
+		return (free(new_av), 0);
+	i = 0;
+	while (i < rd->ac)
+	{
+		new_av[i + 1] = rd->av[i];
+		i++;
+	}
+	new_av[i + 1] = NULL;
+	free(rd->av);
+	rd->av = new_av;
+	rd->ac++;
+	return (1);
+}
 
 static int	append_redirect_target(struct s_redir *rd, int i)
 {
@@ -22,19 +44,12 @@ static int	append_redirect_target(struct s_redir *rd, int i)
 	name = rd->av[i + 1];
 	if (!ft_strcmp(rd->av[i], ">|"))
 		rd->av[i][1] = '\0';
-	if (is_heredoc_token(rd->av[i]))
-		name = create_heredoc_file(rd->vars, rd->av[i + 1]);
-	if (!name)
-		return (0);
-	if (is_heredoc_token(rd->av[i]))
-		set_command_limiter(*rd->tail, "<");
-	else if (!set_command_limiter(*rd->tail, rd->av[i]))
+	if (!set_command_limiter(*rd->tail, rd->av[i]))
 		return (0);
 	target = target_command(name);
-	if (name != rd->av[i + 1])
-		free(name);
-	if (target)
-		append_command(rd->head, rd->tail, target);
+	if (!target)
+		return (0);
+	append_command(rd->head, rd->tail, target);
 	return (1);
 }
 
@@ -51,6 +66,28 @@ static int	append_redirect_targets(struct s_redir *rd)
 			return (0);
 		i += 2;
 	}
+	return (1);
+}
+
+static int	prepare_heredoc(struct s_redir *rd, int i)
+{
+	char	*name;
+	int		j;
+
+	name = create_heredoc_file(rd->vars, rd->av[i + 1]);
+	if (!name)
+		return (0);
+	free(rd->av[i]);
+	free(rd->av[i + 1]);
+	rd->av[i] = name;
+	j = i + 1;
+	while (j < rd->ac - 1)
+	{
+		rd->av[j] = rd->av[j + 1];
+		j++;
+	}
+	rd->av[rd->ac - 1] = NULL;
+	rd->ac--;
 	return (1);
 }
 
@@ -72,34 +109,33 @@ void	append_redirect_segment(struct s_redir *rd)
 {
 	char	**args;
 	int		count;
+	int		i;
 
+	if (rd->ac >= 2 && is_heredoc_token(rd->av[0]))
+	{
+		if (!add_implicit_cat(rd))
+			return ;
+	}
+	i = 0;
+	while (i + 1 < rd->ac)
+	{
+		if (is_heredoc_token(rd->av[i]))
+		{
+			if (!prepare_heredoc(rd, i))
+				return ;
+			i++;
+		}
+		else
+			i++;
+	}
 	args = collect_command_args(rd->av, rd->ac, &count);
 	if (!args)
 		return ;
 	if (count == 0)
 	{
 		free_arr((void **)args);
-		if (!is_heredoc_token(rd->av[0]) || rd->ac < 2)
-		{
-			append_redirect_only(rd);
-			return ;
-		}
-		append_commandless_heredoc(rd);
+		append_redirect_only(rd);
 		return ;
 	}
 	append_regular_redirect(rd, args, count);
-}
-
-static void	append_commandless_heredoc(struct s_redir *rd)
-{
-	char	**args;
-
-	args = malloc(sizeof(char *) * 2);
-	if (!args)
-		return ;
-	args[0] = ft_strdup("cat");
-	args[1] = NULL;
-	if (!args[0])
-		return (free(args));
-	append_regular_redirect(rd, args, 1);
 }

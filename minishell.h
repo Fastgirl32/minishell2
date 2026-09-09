@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/09 22:34:43 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 23:40:12 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,5 +262,6 @@ void					free_tokens(char **av, size_t used);
 void					setup_child_signals(void);
 int						has_syntax_error(const char *line);
 
+void					set_heredoc_signal_mode(int active);
 
 #endif // MINISHELL_H
