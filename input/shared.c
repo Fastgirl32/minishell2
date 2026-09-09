@@ -6,19 +6,17 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:36 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 13:10:49 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 18:59:42 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-/* Checks whether a character is shell whitespace. */
 int	is_blank(char c)
 {
 	return (c == ' ' || c == '\t');
 }
 
-/* Checks whether a string contains only whitespace. */
 int	is_blank_line(const char *s)
 {
 	while (*s)
@@ -30,13 +28,11 @@ int	is_blank_line(const char *s)
 	return (1);
 }
 
-/* Checks whether a character may occur in a variable name. */
 int	is_var_char(char c)
 {
 	return (ft_isalnum((unsigned char)c) || c == '_');
 }
 
-/* Returns the length of a redirection operator at a position. */
 int	redir_op_len(const char *line, size_t i, char quote)
 {
 	if (quote)
@@ -52,7 +48,6 @@ int	redir_op_len(const char *line, size_t i, char quote)
 	return (0);
 }
 
-/* Finds the end of one command segment. */
 size_t	segment_end(const char *line, size_t start)
 {
 	size_t	i;
@@ -66,14 +61,12 @@ size_t	segment_end(const char *line, size_t start)
 			quote = line[i];
 		else if (quote && line[i] == quote)
 			quote = 0;
-		else if (!quote && line[i] == '\n')
-			break ;
 		else if (!quote && redir_op_len(line, i, 0))
 		{
 			i += (size_t)redir_op_len(line, i, 0);
 			continue ;
 		}
-		else if (!quote && line[i] == '|')
+		else if (!quote && (line[i] == '\n' || line[i] == '|'))
 			break ;
 		i++;
 	}

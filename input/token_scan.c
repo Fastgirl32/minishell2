@@ -6,13 +6,12 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:26:10 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 08:35:08 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 19:12:29 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-/* Finds the end of one shell word. */
 size_t	next_word_end(const char *line, size_t i, size_t end)
 {
 	char	quote;
@@ -31,12 +30,10 @@ size_t	next_word_end(const char *line, size_t i, size_t end)
 	return (i);
 }
 
-/* Counts tokens before allocating the token array. */
 size_t	count_tokens(const char *line, size_t start, size_t end)
 {
 	size_t	i;
 	size_t	count;
-	int		op_len;
 
 	i = start;
 	count = 0;
@@ -46,11 +43,10 @@ size_t	count_tokens(const char *line, size_t start, size_t end)
 			i++;
 		if (i >= end)
 			break ;
-		op_len = redir_op_len(line, i, 0);
-		if (op_len)
+		if (redir_op_len(line, i, 0))
 		{
 			count++;
-			i += (size_t)op_len;
+			i += (size_t)redir_op_len(line, i, 0);
 			continue ;
 		}
 		count++;
@@ -59,7 +55,6 @@ size_t	count_tokens(const char *line, size_t start, size_t end)
 	return (count);
 }
 
-/* Frees the tokens already built after an allocation failure. */
 void	free_tokens(char **av, size_t used)
 {
 	while (used > 0)

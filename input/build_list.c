@@ -6,12 +6,11 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:05 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 08:32:52 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 19:08:17 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
 /* Checks whether a parsed command list needs no execution. */
 int	should_skip_list(t_command *head, t_vars *vars)
 {

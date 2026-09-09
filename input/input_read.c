@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:25:07 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 08:33:37 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 18:59:22 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,28 @@ char	*read_line_plain(void)
 {
 	char	*line;
 	size_t	len;
+	size_t	cap;
+	char	c;
+	ssize_t	bytes;
 
-	line = NULL;
-	len = 0;
-	if (getline(&line, &len, stdin) == -1)
-	{
-		free(line);
+	line = malloc(1);
+	if (!line)
 		return (NULL);
+	line[0] = '\0';
+	len = 0;
+	cap = 1;
+	while (1)
+	{
+		bytes = read(STDIN_FILENO, &c, 1);
+		if (bytes <= 0)
+			break ;
+		if (!append_char(&line, &len, &cap, c))
+			return (free(line), NULL);
+		if (c == '\n')
+			break ;
 	}
+	if (bytes < 0 || (bytes == 0 && len == 0))
+		return (free(line), NULL);
 	return (line);
 }
 

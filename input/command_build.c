@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:12 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 08:32:52 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 18:59:16 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,28 @@ int	set_pipe_limiter(t_command *cmd, int has_pipe)
 	return (1);
 }
 
+int	set_command_limiter(t_command *cmd, char *lim)
+{
+	free(cmd->limiter);
+	cmd->limiter = ft_strdup(lim);
+	return (cmd->limiter != NULL);
+}
+
 /* Fills a command with its name, arguments, and pipe state. */
 int	fill_command_base(t_command *cmd, char **av, int *ac, int has_pipe)
 {
-	char	*limiter;
-
-	limiter = NULL;
-	extract_redirections(av, ac, &limiter, NULL);
 	if (*ac < 1 || !av[0])
-		return (free(limiter), 0);
+		return (0);
 	cmd->command = ft_strdup(av[0]);
 	if (!cmd->command)
-		return (free(limiter), 0);
-	cmd->limiter = limiter;
-	if (!set_pipe_limiter(cmd, has_pipe))
-		return (free(cmd->command), free(cmd->limiter), 0);
+		return (0);
+	cmd->limiter = NULL;
+	if (has_pipe)
+	{
+		cmd->limiter = ft_strdup("|");
+		if (!cmd->limiter)
+			return (free(cmd->command), 0);
+	}
 	cmd->ac = *ac;
 	if (!ft_strcmp(av[0], "exit") && *ac == 1)
 		cmd->ac = 0;
@@ -90,17 +97,4 @@ t_command	*new_command(char **av, int ac, int has_pipe)
 	cmd->fd_in = 0;
 	cmd->fd_out = 1;
 	return (cmd);
-}
-
-/* Finds the first redirection token in an argument array. */
-int	first_redir_index(char **av, int ac)
-{
-	int	i;
-
-	i = 0;
-	while (i < ac && !is_redirect_op(av[i]))
-		i++;
-	if (i >= ac)
-		return (-1);
-	return (i);
 }

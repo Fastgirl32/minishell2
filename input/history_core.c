@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:54 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 08:33:37 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 19:22:52 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ t_vars	*init_vars(char **env, int *status_loc)
 	vars->history_count = 0;
 	vars->history_cap = 0;
 	vars->stop = 0;
+	vars->heredoc_number = 0;
 	vars->status = status_loc;
 	return (vars);
 }

@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 13:10:49 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/09 19:21:50 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct s_vars
 	int						history_count;
 	int						history_cap;
 	int						stop;
+	unsigned int			heredoc_number;
 	int						*status;
 	char					*line;
 	t_command				*list;
@@ -232,6 +233,8 @@ int							set_pipe_limiter(t_command *cmd, int has_pipe);
 int							fill_command_base(t_command *cmd, char **av,
 								int *ac, int has_pipe);
 t_command					*new_command(char **av, int ac, int has_pipe);
+char							**dup_token_range(char **av, int start, int end,
+										int *out_ac);
 int							first_redir_index(char **av, int ac);
 int							set_command_limiter(t_command *cmd, char *lim);
 t_command					*new_single_arg_command(char *arg);
@@ -239,8 +242,19 @@ int							append_redirect_nodes(struct s_redir *rd);
 int							handle_redirect_segment(struct s_redir *rd);
 int							has_pipe_after_segment(const char *line,
 								size_t end);
+int							is_redirect_token(const char *token);
+int							is_heredoc_token(const char *token);
+t_command					*target_command(char *target);
+int							line_is_delimiter(char *line, const char *delimiter);
+char						*expand_heredoc_line(char *line, t_vars *vars);
+char						*create_heredoc_file(t_vars *vars, const char *delimiter);
+char						**collect_command_args(char **av, int ac, int *out_ac);
+void						append_redirect_segment(struct s_redir *rd);
 void						append_plain_segment(struct s_redir *rd);
 int							consume_redir_only_segment(struct s_redir *rd);
+
+void						append_redirect_only(
+																struct s_redir *rd);
 
 void						parse_segment(struct s_redir *rd, const char *line,
 								size_t start, int *status);
