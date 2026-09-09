@@ -20,9 +20,19 @@ static int	append_redirect_target(struct s_redir *rd, int i)
 	name = rd->av[i + 1];
 	if (!ft_strcmp(rd->av[i], ">|"))
 		rd->av[i][1] = '\0';
-	if (!set_command_limiter(*rd->tail, rd->av[i]))
+	if (is_heredoc_token(rd->av[i]))
+		name = create_heredoc_file(rd->vars, rd->av[i + 1]);
+	if (!name)
 		return (0);
+	if (!set_command_limiter(*rd->tail, rd->av[i]))
+	{
+		if (name != rd->av[i + 1])
+			free(name);
+		return (0);
+	}
 	target = target_command(name);
+	if (name != rd->av[i + 1])
+		free(name);
 	if (!target)
 		return (0);
 	append_command(rd->head, rd->tail, target);
@@ -34,13 +44,16 @@ static int	append_redirect_targets(struct s_redir *rd)
 	int	i;
 
 	i = 0;
-	while (i + 1 < rd->ac)
+	while (i < rd->ac)
 	{
-		if (!is_redirect_token(rd->av[i]))
+		if (is_redirect_token(rd->av[i]))
+		{
+			if (!append_redirect_target(rd, i))
+				return (0);
+			i += 2;
+		}
+		else
 			i++;
-		else if (!append_redirect_target(rd, i))
-			return (0);
-		i += 2;
 	}
 	return (1);
 }
@@ -99,7 +112,6 @@ void	append_redirect_segment(struct s_redir *rd)
 		else
 			i++;
 	}
-
 	args = collect_command_args(rd->av, rd->ac, &count);
 	if (!args)
 		return ;
@@ -111,5 +123,3 @@ void	append_redirect_segment(struct s_redir *rd)
 	}
 	append_regular_redirect(rd, args, count);
 }
-
-

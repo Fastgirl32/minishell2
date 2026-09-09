@@ -39,8 +39,11 @@ char	**collect_command_args(char **av, int ac, int *out_ac)
 	while (i < ac)
 	{
 		if (is_redirect_token(av[i]))
+		{
 			i += 2;
-		else if (!append_command_arg(args, av, &i, &j))
+			continue ;
+		}
+		if (!append_command_arg(args, av, &i, &j))
 			return (free_arr((void **)args), NULL);
 	}
 	args[j] = NULL;

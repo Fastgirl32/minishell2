@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:05 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/10 01:02:00 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/10 01:34:58 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	make_list(t_vars *vars, char *line)
 	t_command	*head;
 
 	head = build_command_list(vars, line);
+	print_command_list(head);
 	vars->list = head;
 	if (!head || should_skip_list(head, vars))
 		return (free_list(head), (void)(vars->list = NULL));
@@ -68,7 +69,6 @@ void	make_list(t_vars *vars, char *line)
 	}
 	else
 	{
-		print_command_list(head);
 		if (head->next)
 			execute(head, vars);
 		else

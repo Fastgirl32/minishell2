@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:22 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/08 08:32:52 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/10 01:33:30 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,16 @@ void	append_command(t_command **head, t_command **tail, t_command *new_cmd)
 }
 
 /* Prints command arguments in debug mode. */
-void	print_argv_debug(char **argv)
+void print_argv_debug(char **argv)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (argv && argv[i])
-	{
-		ft_printf("    argv[%d]='%s'\n", i, argv[i]);
-		i++;
-	}
+    i = 0;
+    while (argv && argv[i])
+    {
+        ft_printf("    argv[%d]='%s'\n", i, argv[i]);
+        i++;
+    }
 }
 
 /* Prints the complete command list in debug mode. */
