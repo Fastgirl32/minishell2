@@ -110,11 +110,11 @@ t_status	find_and_exec(t_command *cmd, t_vars *vars)
 		path_scan = ft_strchr(path_scan + 1, ':');
 	}
 	free(path_scan_dup);
-	free_vars(vars);
 	close_all_not_std_fds(cmd);
 	if (found == -1)
 	{
 		cmd_not_found(cmd->command);
+		free_vars(vars);
 		free_list(cmd);
 		exit(127);
 	}

@@ -16,7 +16,8 @@ QUELLE_DATEIEN = ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.
 	ft_strdup.c \
 	ft_split.c ft_strjoin.c ft_strtrim.c ft_substr.c \
 	ft_calloc.c \
-	ft_printf.c utils/ft_put_low_hex.c utils/ft_put_upper_hex.c utils/ft_putchar.c utils/ft_putnbr.c utils/ft_putptr.c utils/ft_putstr.c utils/ft_putuint.c 
+	ft_printf.c utils/ft_put_low_hex.c utils/ft_put_upper_hex.c utils/ft_putchar.c utils/ft_putnbr.c utils/ft_putptr.c utils/ft_putstr.c utils/ft_putuint.c \
+	get_next_line_bonus.c get_next_line_utils_bonus.c
 
 OBJEKT_DATEIEN = $(QUELLE_DATEIEN:.c=.o)
 

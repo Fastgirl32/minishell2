@@ -76,6 +76,8 @@ void	execute_single_command(t_command *cmd, t_vars *vars)
 		ft_close(&cmd->fd_out);
 		return ;
 	}
+	if (!print_heredoc(cmd))
+		return ;
 	child_pid = fork();
 	if (!child_pid)
 	{
@@ -130,6 +132,8 @@ void	execute(t_command *cmd, t_vars *vars)
 			exit(1);
 		if (is_builtin(cmd->command))
 			clean_exit(execute_builtin(cmd, vars), vars);
+		if (!print_heredoc(cmd))
+			clean_exit(0, vars);
 		else
 			find_and_exec(cmd, vars);
 	}

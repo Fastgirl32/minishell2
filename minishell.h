@@ -205,6 +205,7 @@ char					*read_continued_lines(t_vars *vars, char *line);
 
 t_command				*alloc_heredoc_cmd(char **lines, int count);
 t_command				*build_heredoc(const char *limiter);
+t_status				print_heredoc(t_command *cmd);
 
 char					*trimmed_history_entry(const char *line);
 int						history_reserve(t_vars *vars);
