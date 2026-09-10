@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/10 00:39:15 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/10 01:43:18 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,5 +266,6 @@ int						has_syntax_error(const char *line);
 void					set_heredoc_signal_mode(int active);
 int						take_heredoc_sigint(void);
 int						heredoc_was_interrupted(void);
+void	ignore_parent_signals(void);
 
 #endif // MINISHELL_H

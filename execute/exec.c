@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:07:13 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/30 12:49:18 by baal             ###   ########.fr       */
+/*   Updated: 2026/09/10 01:43:56 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,9 @@ void	execute_single_command(t_command *cmd, t_vars *vars)
 	}
 	else
 	{
+		ignore_parent_signals();
 		waitpid(child_pid, &stat, 0);
+		setup_parent_signals();
 		*(vars->status) = exit_status(stat);
 	}
 }
@@ -115,8 +117,8 @@ Executes a pipeline recursively.
 */
 void	execute(t_command *cmd, t_vars *vars)
 {
-	pid_t		child_pid;
-	int			stat;
+	pid_t	child_pid;
+	int		stat;
 
 	if (!cmd)
 		return ;
@@ -135,9 +137,11 @@ void	execute(t_command *cmd, t_vars *vars)
 	{
 		ft_close(&cmd->fd_in);
 		ft_close(&cmd->fd_out);
+		ignore_parent_signals();
 		execute(cmd->next, vars);
 		waitpid(child_pid, &stat, 0);
 		if (!(cmd->next))
 			*(vars->status) = exit_status(stat);
+		setup_parent_signals();
 	}
 }
