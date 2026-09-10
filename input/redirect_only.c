@@ -55,4 +55,6 @@ void	append_redirect_only(struct s_redir *rd)
 		append_command(rd->head, rd->tail, target);
 		i += 2;
 	}
+	if (rd->has_pipe)
+		set_command_limiter(*rd->tail, "|");
 }

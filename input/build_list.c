@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:18:05 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/10 21:50:59 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/10 22:51:39 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /* Checks whether a parsed command list needs no execution. */
 int	should_skip_list(t_command *head, t_vars *vars)
 {
-	if (!head->next && head->command && head->command[0] == '\0')
+	if (!head)
 		return (1);
 	if (!head->next && !ft_strcmp(head->command, "history"))
 	{
