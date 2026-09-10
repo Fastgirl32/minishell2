@@ -12,12 +12,6 @@
 
 #include "../minishell.h"
 
-static int	is_redirect_limiter(const char *s)
-{
-	return (s && (!ft_strcmp(s, "<") || !ft_strcmp(s, ">") || !ft_strcmp(s,
-				"<<") || !ft_strcmp(s, ">>") || !ft_strcmp(s, ">|")));
-}
-
 /*
 Recursively connects all the pipes in the linked list.
 Skips redirections.
@@ -120,7 +114,6 @@ t_u16	establish_redirects(t_command *top_cmd)
 {
 	t_command	*cmd;
 	t_command	*prev;
-	t_command	*tmp;
 	int			pipe_fd[2];
 	int			i;
 
@@ -135,14 +128,7 @@ t_u16	establish_redirects(t_command *top_cmd)
 			cmd = cmd->next;
 		}
 		if (cmd->limiter && !ft_strcmp(cmd->limiter, "|"))
-		{
-			tmp = cmd;
-			cmd = cmd->next;
-			tmp->next = NULL;
-			free_list(prev->next);
-			prev->next = cmd;
-			prev = cmd;
-		}
+			destroy_linked_list_segment(&cmd, &prev);
 	}
 	free_list(prev->next);
 	prev->next = NULL;
