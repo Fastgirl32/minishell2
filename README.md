@@ -1,5 +1,6 @@
 # SABRINA HANDLN
-- ">new" (input redirection dieser Art) als invalid syntax werten
+- ```>new``` als ```echo -n > new``` werten.  
+Auch in Pipes wie ```>new | >new2 | echo hihi``` -> ```echo -n > new | echo -n new2 | echo hihi```
 
 _This project has been created as part of the 42 curriculum by lstarek, saecker._
 

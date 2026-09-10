@@ -119,6 +119,6 @@ t_status	find_and_exec(t_command *cmd, t_vars *vars)
 		exit(127);
 	}
 	else
-		execv(path, cmd->argv);
+		execve(path, cmd->argv, vars->env);
 	return (127);
 }
