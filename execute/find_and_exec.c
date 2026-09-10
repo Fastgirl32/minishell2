@@ -72,7 +72,7 @@ int	access_path(char *path_scan, char path[PATH_MAX], t_command *cmd)
 
 	if (!path)
 		return (-1);
-	if (cmd->command[0] == '/')
+	if (ft_strchr(cmd->argv[0], '/'))
 	{
 		found = access(cmd->command, F_OK);
 		ft_memcpy(path, cmd->command, ft_strlen(cmd->command) + 1);
