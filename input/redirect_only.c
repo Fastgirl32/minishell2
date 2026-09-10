@@ -12,18 +12,22 @@
 
 #include "../minishell.h"
 
-static t_command	*empty_command(void)
+static t_command	*echo_command(void)
 {
 	char	**av;
 
-	av = malloc(sizeof(char *) * 2);
+	av = malloc(sizeof(char *) * 3);
 	if (!av)
 		return (NULL);
-	av[0] = ft_strdup("");
-	av[1] = NULL;
-	if (!av[0])
-		return (free(av), NULL);
-	return (new_command(av, 1, 0));
+	av[0] = ft_strdup("echo");
+	av[1] = ft_strdup("-n");
+	av[2] = NULL;
+	if (!av[0] || !av[1])
+	{
+		free_arr((void **)av);
+		return (NULL);
+	}
+	return (new_command(av, 2, 0));
 }
 
 void	append_redirect_only(struct s_redir *rd)
@@ -32,7 +36,7 @@ void	append_redirect_only(struct s_redir *rd)
 	char		*name;
 	int			i;
 
-	*rd->tail = empty_command();
+	*rd->tail = echo_command();
 	if (!*rd->tail)
 		return ;
 	i = 0;

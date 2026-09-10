@@ -94,7 +94,7 @@ static void	append_regular_redirect(struct s_redir *rd, char **args, int count)
 		set_command_limiter(*rd->tail, "|");
 }
 
-void	append_redirect_segment(struct s_redir *rd)
+void append_redirect_segment(struct s_redir *rd)
 {
 	char	**args;
 	int		count;

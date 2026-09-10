@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/10 01:43:18 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/10 21:15:00 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 #  define PATH_MAX 4096
 # endif
 # ifndef VERBOSE
-#  define VERBOSE 0
+#  define VERBOSE 1
 # endif
 # ifndef DISPLAY_BANNER
 #  define DISPLAY_BANNER 0
