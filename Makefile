@@ -2,6 +2,8 @@ NAME = minishell
 LIBNAME = libft/libft.a
 
 CFLAGGEN = -Wall -Wextra -Werror -g
+funny: CFLAGGEN += -D DISPLAY_BANNER=1
+verbose: CFLAGGEN += -D VERBOSE=1
 
 CC = cc
 
@@ -36,6 +38,9 @@ libft/libft.a:
 
 $(NAME): $(OBJEKT_DATEIEN) libft/libft.a
 	$(CC) $(CFLAGGEN) $(OBJEKT_DATEIEN) $(LIBNAME) -lreadline -o $(NAME)
+
+funny: $(NAME)
+verbose: $(NAME)
 
 clean: 
 	rm -f $(OBJEKT_DATEIEN)

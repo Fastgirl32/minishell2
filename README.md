@@ -10,18 +10,26 @@ The main features include a prompt with history, searching executables and launc
 
 # INSTRUCTIONS
 ### Installation: 
-```bash
+``` bash
     git clone <project_url> <folder_name>
 ```
 ### Compilation:
 Makefile is present. Run in the root directory:
-```
+``` bash
     make
+```
+Additional rules exist on top of those required by the subject.  
+``` bash
+    make funny      # Compiles, executable displays the custom banner
+    make verbose    # Compiles, executable displays the command struct
+    make vg         # Runs the program with valgrind and suppression for readline leaks
 ```
 ### Execution:
 Launch minishell and play around.
-```
+``` bash
     ./minishell
+    # or if you want valgrind to show relevant leaks:
+    make vg
 ```
 
 # RESOURCES

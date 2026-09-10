@@ -266,6 +266,6 @@ int						has_syntax_error(const char *line);
 void					set_heredoc_signal_mode(int active);
 int						take_heredoc_sigint(void);
 int						heredoc_was_interrupted(void);
-void	ignore_parent_signals(void);
+void					ignore_parent_signals(void);
 
 #endif // MINISHELL_H
