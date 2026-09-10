@@ -112,6 +112,11 @@ void append_redirect_segment(struct s_redir *rd)
 		else
 			i++;
 	}
+	if (!ft_strcmp(rd->av[0], ">") || !ft_strcmp(rd->av[0], ">>"))
+	{
+		append_redirect_only(rd);
+		return ;
+	}
 	args = collect_command_args(rd->av, rd->ac, &count);
 	if (!args)
 		return ;

@@ -32,13 +32,15 @@ static t_command	*echo_command(void)
 
 void	append_redirect_only(struct s_redir *rd)
 {
+	t_command	*echo;
 	t_command	*target;
 	char		*name;
 	int			i;
 
-	*rd->tail = echo_command();
-	if (!*rd->tail)
+	echo = echo_command();
+	if (!echo)
 		return ;
+	append_command(rd->head, rd->tail, echo);
 	i = 0;
 	while (i + 1 < rd->ac && is_redirect_token(rd->av[i]))
 	{
