@@ -37,28 +37,6 @@ int	execute_builtin(t_command *cmd, t_vars *vars)
 }
 
 /*
-For a given command. dups all file descriptors
-returns 0 on success
-*/
-t_status	redirect_all(t_command *cmd)
-{
-	setup_child_signals();
-	if (cmd->fd_in != 0)
-	{
-		if (dup2(cmd->fd_in, 0) == -1)
-			return (ft_close(&cmd->fd_in), 1);
-		ft_close(&cmd->fd_in);
-	}
-	if (cmd->fd_out != 1)
-	{
-		if (dup2(cmd->fd_out, 1) == -1)
-			return (ft_close(&cmd->fd_out), 1);
-		ft_close(&cmd->fd_out);
-	}
-	return (0);
-}
-
-/*
 executes a command that is not part of a pipeline.
 If it is builtin, it executes directly in the main process.
 Otherwise, it forks once and runs the program in the child.
@@ -72,9 +50,7 @@ void	execute_single_command(t_command *cmd, t_vars *vars)
 	if (is_builtin(cmd->command))
 	{
 		*(vars->status) = execute_builtin(cmd, vars);
-		ft_close(&cmd->fd_in);
-		ft_close(&cmd->fd_out);
-		return ;
+		return ((void)ft_close(&cmd->fd_in), ft_close(&cmd->fd_out));
 	}
 	if (!print_heredoc(cmd))
 		return ;
@@ -94,24 +70,16 @@ void	execute_single_command(t_command *cmd, t_vars *vars)
 	}
 }
 
-/*
-For pipeline command. dups all file descriptors
-returns 0 on success
-*/
-t_status	dup_all(t_command *cmd)
+void	perform_action(t_command *cmd, t_vars *vars)
 {
-	setup_child_signals();
-	if (cmd->fd_in != 0)
-	{
-		if (dup2(cmd->fd_in, 0) == -1)
-			return (1);
-	}
-	if (cmd->fd_out != 1)
-	{
-		if (dup2(cmd->fd_out, 1) == -1)
-			return (1);
-	}
-	return (0);
+	if (dup_all(cmd))
+		exit(1);
+	if (is_builtin(cmd->command))
+		clean_exit(execute_builtin(cmd, vars), vars);
+	if (!print_heredoc(cmd))
+		clean_exit(0, vars);
+	else
+		find_and_exec(cmd, vars);
 }
 
 /*
@@ -127,16 +95,7 @@ void	execute(t_command *cmd, t_vars *vars)
 	child_pid = fork();
 	cmd->is_single = 0;
 	if (!child_pid)
-	{
-		if (dup_all(cmd))
-			exit(1);
-		if (is_builtin(cmd->command))
-			clean_exit(execute_builtin(cmd, vars), vars);
-		if (!print_heredoc(cmd))
-			clean_exit(0, vars);
-		else
-			find_and_exec(cmd, vars);
-	}
+		perform_action(cmd, vars);
 	else
 	{
 		ft_close(&cmd->fd_in);
