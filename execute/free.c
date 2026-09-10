@@ -39,6 +39,7 @@ void	free_vars(t_vars *vars)
 		return ;
 	free_arr((void **)(vars->history));
 	free_arr((void **)(vars->env));
+	free(vars->history_entry);
 	if (vars->line)
 		free(vars->line);
 	free(vars);

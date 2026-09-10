@@ -95,7 +95,7 @@ t_vars	*init_vars(char **env, int *status_loc)
 {
 	t_vars	*vars;
 
-	vars = malloc(sizeof(t_vars));
+	vars = ft_calloc(sizeof(t_vars), 1);
 	if (!vars)
 		return (NULL);
 	vars->env = recreate_env(env);

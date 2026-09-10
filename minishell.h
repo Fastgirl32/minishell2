@@ -29,7 +29,7 @@
 #  define PATH_MAX 4096
 # endif
 # ifndef VERBOSE
-#  define VERBOSE 1
+#  define VERBOSE 0
 # endif
 # ifndef DISPLAY_BANNER
 #  define DISPLAY_BANNER 0
