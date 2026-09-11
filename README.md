@@ -1,7 +1,3 @@
-# SABRINA HANDLN
-- ```>new``` als ```echo -n > new``` werten.  
-Auch in Pipes wie ```>new | >new2 | echo hihi``` -> ```echo -n > new | echo -n new2 | echo hihi```
-
 _This project has been created as part of the 42 curriculum by lstarek, saecker._
 
 saecker was in charge for the "input" part, (parsing input into a usable struct and handling heredocs, prompts, history etc structured in the "input" subfolder)  

@@ -70,11 +70,11 @@ int	access_path(char *path_scan, char path[PATH_MAX], t_command *cmd)
 	char	*tmp2;
 	int		found;
 
-	if (!path)
+	if (!path || (cmd->command && cmd->command[0] == 0))
 		return (-1);
 	if (ft_strchr(cmd->command, '/'))
 	{
-		found = access(cmd->command, F_OK);
+		found = access(cmd->command, F_OK | X_OK);
 		ft_memcpy(path, cmd->command, ft_strlen(cmd->command) + 1);
 		return (found);
 	}
@@ -114,8 +114,8 @@ t_status	find_and_exec(t_command *cmd, t_vars *vars)
 	if (found == -1)
 	{
 		cmd_not_found(cmd->command);
+		free_list(vars->list);
 		free_vars(vars);
-		free_list(cmd);
 		exit(127);
 	}
 	else

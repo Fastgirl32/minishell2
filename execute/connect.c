@@ -75,7 +75,7 @@ t_u16	establish_redirect_helper2(t_command *cmd, t_command *prev,
 		ft_close(&prev->fd_in);
 		prev->fd_in = pipe_fd[0];
 	}
-	return ((prev->fd_in == -1));
+	return ((prev->fd_in < 0) || (prev->fd_out < 0));
 }
 
 t_u16	establish_redirect_helper(t_command *cmd, t_command *prev,
@@ -124,7 +124,7 @@ t_u16	establish_redirects(t_command *top_cmd)
 		while (cmd->limiter && is_redirect_limiter(cmd->limiter))
 		{
 			if (establish_redirect_helper(cmd, prev, pipe_fd, &i))
-				return (1);
+				return (perror(top_cmd->command), 1);
 			cmd = cmd->next;
 		}
 		if (cmd->limiter && !ft_strcmp(cmd->limiter, "|"))
