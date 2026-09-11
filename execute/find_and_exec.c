@@ -78,15 +78,19 @@ int	access_path(char *path_scan, char path[PATH_MAX], t_command *cmd)
 		ft_memcpy(path, cmd->command, ft_strlen(cmd->command) + 1);
 		return (found);
 	}
-	tmp2 = getpath(path_scan + 1);
-	tmp = ft_strjoin(tmp2, "/");
-	free(tmp2);
-	tmp2 = ft_strjoin(tmp, cmd->command);
-	free(tmp);
-	found = access(tmp2, F_OK);
-	ft_memcpy(path, tmp2, ft_strlen(tmp2) + 1);
-	free(tmp2);
-	return (found);
+	else if (path_scan)
+	{
+		tmp2 = getpath(path_scan + 1);
+		tmp = ft_strjoin(tmp2, "/");
+		free(tmp2);
+		tmp2 = ft_strjoin(tmp, cmd->command);
+		free(tmp);
+		found = access(tmp2, F_OK);
+		ft_memcpy(path, tmp2, ft_strlen(tmp2) + 1);
+		free(tmp2);
+		return (found);
+	}
+	return (-1);
 }
 
 /*
@@ -103,7 +107,7 @@ t_status	find_and_exec(t_command *cmd, t_vars *vars)
 
 	path_scan = get_var("PATH", vars);
 	path_scan_dup = path_scan;
-	found = -1;
+	found = access_path(path_scan, path, cmd);
 	while (path_scan && found == -1)
 	{
 		found = access_path(path_scan, path, cmd);

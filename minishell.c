@@ -32,7 +32,7 @@ int	main(int ac, char **av, char **env)
 	{
 		input_process(vars);
 	}
-	ft_printf("exit\n");
+	//ft_printf("exit\n");
 	free_vars(vars);
 	return (status);
 }
