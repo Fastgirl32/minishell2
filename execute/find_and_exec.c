@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/03 14:11:28 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/11 09:16:05 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/11 09:49:38 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	close_all_not_std_fds(t_command *head)
 
 /*
 if "cmd->command" starts with a '/', it is absolute,
-therefore not changed and directly accessed. 
+therefore not changed and directly accessed.
 Else, "cmd->command" gets appended to "path_scan" and then accessed.
 Path is set to whatever it actually is.
 */
@@ -100,7 +100,7 @@ t_status	find_and_exec(t_command *cmd, t_vars *vars)
 	char	*path_scan_dup;
 	char	path[PATH_MAX];
 	int		found;
-	
+
 	path_scan = get_var("PATH", vars);
 	path_scan_dup = path_scan;
 	found = -1;
