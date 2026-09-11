@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/11 08:27:25 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/11 09:45:30 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # endif
 
 # ifndef VERBOSE
-#  define VERBOSE 1
+#  define VERBOSE 0
 # endif
 
 # ifndef DISPLAY_BANNER

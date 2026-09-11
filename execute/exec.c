@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:07:13 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/11 09:21:06 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/11 09:26:09 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void	execute_single_command(t_command *cmd, t_vars *vars)
 	child_pid = fork();
 	if (!child_pid)
 	{
-		setup_child_signals();
 		if (redirect_all(cmd))
 			exit(1);
 		find_and_exec(cmd, vars);
