@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:49:41 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/09 18:55:15 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/11 07:38:51 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	main(int ac, char **av, char **env)
 	{
 		input_process(vars);
 	}
-	//printf("exit\n");
+	ft_printf("exit\n");
 	free_vars(vars);
 	return (status);
 }

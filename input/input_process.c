@@ -6,58 +6,12 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:58 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/10 21:50:09 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/11 07:42:06 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-/* Returns the quote character that is still open, if any. */
-char	find_unclosed_quote(const char *s)
-{
-	char	q;
-
-	q = 0;
-	while (*s)
-	{
-		if (!q && (*s == '\'' || *s == '"'))
-			q = *s;
-		else if (q && *s == q)
-			q = 0;
-		s++;
-	}
-	return (q);
-}
-
-/* Reads additional lines until all quotes are closed. */
-char	*read_continued_lines(t_vars *vars, char *line)
-{
-	char	q;
-	char	*more;
-
-	q = find_unclosed_quote(line);
-	while (q)
-	{
-		more = read_shell_line(vars, quote_prompt(q));
-		if (!more)
-		{
-			if (errno != EINTR)
-				vars->stop = 1;
-			free(line);
-			return (NULL);
-		}
-		line = append_line(line, more);
-		if (!line)
-			return (NULL);
-		q = find_unclosed_quote(line);
-	}
-	return (line);
-}
-
-/*
-Returns what $PS1 expands to, or NULL otherwise.
-The caller will then use the fallback.
-*/
 /* Builds the prompt from PS1 or the default fallback. */
 char	*get_prompt(t_vars *vars, char *backup, _Bool *fallback_used)
 {
@@ -86,6 +40,16 @@ char	*get_prompt(t_vars *vars, char *backup, _Bool *fallback_used)
 	return (prompt);
 }
 
+void	heredoc_cleanup(t_vars *vars, char *line)
+{
+	*(vars->status) = 130;
+	vars->heredoc_interrupted = 0;
+	free(vars->history_entry);
+	vars->history_entry = NULL;
+	free(line);
+	vars->line = NULL;
+}
+
 /* Stores, parses, and frees one complete input line. */
 static void	process_line(t_vars *vars, char *line)
 {
@@ -102,12 +66,7 @@ static void	process_line(t_vars *vars, char *line)
 	make_list(vars, line);
 	if (vars->heredoc_interrupted)
 	{
-		*(vars->status) = 130;
-		vars->heredoc_interrupted = 0;
-		free(vars->history_entry);
-		vars->history_entry = NULL;
-		free(line);
-		vars->line = NULL;
+		heredoc_cleanup(vars, line);
 		return ;
 	}
 	setup_parent_signals();

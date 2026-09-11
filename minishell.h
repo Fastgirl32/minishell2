@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/10 21:15:00 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/11 07:54:02 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,242 +36,263 @@
 # endif
 # define REDIR_MARKER '\001'
 
-typedef unsigned short	t_u16;
-typedef unsigned char	t_status;
+extern volatile sig_atomic_t	g_interrupted;
+
+typedef unsigned short			t_u16;
+typedef unsigned char			t_status;
 
 typedef struct s_command
 {
-	char				*command;
-	char				*limiter;
-	int					ac;
-	char				**argv;
-	struct s_command	*next;
-	int					fd_in;
-	int					fd_out;
-	_Bool				is_single;
-}						t_command;
+	char						*command;
+	char						*limiter;
+	int							ac;
+	char						**argv;
+	struct s_command			*next;
+	int							fd_in;
+	int							fd_out;
+	_Bool						is_single;
+}								t_command;
 
 typedef struct s_vars
 {
-	char				**env;
-	char				**history;
-	int					history_count;
-	int					history_cap;
-	int					stop;
-	unsigned int		heredoc_number;
-	int					heredoc_interrupted;
-	int					*status;
-	char				*line;
-	char				*history_entry;
-	t_command			*list;
-}						t_vars;
+	char						**env;
+	char						**history;
+	int							history_count;
+	int							history_cap;
+	int							stop;
+	unsigned int				heredoc_number;
+	int							heredoc_interrupted;
+	int							*status;
+	char						*line;
+	char						*history_entry;
+	t_command					*list;
+}								t_vars;
 
-struct					s_expand
+struct							s_expand
 {
-	const char			*line;
-	size_t				i;
-	size_t				end;
-	char				**env;
-	char				*dyn;
-	size_t				len;
-	size_t				cap;
-	char				quote;
+	const char					*line;
+	size_t						i;
+	size_t						end;
+	char						**env;
+	char						*dyn;
+	size_t						len;
+	size_t						cap;
+	char						quote;
 };
 
-struct					s_split
+struct							s_split
 {
-	const char			*line;
-	size_t				end;
-	char				**env;
-	int					*ac;
-	char				**av;
-	size_t				i;
-	size_t				j;
-	int					**status;
+	const char					*line;
+	size_t						end;
+	char						**env;
+	int							*ac;
+	char						**av;
+	size_t						i;
+	size_t						j;
+	int							**status;
 };
 
 typedef struct s_raw_word
 {
-	char				**word;
-	size_t				*len;
-	size_t				*cap;
-}						t_raw;
+	char						**word;
+	size_t						*len;
+	size_t						*cap;
+}								t_raw;
 
-struct					s_delimiter
+struct							s_delimiter
 {
-	char				**av;
-	const char			*line;
-	size_t				i;
-	size_t				j;
-	size_t				end;
+	char						**av;
+	const char					*line;
+	size_t						i;
+	size_t						j;
+	size_t						end;
 };
 
-struct					s_redir
+struct							s_redir
 {
-	t_command			**head;
-	t_command			**tail;
-	t_vars				*vars;
-	char				**av;
-	int					ac;
-	int					has_pipe;
-	int					op_i;
+	t_command					**head;
+	t_command					**tail;
+	t_vars						*vars;
+	char						**av;
+	int							ac;
+	int							has_pipe;
+	int							op_i;
 };
 
-int						ft_strcmp(const char *s1, const char *s2);
-char					*ft_strndup(char *str, size_t n);
-char					*ft_str_append(char *s1, char *s2);
-long int				ft_atol(const char *str);
-char					*ft_ltoa(long int n);
+int								ft_strcmp(const char *s1, const char *s2);
+char							*ft_strndup(char *str, size_t n);
+char							*ft_str_append(char *s1, char *s2);
+long int						ft_atol(const char *str);
+char							*ft_ltoa(long int n);
 
-char					*key(const char *str);
-char					*value(const char *str);
-char					*get_var(char *var, t_vars *vars);
-t_status				contains_var(t_vars *vars, char *var);
+char							*key(const char *str);
+char							*value(const char *str);
+char							*get_var(char *var, t_vars *vars);
+t_status						contains_var(t_vars *vars, char *var);
 
-void					cmd_not_found(char *cmd);
-t_u16					is_builtin(char *cmd);
-char					*expand_str(char *format, t_vars *vars);
+void							cmd_not_found(char *cmd);
+t_u16							is_builtin(char *cmd);
+char							*expand_str(char *format, t_vars *vars);
 
-t_status				ft_echo(t_command *cmd, t_vars *vars);
-t_status				ft_cd(t_command *cmd, t_vars *vars);
-t_status				ft_pwd(t_command *cmd);
-t_status				ft_export(t_command *cmd, t_vars *vars);
-t_status				ft_unset(t_command *cmd, t_vars *vars);
-t_status				ft_env(t_command *cmd, t_vars *vars);
-t_status				ft_exit(t_command *cmd, t_vars *vars);
+t_status						ft_echo(t_command *cmd, t_vars *vars);
+t_status						ft_cd(t_command *cmd, t_vars *vars);
+t_status						ft_pwd(t_command *cmd);
+t_status						ft_export(t_command *cmd, t_vars *vars);
+t_status						ft_unset(t_command *cmd, t_vars *vars);
+t_status						ft_env(t_command *cmd, t_vars *vars);
+t_status						ft_exit(t_command *cmd, t_vars *vars);
 
-int						exit_status(int status);
-t_status				find_and_exec(t_command *cmd, t_vars *vars);
+int								exit_status(int status);
+t_status						find_and_exec(t_command *cmd, t_vars *vars);
 
-int						is_redirect_limiter(const char *s);
-void					destroy_linked_list_segment(t_command **cmd,
-							t_command **prev);
-t_status				redirect_all(t_command *cmd);
-t_status				dup_all(t_command *cmd);
-t_u16					connect_pipes(t_command *top_cmd);
-t_u16					establish_redirects(t_command *top_cmd);
-int						execute_builtin(t_command *cmd, t_vars *vars);
-void					execute(t_command *cmd, t_vars *vars);
+int								is_redirect_limiter(const char *s);
+void							destroy_linked_list_segment(t_command **cmd,
+									t_command **prev);
+t_status						redirect_all(t_command *cmd);
+t_status						dup_all(t_command *cmd);
+t_u16							connect_pipes(t_command *top_cmd);
+t_u16							establish_redirects(t_command *top_cmd);
+int								execute_builtin(t_command *cmd, t_vars *vars);
+void							execute(t_command *cmd, t_vars *vars);
 
-char					*get_input(int fd);
-void					ft_close(int *fd);
-void					clean_exit(t_status status, t_vars *vars);
+char							*get_input(int fd);
+void							ft_close(int *fd);
+void							clean_exit(t_status status, t_vars *vars);
 
-void					print_banner(void);
+void							print_banner(void);
 
-void					setup_parent_signals(void);
-void					setup_child_signals(void);
-int						take_interactive_sigint(void);
+void							setup_parent_signals(void);
+void							setup_child_signals(void);
+int								take_interactive_sigint(void);
 
-char					**recreate_env(char **env);
-void					env_append(t_vars *vars, char *str);
-void					env_remove(t_vars *vars, char *str);
-void					free_arr(void **arr);
-void					free_vars(t_vars *vars);
+char							**recreate_env(char **env);
+void							env_append(t_vars *vars, char *str);
+void							env_remove(t_vars *vars, char *str);
+void							free_arr(void **arr);
+void							free_vars(t_vars *vars);
 
-void					input_process(t_vars *vars);
-void					make_list(t_vars *vars, char *line);
-t_vars					*init_vars(char **env, int *status_loc);
+void							input_process(t_vars *vars);
+void							make_list(t_vars *vars, char *line);
+t_vars							*init_vars(char **env, int *status_loc);
 
-int						is_blank(char c);
-int						is_blank_line(const char *s);
-int						is_var_char(char c);
-int						redir_op_len(const char *line, size_t i, char quote);
-size_t					segment_end(const char *line, size_t start);
-size_t					next_word_end(const char *line, size_t i, size_t end);
-size_t					count_tokens(const char *line, size_t start,
-							size_t end);
+int								is_blank(char c);
+int								is_blank_line(const char *s);
+int								is_var_char(char c);
+int								redir_op_len(const char *line, size_t i,
+									char quote);
+size_t							segment_end(const char *line, size_t start);
+size_t							next_word_end(const char *line, size_t i,
+									size_t end);
+size_t							count_tokens(const char *line, size_t start,
+									size_t end);
 
-int						append_char(char **str, size_t *len, size_t *cap,
-							char c);
-int						append_str(char **str, size_t *len, size_t *cap,
-							const char *src);
-char					*check_env(char **env, const char *name);
-int						append_status(char **dyn, size_t *len, size_t *cap,
-							int *status);
-int						append_env_var(struct s_expand *ex);
-int						handle_dollar(struct s_expand *ex, int *status);
-int						consume_quote_char(struct s_expand *ex);
-int						append_token_piece(struct s_expand *ex, int *status);
-int						append_escaped_piece(struct s_expand *ex);
-int						append_dollar_piece(struct s_expand *ex, int *status);
-char					*alloc_token_buffer(void);
-void					setup_expand(struct s_expand *ex, const char *line,
-							char **env, char *dyn);
-char					*copy_token(struct s_split *sp, size_t start);
+int								append_char(char **str, size_t *len,
+									size_t *cap, char c);
+int								append_str(char **str, size_t *len, size_t *cap,
+									const char *src);
+char							*check_env(char **env, const char *name);
+int								append_status(char **dyn, size_t *len,
+									size_t *cap, int *status);
+int								append_env_var(struct s_expand *ex);
+int								handle_dollar(struct s_expand *ex, int *status);
+int								consume_quote_char(struct s_expand *ex);
+int								append_token_piece(struct s_expand *ex,
+									int *status);
+int								append_escaped_piece(struct s_expand *ex);
+int								append_dollar_piece(struct s_expand *ex,
+									int *status);
+char							*alloc_token_buffer(void);
+void							setup_expand(struct s_expand *ex,
+									const char *line, char **env, char *dyn);
+char							*copy_token(struct s_split *sp, size_t start);
 
-char					*read_line_prompt(t_vars *vars, const char *prompt);
-char					*read_line_plain(void);
-char					*read_shell_line(t_vars *vars, const char *prompt);
-char					*append_line(char *line, char *more);
-const char				*quote_prompt(char q);
-char					find_unclosed_quote(const char *s);
-char					*read_continued_lines(t_vars *vars, char *line);
+char							*read_line_prompt(t_vars *vars,
+									const char *prompt);
+char							*read_line_plain(void);
+char							*read_shell_line(t_vars *vars,
+									const char *prompt);
+char							*append_line(char *line, char *more);
+const char						*quote_prompt(char q);
+char							find_unclosed_quote(const char *s);
+char							*read_continued_lines(t_vars *vars, char *line);
 
-t_command				*alloc_heredoc_cmd(char **lines, int count);
-t_command				*build_heredoc(const char *limiter);
-t_status				print_heredoc(t_command *cmd);
+t_command						*alloc_heredoc_cmd(char **lines, int count);
+t_command						*build_heredoc(const char *limiter);
+t_status						print_heredoc(t_command *cmd);
 
-char					*trimmed_history_entry(const char *line);
-int						history_reserve(t_vars *vars);
-void					history_add(t_vars *vars, const char *line);
-void					history_print(t_vars *vars);
+char							*trimmed_history_entry(const char *line);
+int								history_reserve(t_vars *vars);
+void							history_add(t_vars *vars, const char *line);
+void							history_print(t_vars *vars);
 
-void					free_list(t_command *cmd);
-int						set_pipe_limiter(t_command *cmd, int has_pipe);
-int						fill_command_base(t_command *cmd, char **av, int *ac,
-							int has_pipe);
-t_command				*new_command(char **av, int ac, int has_pipe);
-char					**dup_token_range(char **av, int start, int end,
-							int *out_ac);
-int						set_command_limiter(t_command *cmd, char *lim);
-int						has_pipe_after_segment(const char *line, size_t end);
-int						is_redirect_token(const char *token);
-int						is_heredoc_token(const char *token);
-t_command				*target_command(char *target);
-int						line_is_delimiter(char *line, const char *delimiter);
-char					*expand_heredoc_line(char *line, t_vars *vars);
-char					*create_heredoc_file(t_vars *vars,
-							const char *delimiter);
-char					**collect_command_args(char **av, int ac, int *out_ac);
-void					append_redirect_segment(struct s_redir *rd);
-void					append_plain_segment(struct s_redir *rd);
-int						consume_redir_only_segment(struct s_redir *rd);
+void							free_list(t_command *cmd);
+int								set_pipe_limiter(t_command *cmd, int has_pipe);
+int								fill_command_base(t_command *cmd, char **av,
+									int *ac, int has_pipe);
+t_command						*new_command(char **av, int ac, int has_pipe);
+char							**dup_token_range(char **av, int start, int end,
+									int *out_ac);
+int								set_command_limiter(t_command *cmd, char *lim);
+int								has_pipe_after_segment(const char *line,
+									size_t end);
+int								is_redirect_token(const char *token);
+int								is_heredoc_token(const char *token);
+t_command						*target_command(char *target);
+int								line_is_delimiter(char *line,
+									const char *delimiter);
+char							*expand_heredoc_line(char *line, t_vars *vars);
+char							*create_heredoc_file(t_vars *vars,
+									const char *delimiter);
+char							**collect_command_args(char **av, int ac,
+									int *out_ac);
+void							append_redirect_segment(struct s_redir *rd);
+void							append_plain_segment(struct s_redir *rd);
+int								consume_redir_only_segment(struct s_redir *rd);
 
-void					append_redirect_only(struct s_redir *rd);
+void							append_redirect_only(struct s_redir *rd);
 
-void					parse_segment(struct s_redir *rd, const char *line,
-							size_t start, int *status);
-void					preserve_heredoc_delimiters(char **av, const char *line,
-							size_t start, size_t end);
-int						process_delimiter(struct s_delimiter *ctx);
-size_t					skip_blanks(const char *line, size_t i);
-size_t					parse_and_move(struct s_redir *rd, const char *line,
-							size_t i, int *status);
-size_t					next_segment_start(const char *line, size_t pos);
-t_command				*build_command_list(t_vars *vars, const char *line);
-void					execute_single_command(t_command *head, t_vars *vars);
-int						should_skip_list(t_command *head, t_vars *vars);
+void							parse_segment(struct s_redir *rd,
+									const char *line, size_t start,
+									int *status);
+void							preserve_heredoc_delimiters(char **av,
+									const char *line, size_t start, size_t end);
+int								process_delimiter(struct s_delimiter *ctx);
+size_t							skip_blanks(const char *line, size_t i);
+size_t							parse_and_move(struct s_redir *rd,
+									const char *line, size_t i, int *status);
+size_t							next_segment_start(const char *line,
+									size_t pos);
+t_command						*build_command_list(t_vars *vars,
+									const char *line);
+void							execute_single_command(t_command *head,
+									t_vars *vars);
+int								should_skip_list(t_command *head, t_vars *vars);
 
-char					*safe_text(char *s);
-void					print_one_command(int idx, t_command *head);
-void					append_command(t_command **head, t_command **tail,
-							t_command *new_cmd);
-void					print_argv_debug(char **argv);
-void					print_command_list(t_command *head);
+char							*safe_text(char *s);
+void							print_one_command(int idx, t_command *head);
+void							append_command(t_command **head,
+									t_command **tail, t_command *new_cmd);
+void							print_argv_debug(char **argv);
+void							print_command_list(t_command *head);
 
-int						push_operator_token(struct s_split *sp);
-int						push_word_token(struct s_split *sp);
-int						fill_split_tokens(struct s_split *sp);
-char					**split_tokens(const char *line, size_t start,
-							size_t end, struct s_split *sp);
-void					free_tokens(char **av, size_t used);
-void					setup_child_signals(void);
-int						has_syntax_error(const char *line);
+int								push_operator_token(struct s_split *sp);
+int								push_word_token(struct s_split *sp);
+int								fill_split_tokens(struct s_split *sp);
+char							**split_tokens(const char *line, size_t start,
+									size_t end, struct s_split *sp);
+void							free_tokens(char **av, size_t used);
+void							setup_child_signals(void);
+int								has_syntax_error(const char *line);
 
-void					set_heredoc_signal_mode(int active);
-int						take_heredoc_sigint(void);
-int						heredoc_was_interrupted(void);
-void					ignore_parent_signals(void);
+void							set_heredoc_signal_mode(int active);
+int								take_heredoc_sigint(void);
+int								heredoc_was_interrupted(void);
+void							ignore_parent_signals(void);
+char							*read_continued_lines(t_vars *vars, char *line);
+char							find_unclosed_quote(const char *s);
+int								prepare_heredoc(struct s_redir *rd, int i);
+int								open_heredoc_file(char **path, t_vars *vars);
+int								here_doc_received_sigint(int fd, char **path);
+void							heredoc_write_error(int fd, char **path);
 
 #endif // MINISHELL_H

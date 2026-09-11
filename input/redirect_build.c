@@ -58,28 +58,6 @@ static int	append_redirect_targets(struct s_redir *rd)
 	return (1);
 }
 
-static int	prepare_heredoc(struct s_redir *rd, int i)
-{
-	char	*name;
-	int		j;
-
-	name = create_heredoc_file(rd->vars, rd->av[i + 1]);
-	if (!name)
-		return (0);
-	free(rd->av[i]);
-	free(rd->av[i + 1]);
-	rd->av[i] = name;
-	j = i + 1;
-	while (j < rd->ac - 1)
-	{
-		rd->av[j] = rd->av[j + 1];
-		j++;
-	}
-	rd->av[rd->ac - 1] = NULL;
-	rd->ac--;
-	return (1);
-}
-
 static void	append_regular_redirect(struct s_redir *rd, char **args, int count)
 {
 	t_command	*cmd;
@@ -94,11 +72,9 @@ static void	append_regular_redirect(struct s_redir *rd, char **args, int count)
 		set_command_limiter(*rd->tail, "|");
 }
 
-void append_redirect_segment(struct s_redir *rd)
+void	check_for_heredocs(struct s_redir *rd)
 {
-	char	**args;
-	int		count;
-	int		i;
+	int	i;
 
 	i = 0;
 	while (i + 1 < rd->ac)
@@ -112,6 +88,14 @@ void append_redirect_segment(struct s_redir *rd)
 		else
 			i++;
 	}
+}
+
+void	append_redirect_segment(struct s_redir *rd)
+{
+	char	**args;
+	int		count;
+
+	check_for_heredocs(rd);
 	if (!ft_strcmp(rd->av[0], ">") || !ft_strcmp(rd->av[0], ">>"))
 	{
 		append_redirect_only(rd);
