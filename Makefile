@@ -26,6 +26,7 @@ input/heredoc_file.c \
 	input/redirect_build.c \
 	input/redirect_only.c \
 	input/signals_child.c execute/exec.c \
+	input/signals_heredoc.c input/heredoc_helper.c input/find_and_close_quotes.c
 
 OBJEKT_DATEIEN = $(QUELLE_DATEIEN:.c=.o)
 

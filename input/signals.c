@@ -6,11 +6,13 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 01:47:07 by saecker           #+#    #+#             */
-/*   Updated: 2026/09/11 07:56:24 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/11 08:36:13 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+volatile sig_atomic_t	g_interrupted;
 
 static void	sigint_handler(int sig)
 {

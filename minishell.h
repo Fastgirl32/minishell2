@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 15:51:14 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/11 08:01:07 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/11 08:27:25 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@
 # endif
 
 # define REDIR_MARKER '\001'
+
+extern volatile sig_atomic_t	g_interrupted;
 
 typedef unsigned short	t_u16;
 typedef unsigned char	t_status;
@@ -191,6 +193,7 @@ t_status				dup_all(t_command *cmd);
 void					cmd_not_found(char *cmd);
 void					destroy_linked_list_segment(t_command **cmd,
 							t_command **prev);
+int						is_redirect_limiter(const char *s);
 
 /* Signals */
 void					setup_parent_signals(void);
@@ -198,7 +201,7 @@ void					setup_child_signals(void);
 int						take_interactive_sigint(void);
 void					set_heredoc_signal_mode(int active);
 int						take_heredoc_sigint(void);
-int						heredoc_was_interrupted(void);
+void					ignore_parent_signals(void);
 
 /* Initialization */
 t_vars					*init_vars(char **env, int *status_loc);
@@ -223,13 +226,16 @@ void					history_add(t_vars *vars, const char *line);
 void					history_print(t_vars *vars);
 
 /* Heredoc */
-t_command				*alloc_heredoc_cmd(char **lines, int count);
-t_command				*build_heredoc(const char *limiter);
 int						is_heredoc_token(const char *token);
 int						line_is_delimiter(char *line, const char *delimiter);
 char					*expand_heredoc_line(char *line, t_vars *vars);
 char					*create_heredoc_file(t_vars *vars,
 							const char *delimiter);
+void					heredoc_write_error(int fd, char **path);
+int						here_doc_received_sigint(int fd, char **path);
+int						open_heredoc_file(char **path, t_vars *vars);
+int						prepare_heredoc(struct s_redir *rd, int i);
+t_status				print_heredoc(t_command *cmd);
 
 /* Lexer */
 int						is_blank(char c);
@@ -255,9 +261,6 @@ size_t					skip_blanks(const char *line, size_t i);
 size_t					parse_and_move(struct s_redir *rd, const char *line,
 							size_t i, int *status);
 size_t					next_segment_start(const char *line, size_t pos);
-int						process_delimiter(struct s_delimiter *ctx);
-void					preserve_heredoc_delimiters(char **av, const char *line,
-							size_t start, size_t end);
 char					**collect_command_args(char **av, int ac, int *out_ac);
 
 /* Command build */
@@ -276,7 +279,6 @@ void					append_command(t_command **head, t_command **tail,
 void					append_redirect_segment(struct s_redir *rd);
 void					append_plain_segment(struct s_redir *rd);
 void					append_redirect_only(struct s_redir *rd);
-int						consume_redir_only_segment(struct s_redir *rd);
 void					parse_segment(struct s_redir *rd, const char *line,
 							size_t start, int *status);
 t_command				*build_command_list(t_vars *vars, const char *line);

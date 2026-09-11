@@ -6,7 +6,7 @@
 /*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:24:58 by lstarek           #+#    #+#             */
-/*   Updated: 2026/09/11 07:42:06 by saecker          ###   ########.fr       */
+/*   Updated: 2026/09/11 08:40:33 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	input_process(t_vars *vars)
 	if (!fallback_used)
 		free(prompt);
 	if (take_interactive_sigint())
-		*(vars->status) = 130;
+		return (*(vars->status) = 130, free(line));
 	if (!line)
 	{
 		if (errno != EINTR)
