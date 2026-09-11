@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baal <baal@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: saecker <saecker@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 14:02:27 by lstarek           #+#    #+#             */
-/*   Updated: 2026/08/07 14:58:06 by baal             ###   ########.fr       */
+/*   Updated: 2026/09/11 14:04:42 by saecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,21 @@ char	*ft_str_append(char *s1, char *s2)
 
 void	cmd_not_found(char *cmd)
 {
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(": command not found\n", 2);
+	char	*str;
+	char	*str2;
+	char	*str3;
+
+	str = ft_strndup("minishell: ", 11);
+	str2 = ft_strndup(cmd, ft_strlen(cmd));
+	str3 = ft_strjoin(str, str2);
+	free(str);
+	free(str2);
+	str = ft_strndup(": command not found\n", 21);
+	str2 = ft_strjoin(str3, str);
+	free(str3);
+	free(str);
+	write(2, str2, ft_strlen(str2));
+	free(str2);
 }
 
 /*
@@ -77,11 +89,7 @@ Returns 1 if a command is builtin.
 */
 t_u16	is_builtin(char *cmd)
 {
-	return (!ft_strcmp(cmd, "cd")
-		|| !ft_strcmp(cmd, "echo")
-		|| !ft_strcmp(cmd, "env")
-		|| !ft_strcmp(cmd, "exit")
-		|| !ft_strcmp(cmd, "export")
-		|| !ft_strcmp(cmd, "pwd")
-		|| !ft_strcmp(cmd, "unset"));
+	return (!ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "echo") || !ft_strcmp(cmd,
+			"env") || !ft_strcmp(cmd, "exit") || !ft_strcmp(cmd, "export")
+		|| !ft_strcmp(cmd, "pwd") || !ft_strcmp(cmd, "unset"));
 }
